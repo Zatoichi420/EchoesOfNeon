@@ -109,20 +109,41 @@ EchoesOfNeon/
 
 ## 🎯 Task Tracking & Roadmap
 
-| Task / Feature | Module | Status | Owner / Agent | Target File(s) |
-| :--- | :--- | :--- | :--- | :--- |
-| Project Folder Scaffolding | Setup | ✅ Completed | System | Root directory structure |
-| Multi-Agent Memory & Protocol | Docs | ✅ Completed | System | `MEMORY.md`, `README.md` |
-| `AccessibilityManager.cs` | Accessibility | ⏳ In Backlog | Unassigned | `Assets/Scripts/Accessibility/AccessibilityManager.cs` |
-| `InputManager.cs` (New Input System) | Core | ⏳ In Backlog | Unassigned | `Assets/Scripts/Core/InputManager.cs` |
-| `TacticalPlayerController.cs` | Player | ⏳ In Backlog | Unassigned | `Assets/Scripts/Player/TacticalPlayerController.cs` |
-| `OculusSensorySuite.cs` | Optics | ⏳ In Backlog | Unassigned | `Assets/Scripts/Optics/OculusSensorySuite.cs` |
-| `SoundVisualizerCompass.cs` | UI | ⏳ In Backlog | Unassigned | `Assets/Scripts/UI/SoundVisualizerCompass.cs` |
-| `AcousticEventSystem.cs` & `AcousticEmitter.cs` | Core / AI | ⏳ In Backlog | Unassigned | `Assets/Scripts/Core/AcousticEventSystem.cs` |
-| `BallisticWeapon.cs` (Vanguard 9) | Weapons | ⏳ In Backlog | Unassigned | `Assets/Scripts/Weapons/BallisticWeapon.cs` |
-| `TacticalEnemyAI.cs` | AI | ⏳ In Backlog | Unassigned | `Assets/Scripts/AI/TacticalEnemyAI.cs` |
-| Post-Process Sonar & Outline Shaders | Shaders | ⏳ In Backlog | Unassigned | `Assets/Shaders/SonarPulseEffect.shader` |
-| Graybox Firing Range / Stealth Level | Scenes | ⏳ In Backlog | Unassigned | `Assets/Scenes/TestRange_Proto.unity` |
+Reordered into phases 2026-09-09 to put input first (explicit user priority:
+keyboard **and** game controller support) and to call out the screen-reader
+architecture decision below. See the Changelog for tooling setup detail.
+
+> [!IMPORTANT]
+> ### 🦯 Screen-reader architecture decision (2026-09-09)
+> Menus/UI use **Unity 6.3's native `AccessibilityNode`/`AccessibilityHierarchy`
+> API** (`UnityEngine.Accessibility`), which exposes UI through Windows UI
+> Automation — the same standard API NVDA reads other apps through. This is
+> *why* the project targets **Unity 6.3 (`6000.3.23f1`)** instead of the 6.0
+> LTS line, which predates this API entirely. Unity's own docs only list
+> "Windows Narrator" as tested, not NVDA by name, but the mechanism is
+> standard UIA, not Narrator-specific — NVDA compatibility is expected but
+> **not yet empirically verified**; confirm live once a menu exists.
+> **Live gameplay does not go through a screen reader at all** — that's what
+> the Oculus Sensory Suite (sonar echolocation, sound-visualizer compass) is
+> *for*. Screen readers are for static menu/UI screens only.
+
+| Phase | Task / Feature | Module | Status | Owner / Agent | Target File(s) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 0 | Project Folder Scaffolding | Setup | ✅ Completed | System | Root directory structure |
+| 0 | Multi-Agent Memory & Protocol | Docs | ✅ Completed | System | `MEMORY.md`, `README.md` |
+| 0 | Unity Hub + Unity 6.3 Editor + Windows IL2CPP install | Tooling | ✅ Completed | Claude | n/a (machine-level) |
+| 0 | Git repo + GitHub remote (`Zatoichi420/EchoesOfNeon`, private) | Tooling | ✅ Completed | Claude | `.gitignore` |
+| 0 | Real Unity project (`ProjectSettings/`, `Packages/manifest.json`) | Setup | ⏳ Next | Unassigned | project root |
+| 1 | `InputManager.cs` (New Input System — keyboard + gamepad) | Core | ⏳ In Backlog | Unassigned | `Assets/Scripts/Core/InputManager.cs` |
+| 2 | `AccessibilityManager.cs` (incl. native screen-reader hookup) | Accessibility | ⏳ In Backlog | Unassigned | `Assets/Scripts/Accessibility/AccessibilityManager.cs` |
+| 3 | `TacticalPlayerController.cs` | Player | ⏳ In Backlog | Unassigned | `Assets/Scripts/Player/TacticalPlayerController.cs` |
+| 4 | `OculusSensorySuite.cs` | Optics | ⏳ In Backlog | Unassigned | `Assets/Scripts/Optics/OculusSensorySuite.cs` |
+| 5 | `SoundVisualizerCompass.cs` | UI | ⏳ In Backlog | Unassigned | `Assets/Scripts/UI/SoundVisualizerCompass.cs` |
+| 5 | `AcousticEventSystem.cs` & `AcousticEmitter.cs` | Core / AI | ⏳ In Backlog | Unassigned | `Assets/Scripts/Core/AcousticEventSystem.cs` |
+| 6 | `BallisticWeapon.cs` (Vanguard 9) | Weapons | ⏳ In Backlog | Unassigned | `Assets/Scripts/Weapons/BallisticWeapon.cs` |
+| 6 | `TacticalEnemyAI.cs` | AI | ⏳ In Backlog | Unassigned | `Assets/Scripts/AI/TacticalEnemyAI.cs` |
+| 6 | Post-Process Sonar & Outline Shaders | Shaders | ⏳ In Backlog | Unassigned | `Assets/Shaders/SonarPulseEffect.shader` |
+| 6 | Graybox Firing Range / Stealth Level | Scenes | ⏳ In Backlog | Unassigned | `Assets/Scenes/TestRange_Proto.unity` |
 
 ---
 
@@ -132,4 +153,5 @@ EchoesOfNeon/
 
 | Date & Time | Agent / Role | Action Summary | Files Touched / Created | Notes & Next Steps |
 | :--- | :--- | :--- | :--- | :--- |
+| **2026-09-09** | Claude | Tooling setup: installed Unity Hub + Unity 6.3 Editor (`6000.3.23f1`, chosen over 6.0 LTS specifically for its native screen-reader Accessibility API — see the decision note above) with Windows IL2CPP build support. Initialized git, added a standard Unity `.gitignore`, created private GitHub repo `Zatoichi420/EchoesOfNeon`. Reordered the task table into phases with input first per user request. | `.gitignore`, this file | Next: create the actual Unity project via the Editor's own project-creation flow (not hand-authored `ProjectSettings`), then start Phase 1 (`InputManager.cs`). |
 | **2026-09-05** | Master Coordinator | Initialized Desktop project structure, created `MEMORY.md` and `README.md`. Set up multi-agent synchronization rules. | `MEMORY.md`, `README.md`, folder structure | Ready for agents to claim and implement core C# scripts. |
