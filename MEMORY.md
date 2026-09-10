@@ -2,18 +2,22 @@
 **Project:** *Echoes of Neon* — Accessible Tactical Cyber-Noir FPS  
 **Target Engine:** Unity 6.6.0f1 (installed, real project exists - see Changelog)  
 **Location:** `Desktop/EchoesOfNeon/`  
-**Last Updated:** 2026-09-09  
+**Last Updated:** 2026-09-10  
 
 > [!NOTE]
-> ### ⏸️ Stopped here for the evening (2026-09-09) - resume point
-> Phases 0-3 are done (`InputManager.cs`, `AccessibilityManager.cs`,
-> `TacticalPlayerController.cs` all written and compile clean) but **nothing
-> has ever run in a live scene** - no GameObjects, no scene wiring exists at
-> all yet. **Next session: build a minimal test scene first** (player
-> capsule + `CharacterController` + the two manager singletons + simple
-> ground) and confirm real input reaches `InputManager` and NVDA actually
-> hears an `AccessibilityManager.Announce()` call, before starting Phase 4.
-> Do not skip straight to more script-writing.
+> ### ⏸️ Resume point (2026-09-10)
+> Phases 0-4 are all done and compile clean. A test scene
+> (`Assets/Scenes/TestRange_Proto.unity`, built via `TestSceneSetup.cs`)
+> and a Windows standalone build (`Builds/TestRange/EchoesOfNeon_Test.exe`,
+> via `TestBuild.cs`) exist and were sanity-checked (launches, runs 15+
+> seconds, no crash/exceptions) - but that test scene does **not** yet have
+> `OculusSensorySuite` wired into it (it predates Phase 4), and **nothing
+> has been confirmed working by an actual person yet** - no real input
+> tested, NVDA hasn't been confirmed to actually announce anything, Neural
+> Dilate/sonar/ballistics have never run. **Next session**: either (a) have
+> the user run the existing build and report what does/doesn't work, or
+> (b) add `OculusSensorySuite` to `TestSceneSetup.cs`, rebuild, then test -
+> before starting Phase 5. Don't keep stacking phases on unverified ground.
 
 ---
 
@@ -149,7 +153,7 @@ architecture decision below. See the Changelog for tooling setup detail.
 | 1 | `InputManager.cs` (New Input System — keyboard + gamepad) | Core | ✅ Completed (untested in a live scene) | Claude | `Assets/Scripts/Core/InputManager.cs` |
 | 2 | `AccessibilityManager.cs` (incl. native screen-reader hookup) | Accessibility | ✅ Completed (screen-reader path untested live) | Claude | `Assets/Scripts/Accessibility/AccessibilityManager.cs` |
 | 3 | `TacticalPlayerController.cs` | Player | ✅ Completed (untested in a live scene) | Claude | `Assets/Scripts/Player/TacticalPlayerController.cs` |
-| 4 | `OculusSensorySuite.cs` | Optics | ⏳ In Backlog | Unassigned | `Assets/Scripts/Optics/OculusSensorySuite.cs` |
+| 4 | `OculusSensorySuite.cs` (sonar, Neural Dilate, predictive ballistics) | Optics | ✅ Completed (not wired into test scene / untested live) | Claude | `Assets/Scripts/Optics/OculusSensorySuite.cs` |
 | 5 | `SoundVisualizerCompass.cs` | UI | ⏳ In Backlog | Unassigned | `Assets/Scripts/UI/SoundVisualizerCompass.cs` |
 | 5 | `AcousticEventSystem.cs` & `AcousticEmitter.cs` | Core / AI | ⏳ In Backlog | Unassigned | `Assets/Scripts/Core/AcousticEventSystem.cs` |
 | 6 | `BallisticWeapon.cs` (Vanguard 9) | Weapons | ⏳ In Backlog | Unassigned | `Assets/Scripts/Weapons/BallisticWeapon.cs` |
@@ -165,6 +169,7 @@ architecture decision below. See the Changelog for tooling setup detail.
 
 | Date & Time | Agent / Role | Action Summary | Files Touched / Created | Notes & Next Steps |
 | :--- | :--- | :--- | :--- | :--- |
+| **2026-09-10** | Claude | **Built and deployed the Phase 1-3 test scene**: `TestSceneSetup.cs` scripts `Assets/Scenes/TestRange_Proto.unity` (the filename already planned for this purpose) with both manager singletons, a wired-up player, ground, and `TestAnnouncer.cs` (announces via `AccessibilityManager` on scene start, independent of input working). `TestBuild.cs` built a StandaloneWindows64 player to `Builds/TestRange/` (gitignored) - 0 errors, 0 warnings, ~96MB. Launched briefly to confirm no startup crash; **real verification (actual input, actually hearing NVDA) still needs the user**, not a Claude-launched process. **Phase 4**: `OculusSensorySuite.cs` - sonar pulse (`ISonarPingable` interface for decoupled reactions, none exist yet), Neural Dilate (eases `Time.timeScale`, scales `Time.fixedDeltaTime` proportionally per Unity's own slow-mo guidance), predictive ballistics (raycast-and-reflect, gated on `AccessibilityManager.IsAiming`). Required switching `TacticalPlayerController` to `Time.unscaledDeltaTime` throughout (separate commit) so Neural Dilate doesn't also slow the player, per the design doc's explicit requirement. Compiled clean. **Not yet wired into the test scene** (predates it) or tested live. | `Assets/Editor/TestSceneSetup.cs`, `Assets/Editor/TestBuild.cs`, `Assets/Scenes/TestRange_Proto.unity`, `Assets/Scripts/Core/TestAnnouncer.cs`, `Assets/Scripts/Player/TacticalPlayerController.cs`, `Assets/Scripts/Optics/OculusSensorySuite.cs` | See the resume-point note above. |
 | **2026-09-09 (Phase 3)** | Claude | **`TacticalPlayerController.cs`** written: `CharacterController`-based FPS movement/look. Reads Move/Look/Jump/Interact straight from `InputManager`, but Sprint/Crouch/Aim from `AccessibilityManager` (post toggle-vs-hold). Look branches on `InputManager.CurrentDevice` - mouse delta (per-frame pixels, no deltaTime scaling) vs. gamepad stick (continuous rate, deltaTime-scaled) need different math or look feel breaks on whichever device wasn't tuned last. Implements two accessibility behaviors that belong at the controller level rather than in settings: camera head-bob (respects `cameraBobEnabled`/`reduceMotion`) and **single-stick mode** (the move stick also drives facing - play without a second stick/mouse). Aiming applies a real movement-speed penalty now, not a placeholder. Added `IInteractable` (minimal, only what the Interact raycast needs today). Compiled clean first try. | `Assets/Scripts/Player/TacticalPlayerController.cs`, `Assets/Scripts/Player/IInteractable.cs` | User wants to pause here and actually test what exists (Phases 1-3) in a live scene before Phase 4 - nothing has run yet, all three scripts are compile-verified only. |
 | **2026-09-09 (Phase 2)** | Claude | **`AccessibilityManager.cs`** written: settings hub (colorblind mode, high-contrast outlines, aim assist friction/magnetism, single-stick mode, look sensitivity, Neural Dilate timescale, camera bob/screen shake/reduced motion) persisted via PlayerPrefs+JSON; toggle-vs-hold translation for Aim/Sprint/Crouch layered on `InputManager`'s raw events; and the **native screen-reader hookup** confirmed working at the API level - `AssistiveSupport.activeHierarchy`, `.isScreenReaderEnabled`, and `.notificationDispatcher.SendAnnouncement(string)` (confirmed via Unity's own docs before writing code, not guessed) all compiled clean on the first try. `Announce(string)` is the one-off narration entry point for now; a real `AccessibilityNode` tree for actual menu buttons is Phase 5/6 work once menu UI exists - registered an empty `AccessibilityHierarchy` in the meantime so the plumbing is ready. **Not yet tested against a live screen reader** - this is the first real use of the Accessibility API in the project. Colorblind/outline settings are stored but nothing reads them yet (Phase 6). | `Assets/Scripts/Accessibility/AccessibilityManager.cs` | Next: either Phase 3 (`TacticalPlayerController.cs`, consumes both `InputManager` and `AccessibilityManager`), or pause to wire a minimal test scene and confirm both scripts actually work live (NVDA hearing an `Announce()` call, `InputManager` receiving real input) before building further on unverified ground. |
 | **2026-09-09 (later)** | Claude | **Real Unity project created** at the project root via `Unity.exe -batchmode -createProject` (existing docs/folders preserved). Editor ended up as **6000.6.0f1** (not the originally-targeted 6000.3.23f1) after the user completed the install via Hub's GUI themselves - still has the native accessibility API (6.3+ requirement satisfied). Installed `com.unity.inputsystem` (1.20.0) and `com.unity.render-pipelines.universal` (17.6.0) via a `PackageSetup.cs` editor utility using Package Manager's own resolver (avoids hand-pinning versions). `com.unity.textmeshpro` as a standalone package is **not compatible** with this Unity version - don't retry it; TMP now ships via core UI packages instead. Set `activeInputHandler: 1` in ProjectSettings. Wrote and verified (clean batch-mode compile) `InputManager.cs` - see the file itself for the full action list; covers keyboard+gamepad for every planned action including the Oculus Sensory Suite's SonarPulse/NeuralDilate. **Gotcha worth remembering**: writing a script that references a not-yet-installed package's namespace, then trying to install that package in the *same* batch-mode session, fails - the broken script blocks compilation before the install method can even run. Move the script aside, install the package, move it back. | `Packages/manifest.json`, `ProjectSettings/ProjectSettings.asset`, `Assets/Editor/PackageSetup.cs`, `Assets/Scripts/Core/InputManager.cs` | Not yet tested in a live scene (no GameObject/scene wiring exists yet - InputManager.cs compiles but has never actually run). Next: Phase 2 (`AccessibilityManager.cs`), or first wire up a minimal test scene to confirm InputManager actually receives real input before building more on top of it. |
