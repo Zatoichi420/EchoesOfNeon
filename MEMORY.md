@@ -1,8 +1,19 @@
 # 🧠 PROJECT MEMORY & MULTI-AGENT COORDINATION PROTOCOL
 **Project:** *Echoes of Neon* — Accessible Tactical Cyber-Noir FPS  
-**Target Engine:** Unity 6 / Unity 2022+ (Universal Render Pipeline - URP)  
+**Target Engine:** Unity 6.6.0f1 (installed, real project exists - see Changelog)  
 **Location:** `Desktop/EchoesOfNeon/`  
-**Last Updated:** 2026-09-05  
+**Last Updated:** 2026-09-09  
+
+> [!NOTE]
+> ### ⏸️ Stopped here for the evening (2026-09-09) - resume point
+> Phases 0-3 are done (`InputManager.cs`, `AccessibilityManager.cs`,
+> `TacticalPlayerController.cs` all written and compile clean) but **nothing
+> has ever run in a live scene** - no GameObjects, no scene wiring exists at
+> all yet. **Next session: build a minimal test scene first** (player
+> capsule + `CharacterController` + the two manager singletons + simple
+> ground) and confirm real input reaches `InputManager` and NVDA actually
+> hears an `AccessibilityManager.Announce()` call, before starting Phase 4.
+> Do not skip straight to more script-writing.
 
 ---
 
