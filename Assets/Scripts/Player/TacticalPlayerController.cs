@@ -16,6 +16,12 @@ namespace EchoesOfNeon.Player
     /// when Settings.cameraBobEnabled is off or reduceMotion is on), and
     /// single-stick mode (movement stick also drives facing, removing the
     /// need for a second look stick/mouse entirely).
+    ///
+    /// Everything uses Time.unscaledDeltaTime, not Time.deltaTime (Phase 4):
+    /// Neural Dilate (OculusSensorySuite) slows the world via Time.timeScale,
+    /// and the design doc is explicit that it should do that "without making
+    /// player controls sluggish" - the player would feel the slowdown too if
+    /// this used scaled time.
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
     public class TacticalPlayerController : MonoBehaviour
@@ -154,7 +160,7 @@ namespace EchoesOfNeon.Player
                 {
                     var moveDir = transform.TransformDirection(new Vector3(_moveInput.x, 0f, _moveInput.y));
                     float targetYaw = Quaternion.LookRotation(new Vector3(moveDir.x, 0f, moveDir.z)).eulerAngles.y;
-                    float newYaw = Mathf.MoveTowardsAngle(transform.eulerAngles.y, targetYaw, singleStickTurnSpeed * Time.deltaTime);
+                    float newYaw = Mathf.MoveTowardsAngle(transform.eulerAngles.y, targetYaw, singleStickTurnSpeed * Time.unscaledDeltaTime);
                     transform.rotation = Quaternion.Euler(0f, newYaw, 0f);
                 }
                 return;
@@ -164,13 +170,13 @@ namespace EchoesOfNeon.Player
             float yawDelta, pitchDelta;
             if (_input.CurrentDevice == InputManager.DeviceKind.Gamepad)
             {
-                yawDelta = _lookInput.x * gamepadLookSpeed * sensitivity * Time.deltaTime;
-                pitchDelta = _lookInput.y * gamepadLookSpeed * sensitivity * Time.deltaTime;
+                yawDelta = _lookInput.x * gamepadLookSpeed * sensitivity * Time.unscaledDeltaTime;
+                pitchDelta = _lookInput.y * gamepadLookSpeed * sensitivity * Time.unscaledDeltaTime;
             }
             else
             {
                 // Mouse delta is already a per-frame pixel movement, not a
-                // continuous rate - do not scale it by Time.deltaTime too,
+                // continuous rate - do not scale it by Time.unscaledDeltaTime too,
                 // or look speed becomes framerate-dependent in the wrong way.
                 yawDelta = _lookInput.x * mouseSensitivity * sensitivity;
                 pitchDelta = _lookInput.y * mouseSensitivity * sensitivity;
@@ -185,7 +191,7 @@ namespace EchoesOfNeon.Player
         {
             bool crouching = _accessibility != null && _accessibility.IsCrouching;
             float targetHeight = crouching ? crouchHeight : standingHeight;
-            _currentHeight = Mathf.MoveTowards(_currentHeight, targetHeight, crouchTransitionSpeed * Time.deltaTime);
+            _currentHeight = Mathf.MoveTowards(_currentHeight, targetHeight, crouchTransitionSpeed * Time.unscaledDeltaTime);
             _controller.height = _currentHeight;
             _controller.center = new Vector3(0f, _currentHeight / 2f, 0f);
         }
@@ -214,11 +220,11 @@ namespace EchoesOfNeon.Player
             }
             else
             {
-                _verticalVelocity += gravity * Time.deltaTime;
+                _verticalVelocity += gravity * Time.unscaledDeltaTime;
             }
 
             Vector3 velocity = worldMove + Vector3.up * _verticalVelocity;
-            _controller.Move(velocity * Time.deltaTime);
+            _controller.Move(velocity * Time.unscaledDeltaTime);
         }
 
         private void UpdateCameraBob()
@@ -232,14 +238,14 @@ namespace EchoesOfNeon.Player
 
             if (bobEnabled && isMoving)
             {
-                _bobTimer += Time.deltaTime * bobFrequency * (horizontalVelocity.magnitude / walkSpeed);
+                _bobTimer += Time.unscaledDeltaTime * bobFrequency * (horizontalVelocity.magnitude / walkSpeed);
                 float bobOffset = Mathf.Sin(_bobTimer * Mathf.PI * 2f) * bobAmplitude;
                 cameraPivot.localPosition = _cameraBasePosition + new Vector3(0f, bobOffset, 0f);
             }
             else
             {
                 _bobTimer = 0f;
-                cameraPivot.localPosition = Vector3.Lerp(cameraPivot.localPosition, _cameraBasePosition, Time.deltaTime * 8f);
+                cameraPivot.localPosition = Vector3.Lerp(cameraPivot.localPosition, _cameraBasePosition, Time.unscaledDeltaTime * 8f);
             }
         }
     }
