@@ -43,4 +43,18 @@ public static class PlatformIdentitySetup
         Debug.Log($"[PlatformIdentitySetup] companyName={PlayerSettings.companyName}, "
             + $"bundleId={BundleIdentifier}, team={AppleDeveloperTeamID}");
     }
+
+    /// <summary>The tvOS build launched fine on a real Apple TV but a paired
+    /// PS5 controller did nothing - the generated Info.plist only declared
+    /// GCSupportedGameControllers=MicroGamepad (the Siri Remote's minimal
+    /// touch-surface profile), not ExtendedGamepad (what a DualSense/Xbox
+    /// pad presents as). tvOSRequireExtendedGameController was left at its
+    /// default (false) - this is the actual project-level toggle for that,
+    /// not something fixable by hand-editing the generated Info.plist (it's
+    /// regenerated from this setting on every tvOS build).</summary>
+    public static void EnableExtendedGameController()
+    {
+        PlayerSettings.tvOS.requireExtendedGameController = true;
+        Debug.Log("[PlatformIdentitySetup] tvOS requireExtendedGameController=true");
+    }
 }

@@ -201,7 +201,7 @@ PlayerSettings:
   iOSTargetOSVersionString: 15.0
   tvOSSdkVersion: 0
   tvOSSimulatorArchitecture: 0
-  tvOSRequireExtendedGameController: 0
+  tvOSRequireExtendedGameController: 1
   tvOSTargetOSVersionString: 15.0
   VisionOSSdkVersion: 0
   VisionOSTargetOSVersionString: 1.0
