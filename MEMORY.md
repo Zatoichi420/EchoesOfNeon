@@ -2,22 +2,74 @@
 **Project:** *Echoes of Neon* — Accessible Tactical Cyber-Noir FPS  
 **Target Engine:** Unity 6.6.0f1 (installed, real project exists - see Changelog)  
 **Location:** `Desktop/EchoesOfNeon/`  
-**Last Updated:** 2026-09-10  
+**Last Updated:** 2026-09-13 (overnight autonomous session, Orlando asleep - see resume point)  
 
 > [!NOTE]
-> ### ⏸️ Resume point (2026-09-10)
-> Phases 0-4 are all done and compile clean. A test scene
-> (`Assets/Scenes/TestRange_Proto.unity`, built via `TestSceneSetup.cs`)
-> and a Windows standalone build (`Builds/TestRange/EchoesOfNeon_Test.exe`,
-> via `TestBuild.cs`) exist and were sanity-checked (launches, runs 15+
-> seconds, no crash/exceptions) - but that test scene does **not** yet have
-> `OculusSensorySuite` wired into it (it predates Phase 4), and **nothing
-> has been confirmed working by an actual person yet** - no real input
-> tested, NVDA hasn't been confirmed to actually announce anything, Neural
-> Dilate/sonar/ballistics have never run. **Next session**: either (a) have
-> the user run the existing build and report what does/doesn't work, or
-> (b) add `OculusSensorySuite` to `TestSceneSetup.cs`, rebuild, then test -
-> before starting Phase 5. Don't keep stacking phases on unverified ground.
+> ### Resume point (2026-09-13)
+> **The project pivoted to Mac testing this session** - Orlando uses VoiceOver
+> on Mac, not NVDA on Windows (the Phase 2 screen-reader note below only
+> mentions NVDA because that's what Unity's docs name first; `AssistiveSupport`
+> is the same cross-platform API and should back onto VoiceOver too, but see
+> "still needs a human" below - this is NOT yet confirmed).
+>
+> **Found and fixed a real bug that was blocking ALL input** (both keyboard
+> and gamepad, on Mac): two separate causes, both now fixed -
+> 1. **macOS Input Monitoring permission** - Unity's Input System reads raw
+>    HID on Mac for keyboard AND gamepad, not just gamepad. `EchoesOfNeon.app`
+>    was never in System Settings > Privacy & Security > Input Monitoring
+>    (no prompt ever appeared). Orlando added it manually and enabled it.
+> 2. **Corrupted `Library/` cache** - after switching build target to tvOS
+>    and back to Mac (session predating this one), rebuilding the Mac player
+>    started failing with "script class layout is incompatible between the
+>    editor and the player" (URP `ForwardRendererData`/`UniversalRendererData`
+>    had a mismatched `xrSystemData` field between Editor and Player
+>    serialization). The documented `SwitchToMac` workaround alone didn't fix
+>    it. **Fix: delete `Library/` entirely and let Unity do a full clean
+>    reimport** (~76s) before rebuilding. If this error reappears after
+>    switching build targets again, this is the fix, not just `SwitchToMac`.
+>
+> **Verified via synthetic input injection, not a live human test** - Orlando
+> went to bed before re-testing, so verification here used
+> `osascript ... key down/up "w"` (macOS UI scripting, not a real keypress)
+> plus a temporary `InputDiagnostics.cs` script (since deleted) that logged
+> `Keyboard.current`/`Gamepad.current` state and the player's `transform.position`
+> once/sec to `~/Library/Logs/Zatoichi420/EchoesOfNeon/Player.log`. Confirmed:
+> raw `Keyboard.current.wKey.isPressed` toggled correctly, `InputManager`'s
+> `Move.performed` event fired with the right composite value, and the
+> player's Z position actually moved (0 to 8.57) while held and stopped
+> instantly on release. **This proves the keyboard-to-movement pipeline works
+> end to end.** It does **not** prove: gamepad works (couldn't synthesize a
+> real HID joystick from a script), or that VoiceOver actually speaks
+> `Announce()` calls (VoiceOver was OFF on this Mac during this session -
+> deliberately did not toggle it on to test, since that would make the
+> machine start talking out loud while Orlando was asleep nearby).
+>
+> **Orlando approved proceeding to Phase 5 before the fix was confirmed by a
+> human** - explicit override of this file's own "don't stack phases on
+> unverified ground" rule, given for this specific situation.
+>
+> **Phase 5 built this session** (see roadmap table) - `AcousticEventSystem`/
+> `AcousticEmitter` (Core) and `SoundVisualizerCompass` (UI), wired into the
+> test scene with two auto-firing test emitters. Compiles clean, smoke-tested
+> (launched, ran 8+ seconds covering 2+ emitter cycles, zero exceptions in
+> Player.log) - but like the input fix, **not confirmed by a human**: nobody
+> has heard the placeholder tone audio or seen a compass blip on screen.
+>
+> **Next session, in order:**
+> 1. Have Orlando actually play the current Mac build with VoiceOver on and
+>    a real keyboard/controller - confirm (a) the "test scene loaded"
+>    announcement is actually spoken, (b) WASD/mouse-look/jump/pause all work
+>    by hand, (c) the PS5 controller works by hand, (d) the placeholder
+>    acoustic tones are audible and panning correctly, (e) compass blips are
+>    visible on screen (orange=gunfire test emitter east, yellow=mechanical
+>    test emitter north), (f) left-click fires the pistol (short suppressed
+>    tone, recoil climbs on rapid clicks then eases back), (g) the test
+>    enemy (capsule, patrols between two points southwest of spawn) reacts
+>    to gunfire/sonar and can be damaged.
+> 2. Fix whatever that live test finds.
+> 3. Only then continue toward the rest of Phase 6 - shaders and real level
+>    design need visual verification a human has to do (see the roadmap
+>    table's note on why those were skipped this session).
 
 ---
 
@@ -154,12 +206,25 @@ architecture decision below. See the Changelog for tooling setup detail.
 | 2 | `AccessibilityManager.cs` (incl. native screen-reader hookup) | Accessibility | ✅ Completed (screen-reader path untested live) | Claude | `Assets/Scripts/Accessibility/AccessibilityManager.cs` |
 | 3 | `TacticalPlayerController.cs` | Player | ✅ Completed (untested in a live scene) | Claude | `Assets/Scripts/Player/TacticalPlayerController.cs` |
 | 4 | `OculusSensorySuite.cs` (sonar, Neural Dilate, predictive ballistics) | Optics | ✅ Completed (not wired into test scene / untested live) | Claude | `Assets/Scripts/Optics/OculusSensorySuite.cs` |
-| 5 | `SoundVisualizerCompass.cs` | UI | ⏳ In Backlog | Unassigned | `Assets/Scripts/UI/SoundVisualizerCompass.cs` |
-| 5 | `AcousticEventSystem.cs` & `AcousticEmitter.cs` | Core / AI | ⏳ In Backlog | Unassigned | `Assets/Scripts/Core/AcousticEventSystem.cs` |
-| 6 | `BallisticWeapon.cs` (Vanguard 9) | Weapons | ⏳ In Backlog | Unassigned | `Assets/Scripts/Weapons/BallisticWeapon.cs` |
-| 6 | `TacticalEnemyAI.cs` | AI | ⏳ In Backlog | Unassigned | `Assets/Scripts/AI/TacticalEnemyAI.cs` |
-| 6 | Post-Process Sonar & Outline Shaders | Shaders | ⏳ In Backlog | Unassigned | `Assets/Shaders/SonarPulseEffect.shader` |
-| 6 | Graybox Firing Range / Stealth Level | Scenes | ⏳ In Backlog | Unassigned | `Assets/Scenes/TestRange_Proto.unity` |
+| 5 | `SoundVisualizerCompass.cs` | UI | ✅ Completed (compiles, smoke-tested, not human-verified) | Claude | `Assets/Scripts/UI/SoundVisualizerCompass.cs` |
+| 5 | `AcousticEventSystem.cs` & `AcousticEmitter.cs` | Core / AI | ✅ Completed (compiles, smoke-tested, not human-verified) | Claude | `Assets/Scripts/Core/AcousticEventSystem.cs`, `Assets/Scripts/Core/AcousticEmitter.cs` |
+| 6 | `BallisticWeapon.cs` (Vanguard 9) | Weapons | ✅ Completed (compiles, smoke-tested, not human-verified) | Claude | `Assets/Scripts/Weapons/BallisticWeapon.cs`, `Assets/Scripts/Weapons/IDamageable.cs` |
+| 6 | `TacticalEnemyAI.cs` | AI | ✅ Completed - basic version (compiles, smoke-tested, not human-verified) | Claude | `Assets/Scripts/AI/TacticalEnemyAI.cs` |
+| 6 | Post-Process Sonar & Outline Shaders | Shaders | ⏳ In Backlog - deliberately not attempted overnight, see note below | Unassigned | `Assets/Shaders/SonarPulseEffect.shader` |
+| 6 | Graybox Firing Range / Stealth Level | Scenes | ⏳ In Backlog - deliberately not attempted overnight, see note below | Unassigned | `Assets/Scenes/TestRange_Proto.unity` |
+
+> [!NOTE]
+> Shaders and real level design were deliberately skipped this session even
+> though time/budget allowed more work: both need visual inspection to know
+> if they're actually correct (a shader that compiles can still look wrong;
+> a level's pacing/layout is a design judgment call), and this session had
+> no reliable way to capture a screenshot to self-check (`screencapture`
+> failed - Screen Recording permission not granted to whatever process runs
+> Claude Code's Bash tool). Writing either blind risked a pile of
+> unverifiable code by morning, which isn't actually useful progress. Also
+> `TacticalEnemyAI` here is a simple version - point-to-point movement, no
+> NavMesh (avoids a bake step in batch-mode tooling) - fine for this graybox
+> test range but will need revisiting once real level geometry exists.
 
 ---
 
@@ -169,6 +234,8 @@ architecture decision below. See the Changelog for tooling setup detail.
 
 | Date & Time | Agent / Role | Action Summary | Files Touched / Created | Notes & Next Steps |
 | :--- | :--- | :--- | :--- | :--- |
+| **2026-09-13 (overnight, cont'd)** | Claude | **Phase 6 (partial)**: `BallisticWeapon.cs` (Vanguard 9 - semi-auto hitscan, recoil-damped via raycast-direction bias not a camera kick, suppressed/short-radius `AcousticEmitter` gunfire) + `IDamageable.cs` (decoupled damage seam, same pattern as `ISonarPingable`/`IInteractable`). `TacticalEnemyAI.cs` - Patrol/Investigate/Alert state machine, simple point-to-point movement (no NavMesh), implements both `ISonarPingable` (answers a sonar ping with a positional acoustic event - ties Phases 4-6 together) and `IDamageable`, and separately subscribes to `AcousticEventSystem` so loud nearby noise alone pulls it into Investigate. Added one test enemy (capsule, 2 patrol points) and wired the pistol onto the player in `TestSceneSetup.cs`. Rebuilt scene + Mac player - 0 errors/0 warnings - and smoke-tested (movement, two synthetic mouse-click fires, 8+ seconds of AI/emitter runtime, zero exceptions). **Deliberately stopped here** rather than attempting shaders or real level design - both need visual verification this session couldn't do reliably (see the note in the roadmap table above); continuing blind risked producing a pile of code nobody could tell was actually correct. | `Assets/Scripts/Weapons/BallisticWeapon.cs`, `Assets/Scripts/Weapons/IDamageable.cs`, `Assets/Scripts/AI/TacticalEnemyAI.cs`, `Assets/Editor/TestSceneSetup.cs` | Next real step is still the live human test from the resume point above - now also covering: does the pistol fire/sound suppressed, does the test enemy patrol/investigate/chase correctly, does sonar-pinging it produce an audible response. |
+| **2026-09-13 (overnight)** | Claude | **Found and fixed the Mac input bug** (see resume point above for full detail): macOS Input Monitoring permission (Orlando granted it) + a corrupted `Library/` cache from an earlier tvOS target switch (fixed by deleting `Library/` and letting Unity do a clean reimport - the documented `SwitchToMac`-as-separate-process workaround alone was not enough this time). Verified via synthetic `osascript` keystrokes + a temporary `InputDiagnostics.cs` (deleted after use) logging to Player.log - confirmed the full raw-HID-to-`CharacterController.Move()` pipeline works, but this is NOT a human/VoiceOver/gamepad test. **Phase 5**: built `AcousticEventSystem.cs` (event bus + procedurally-generated placeholder tone audio, 3D-spatialized - this is the actual accessibility payload for a blind player, not just the compass), `AcousticEmitter.cs`, `SoundVisualizerCompass.cs` (HUD ring, color-coded per the design doc), installed the missing `com.unity.ugui` package it needs. Wired `OculusSensorySuite` into the test scene for the first time (predates it, was built Phase 4 but never added). Added two auto-firing test emitters to the test scene. Rebuilt scene + Mac player multiple times, final state compiles with 0 errors/0 warnings and smoke-tests clean (8+ seconds runtime, 2+ emitter cycles, zero exceptions). All work uncommitted - Orlando was asleep, did not commit without being asked. | `Assets/Scripts/Core/AcousticEventSystem.cs`, `Assets/Scripts/Core/AcousticEmitter.cs`, `Assets/Scripts/Core/TestEmitterLoop.cs` (temp test scaffold), `Assets/Scripts/UI/SoundVisualizerCompass.cs`, `Assets/Editor/TestSceneSetup.cs`, `Assets/Editor/PackageSetup.cs`, `Assets/Editor/TestBuild.cs` (already had Mac/tvOS targets from a prior uncommitted session), `Assets/Editor/PlatformIdentitySetup.cs` (already existed uncommitted, applied this session), `Packages/manifest.json`, `ProjectSettings/ProjectSettings.asset` | See resume point above - live human test with VoiceOver + real controller is the next required step before Phase 6. |
 | **2026-09-10** | Claude | **Built and deployed the Phase 1-3 test scene**: `TestSceneSetup.cs` scripts `Assets/Scenes/TestRange_Proto.unity` (the filename already planned for this purpose) with both manager singletons, a wired-up player, ground, and `TestAnnouncer.cs` (announces via `AccessibilityManager` on scene start, independent of input working). `TestBuild.cs` built a StandaloneWindows64 player to `Builds/TestRange/` (gitignored) - 0 errors, 0 warnings, ~96MB. Launched briefly to confirm no startup crash; **real verification (actual input, actually hearing NVDA) still needs the user**, not a Claude-launched process. **Phase 4**: `OculusSensorySuite.cs` - sonar pulse (`ISonarPingable` interface for decoupled reactions, none exist yet), Neural Dilate (eases `Time.timeScale`, scales `Time.fixedDeltaTime` proportionally per Unity's own slow-mo guidance), predictive ballistics (raycast-and-reflect, gated on `AccessibilityManager.IsAiming`). Required switching `TacticalPlayerController` to `Time.unscaledDeltaTime` throughout (separate commit) so Neural Dilate doesn't also slow the player, per the design doc's explicit requirement. Compiled clean. **Not yet wired into the test scene** (predates it) or tested live. | `Assets/Editor/TestSceneSetup.cs`, `Assets/Editor/TestBuild.cs`, `Assets/Scenes/TestRange_Proto.unity`, `Assets/Scripts/Core/TestAnnouncer.cs`, `Assets/Scripts/Player/TacticalPlayerController.cs`, `Assets/Scripts/Optics/OculusSensorySuite.cs` | See the resume-point note above. |
 | **2026-09-09 (Phase 3)** | Claude | **`TacticalPlayerController.cs`** written: `CharacterController`-based FPS movement/look. Reads Move/Look/Jump/Interact straight from `InputManager`, but Sprint/Crouch/Aim from `AccessibilityManager` (post toggle-vs-hold). Look branches on `InputManager.CurrentDevice` - mouse delta (per-frame pixels, no deltaTime scaling) vs. gamepad stick (continuous rate, deltaTime-scaled) need different math or look feel breaks on whichever device wasn't tuned last. Implements two accessibility behaviors that belong at the controller level rather than in settings: camera head-bob (respects `cameraBobEnabled`/`reduceMotion`) and **single-stick mode** (the move stick also drives facing - play without a second stick/mouse). Aiming applies a real movement-speed penalty now, not a placeholder. Added `IInteractable` (minimal, only what the Interact raycast needs today). Compiled clean first try. | `Assets/Scripts/Player/TacticalPlayerController.cs`, `Assets/Scripts/Player/IInteractable.cs` | User wants to pause here and actually test what exists (Phases 1-3) in a live scene before Phase 4 - nothing has run yet, all three scripts are compile-verified only. |
 | **2026-09-09 (Phase 2)** | Claude | **`AccessibilityManager.cs`** written: settings hub (colorblind mode, high-contrast outlines, aim assist friction/magnetism, single-stick mode, look sensitivity, Neural Dilate timescale, camera bob/screen shake/reduced motion) persisted via PlayerPrefs+JSON; toggle-vs-hold translation for Aim/Sprint/Crouch layered on `InputManager`'s raw events; and the **native screen-reader hookup** confirmed working at the API level - `AssistiveSupport.activeHierarchy`, `.isScreenReaderEnabled`, and `.notificationDispatcher.SendAnnouncement(string)` (confirmed via Unity's own docs before writing code, not guessed) all compiled clean on the first try. `Announce(string)` is the one-off narration entry point for now; a real `AccessibilityNode` tree for actual menu buttons is Phase 5/6 work once menu UI exists - registered an empty `AccessibilityHierarchy` in the meantime so the plumbing is ready. **Not yet tested against a live screen reader** - this is the first real use of the Accessibility API in the project. Colorblind/outline settings are stored but nothing reads them yet (Phase 6). | `Assets/Scripts/Accessibility/AccessibilityManager.cs` | Next: either Phase 3 (`TacticalPlayerController.cs`, consumes both `InputManager` and `AccessibilityManager`), or pause to wire a minimal test scene and confirm both scripts actually work live (NVDA hearing an `Announce()` call, `InputManager` receiving real input) before building further on unverified ground. |

@@ -32,6 +32,17 @@ public static class PackageSetup
         EditorApplication.update += Tick;
     }
 
+    /// <summary>Phase 5: SoundVisualizerCompass needs UnityEngine.UI
+    /// (Image/CanvasScaler) - com.unity.modules.ui alone only provides the
+    /// base Canvas/RectTransform rendering infra, not those classes.</summary>
+    public static void InstallPhase5Packages()
+    {
+        var toAdd = new[] { "com.unity.ugui" };
+        Debug.Log("[PackageSetup] Requesting packages: " + string.Join(", ", toAdd));
+        _request = Client.AddAndRemove(packagesToAdd: toAdd);
+        EditorApplication.update += Tick;
+    }
+
     private static void Tick()
     {
         if (!_request.IsCompleted)
