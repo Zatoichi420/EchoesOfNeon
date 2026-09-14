@@ -88,7 +88,7 @@ framing, not sight restored. Worth keeping the two in sync as both develop furth
   his twin sister. See `the-madame.md`.
 - **Geoffrey "G"** — a cousin Marcus has no idea exists, working as The Madame's
   enforcer. See `geoffrey-g.md`.
-- **C.O.Q.I. "Cookie"** — his companion, a black lab Desi built and Marcus was
+- **COOQI "Cookie"** — his companion, a black lab Desi built and Marcus was
   training as a puppy. Both were injured in the attack that killed Desi. Linked to
   Marcus wirelessly; speaks in a voice only he can hear. See `cookie.md`.
 

@@ -52,7 +52,9 @@ downloaded into this project.
 
 ## Files
 
-- `marcus-cross-script.md`
+- `marcus-cross-script.md` (reference table) / `marcus-recording-sheet.md` (the
+  actual sheet to read from while recording — same 6 lines, formatted to work through
+  sequentially instead of navigating a wide table)
 - `the-madame-script.md`
 - `max-gomez-script.md`
 - `geoffrey-g-script.md`

@@ -1,4 +1,4 @@
-# C.O.Q.I. "Cookie" — Marcus's Companion
+# COOQI "Cookie" — Marcus's Companion
 
 Built from Orlando's direct answers, 2026-09-14. Voice notes still open — see
 `Docs/Story/Dialogue/dialogue-intake-form.md`. "Other abilities to be added later" is
@@ -6,9 +6,10 @@ Orlando's own phrasing — this file is explicitly not final.
 
 ## Name
 
-**C.O.Q.I.** — Canine Organism with Quantum Intelligence. Pronounced, and always
-referred to as, **"Cookie."** The acronym is background/lore, not something spoken
-aloud in dialogue — nobody calls her "C.O.Q.I." to her face.
+**COOQI** — Canine Organism for Orientation and Quantum Intelligence *(renamed
+2026-09-14 from the original "C.O.Q.I. — Canine Organism with Quantum Intelligence")*.
+Pronounced, and always referred to as, **"Cookie."** The acronym is background/lore,
+not something spoken aloud in dialogue — nobody calls her "COOQI" to her face.
 
 ## What she is
 

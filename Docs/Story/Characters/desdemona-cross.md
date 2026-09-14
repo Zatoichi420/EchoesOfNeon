@@ -47,7 +47,7 @@ story bible's open questions).
 
 ## Her other legacy: Cookie
 
-Desi's bio-mechanical research wasn't purely theoretical — she built **C.O.Q.I.
+Desi's bio-mechanical research wasn't purely theoretical — she built **COOQI
 "Cookie,"** a black lab with cybernetic flesh-bonding limbs, before she died. See
 `cookie.md`.
 
@@ -61,4 +61,4 @@ the blood secret. She wasn't collateral to a break-in aimed at something else; C
 ## Relationships
 
 - **Marcus "Echo" Cross** — husband. See `marcus-cross.md`.
-- **C.O.Q.I. "Cookie"** — her creation, later Marcus's companion. See `cookie.md`.
+- **COOQI "Cookie"** — her creation, later Marcus's companion. See `cookie.md`.

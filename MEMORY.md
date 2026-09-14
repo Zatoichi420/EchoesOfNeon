@@ -1,58 +1,64 @@
 # 🧠 PROJECT MEMORY & MULTI-AGENT COORDINATION PROTOCOL
 **Project:** *Echoes of Neon* — Accessible Tactical Cyber-Noir FPS  
 **Target Engine:** Unity 6.6.0f1 (installed, real project exists - see Changelog)  
-**Location:** `Desktop/EchoesOfNeon/`  
-**Last Updated:** 2026-09-14 (night - closed the stale Xcode/Instruments session, but
-the batch-mode build-verify is STILL blocked, now by a confirmed iCloud
-conflict-resolution storm on `Library/PackageCache` - a real decision for Orlando is
-needed, see resume point)  
+**Location:** `~/Developer/EchoesOfNeon/` (moved 2026-09-14 from `~/Desktop/EchoesOfNeon`
+- see below; update any tool/shortcut still pointing at the old Desktop path)  
+**Last Updated:** 2026-09-14 (night - moved the whole project out of iCloud-synced
+`~/Desktop` to fix the build-stall problem for good; build-verify now passes clean,
+audio imports and the `PulseFrom` refactor both confirmed working)  
 
 > [!NOTE]
-> ### Resume point (2026-09-14, night, audio session cont'd - iCloud conflict storm found)
+> ### Resume point (2026-09-14, night - project moved, build-verify finally passes)
 > Orlando's "yes generate the ambient stuff and make the midi files" is done and
-> pushed (commit `8e82324`): two ambient WAV beds in `Assets/Audio/Ambient/`, two MIDI
-> music sketches + a README in `Docs/Story/Audio/Music/`, generation scripts preserved
-> in `Docs/Story/Audio/generation-scripts/`. All independently verified as structurally
-> valid, **none of it has been heard by Orlando yet**.
+> pushed: two ambient WAV beds in `Assets/Audio/Ambient/`, two MIDI music sketches + a
+> README in `Docs/Story/Audio/Music/`, generation scripts preserved in
+> `Docs/Story/Audio/generation-scripts/`. **Still not yet heard by Orlando.**
 >
-> **The stale Xcode/Instruments session flagged earlier this session was closed** (with
-> Orlando's go-ahead) - Xcode quit cleanly via `osascript ... quit`; Instruments' own
-> graceful quit hung (likely an unattended dialog), so `kill -TERM` was used instead
-> and it exited cleanly within seconds, no corruption.
+> **The iCloud build-stall problem (three distinct causes found across this session -
+> plain iCloud churn, a stale Xcode/Instruments session, and an iCloud conflict-
+> duplication storm on `Library/PackageCache`) is now resolved for good**, per
+> Orlando's choice of the heavier fix: the whole project moved from
+> `~/Desktop/EchoesOfNeon` to **`~/Developer/EchoesOfNeon`**, out of iCloud's Desktop &
+> Documents sync entirely.
 >
-> **But the batch-mode build-verify is still blocked - by something new and worse.**
-> Two real attempts after closing Xcode/Instruments both hit the exact same stall
-> signature (log frozen right after package registration, near-zero Unity CPU) for
-> minutes at a time, and this time `brctl status` showed the actual cause: iCloud was
-> generating **conflict duplicate files** (e.g. `RenderGraph.cs 2`, `StyleSheets.meta
-> 2`) inside `Library/PackageCache` - Unity's own regenerated package cache, which
-> should never be iCloud material in the first place. Likely trigger: closing Xcode
-> released file locks/timestamps it had been holding on the same tree, combined with
-> the git push right before, and iCloud tried to reconcile all of it as document
-> conflicts. Attempt 1 resolved on its own in about 2 minutes; attempt 2 took over 4
-> minutes of continuous churn before finally going quiet enough to stop cleanly with
-> `kill -TERM` (used a watcher script that only kills once iCloud CPU is confirmed
-> genuinely idle, not just "quiet for a moment" - avoided repeating the earlier
-> `kill -9`-during-churn mistake). **Did not attempt a third blind retry** - two
-> real, multi-minute stalls in a row on the same cause means this isn't a one-off
-> blip anymore.
+> **How the move was actually done** (worth keeping for any future project that needs
+> the same fix): a plain `mv` **deadlocked at the kernel level** - `sample`-ing the
+> stuck `mv` process showed 100% of samples blocked inside a single `rename()` syscall,
+> presumably waiting on File Provider IPC that never completed, for 10+ minutes with
+> zero progress. Since POSIX `rename()` is atomic, it was safe to `kill -TERM` it - the
+> project reverted fully and cleanly to its original location with no partial state,
+> verified by file count and git status. Switched to `ditto -v` instead (copies file-
+> by-file via normal reads rather than one atomic directory-rename operation) - this
+> completed successfully with real, steady progress the whole way (no deadlock), and
+> was verified byte-for-byte against the source with `diff -rq` (empty output) plus a
+> file-count and total-size match before the original was deleted. **Lesson: don't
+> `mv`/rename a directory out of iCloud-managed `~/Desktop` - copy with `ditto` (or
+> `rsync`) and delete the original only after verifying, since directory rename here
+> can deadlock in a way a signal can safely interrupt but a plain retry won't fix.**
 >
-> **This is now a real decision for Orlando, not something to keep working around:**
-> the project's own `Library/`, `Temp/`, `Builds/`, and `Logs/` folders churn
-> thousands of files during any build and should never be iCloud material - they're
-> gitignored precisely because they're disposable. Two options, neither done
-> unilaterally because both touch paths Unity Hub/Antigravity/these memory files
-> reference:
-> 1. **Symlink fix (lighter)**: move `Library/`, `Temp/`, `Builds/`, `Logs/` to
->    somewhere outside `~/Desktop` (e.g. `~/UnityCache/EchoesOfNeon/`) and leave
->    symlinks in their place inside the project - iCloud's Desktop & Documents sync
->    does not follow a symlink to sync its target, only the tiny symlink file itself.
-> 2. **Move the whole project (heavier, previously suggested)**: relocate
->    `~/Desktop/EchoesOfNeon` to somewhere like `~/Developer/EchoesOfNeon` entirely.
+> **Build-verify from the new location passed clean on the first try** - the batch-mode
+> Mac build finished in well under a minute (previously it never got past the ~19KB
+> package-registration stall), zero real compiler errors (`grep -c "error CS"` = 0;
+> the build report's own `errors=23827` count is the already-known-unreliable
+> `BuildReport.summary.totalErrors` metric, not real - see the Problem Solving history
+> for why that number can't be trusted directly), and produced a real, freshly-
+> timestamped 73MB player binary that launched without crashing. This also finally
+> verifies the `OculusSensorySuite.PulseFrom` refactor from the entry below compiled
+> and built clean. The zero-byte `Player.log` on launch is the already-documented,
+> unrelated macOS Accessibility-permission hang (see further down this file) - not a
+> new problem introduced by the move.
 >
-> Once resolved, that one build-verify would cover both this session's new audio
-> imports AND the still-unverified `OculusSensorySuite.PulseFrom` refactor from the
-> entry before it.
+> **Unity Hub's project list (`~/Library/Application Support/UnityHub/projects-v1.json`)
+> was checked and is empty** (`{"data":{}}`) - this project was never opened through
+> Hub's own GUI, so there was nothing to update there. If Orlando ever adds it to Hub
+> going forward, add it from the new `~/Developer/EchoesOfNeon` path.
+>
+> **Also this session**: reformatted `Docs/Story/Dialogue/dialogue-intake-form.md` to
+> show current answers vs. genuinely open items (matching the pattern already used in
+> `Narrative/story-intake-form.md`), and added `Docs/Story/Dialogue/scripts/
+> marcus-recording-sheet.md` - the same 6 Marcus lines as `marcus-cross-script.md`,
+> reformatted as a sequential read-and-record sheet instead of a wide reference table,
+> since Marcus is the one character Orlando is voicing himself.
 >
 > ### Resume point (2026-09-13, blueprint-gap session)
 > Orlando shared an "Accessible Unity Game Blueprint" template and asked what parts of
@@ -355,6 +361,7 @@ architecture decision below. See the Changelog for tooling setup detail.
 
 | Date & Time | Agent / Role | Action Summary | Files Touched / Created | Notes & Next Steps |
 | :--- | :--- | :--- | :--- | :--- |
+| **2026-09-14 (night, project moved out of iCloud + build-verify finally passes)** | Claude | Orlando picked the heavier of the two fixes raised in the previous entry: move the whole project out of `~/Desktop` (he first asked about the external Time Machine drive - checked it and recommended against it, since `GameLibrary` is nearly full and off-limits per standing instructions, and `TimeMachine` is the backup destination itself, which would lose backup coverage and travel portability). Moved to **`~/Developer/EchoesOfNeon`**. Plain `mv` deadlocked at the kernel level in a single `rename()` syscall (confirmed via `sample`) - safely interrupted with `kill -TERM` since POSIX rename() is atomic, reverting cleanly with zero data loss. Switched to `ditto -v` instead, which completed with real progress and was verified byte-identical via `diff -rq` before the original was deleted. **Build-verify from the new location passed clean on the first try** - well under a minute, zero real compiler errors, produced a working 73MB player binary. Also fixed the dog's name per Orlando's request: renamed from "C.O.Q.I. — Canine Organism with Quantum Intelligence" to **"COOQI — Canine Organism for Orientation and Quantum Intelligence"** (still pronounced "Cookie") in `cookie.md`, `marcus-cross.md`, `desdemona-cross.md`. Also reformatted `Docs/Story/Dialogue/dialogue-intake-form.md` into current-answers-vs-open-items (matching the narrative form's pattern) and added `scripts/marcus-recording-sheet.md` for Orlando's own recording session. | `MEMORY.md`, `Docs/Story/Characters/cookie.md`, `Docs/Story/Characters/marcus-cross.md`, `Docs/Story/Characters/desdemona-cross.md`, `Docs/Story/Dialogue/dialogue-intake-form.md`, `Docs/Story/Dialogue/scripts/marcus-recording-sheet.md`, `Docs/Story/Dialogue/scripts/README.md`, whole project directory (moved) | Next: Orlando records his 6 Marcus lines per the new recording sheet; the dialogue form's still-open items (event-trigger lines, whether Marcus's voice actually sounds right once heard, corp comms/resistance voices) need his input. |
 | **2026-09-14 (night, iCloud conflict storm blocks build-verify)** | Claude | Orlando approved closing the stale Xcode/Instruments session flagged in the previous entry ("Go ahead and close it"). Closed cleanly: Xcode quit via AppleScript; Instruments' graceful quit hung (likely an unattended dialog after days pinned at high CPU), so `kill -TERM` was used and it exited within seconds with no corruption. Retried the Unity batch-mode Mac build-verify twice afterward - both times hit the identical known stall signature (frozen log right after package registration), but this time `brctl status` revealed the real cause: iCloud was actively generating **conflict duplicate files** (e.g. `RenderGraph.cs 2`) inside `Library/PackageCache`, which is Unity's own regenerated cache and should never be under iCloud sync at all. Likely trigger: closing Xcode released file locks/touched timestamps on the same tree right after a git push, and iCloud tried to reconcile the result as document conflicts. Attempt 1 resolved itself in ~2 minutes; attempt 2 took 4+ minutes of continuous churn. Used a watcher script that waits for iCloud CPU to be confirmed genuinely idle (not just momentarily quiet) before sending `kill -TERM` to the stuck Unity process each time - both exits were clean, no `Library/` corruption. **Deliberately did not attempt a third blind retry** - two real, multi-minute stalls from the same identified cause means this needs an actual structural fix, not another retry. Raised two concrete options to Orlando (not chosen unilaterally, since both touch paths other tools/memory files reference): symlink `Library/`/`Temp/`/`Builds/`/`Logs/` outside `~/Desktop` (iCloud doesn't follow symlinks to their targets), or move the whole project out of `~/Desktop` entirely. | `MEMORY.md` | Next: Orlando picks one of the two fixes above; only after that should batch-mode builds be retried. The `PulseFrom` refactor and this session's new audio imports both still need that one build-verify once the iCloud issue is actually resolved rather than intermittently avoided. |
 | **2026-09-14 (night, first-pass ambient audio + MIDI music)** | Claude | Orlando said "yes generate the ambient stuff and make the midi files" (also confirmed he re-downloaded GarageBand, which turned out not to be scriptable - no AppleScript/CLI surface - so this used Python instead). Generated two 30s loop-safe ambient beds (`new_carthage_night_rain.wav`, `desi_lab_ambience.wav`) via scipy Butterworth-filtered noise synthesis, matching `AcousticEventSystem.cs`'s existing procedural-audio convention (mono, 44.1kHz, 16-bit PCM) - only the two locations with real descriptive detail in `locations.md` were synthesized, not all six named locations. Also wrote a from-scratch minimal Standard MIDI File writer (no `mido`/`midiutil` installed; not worth adding the dependency for a one-off script) and composed two sketches: `theme_new_carthage.mid` (62 BPM, A minor, sparse exploration theme) and `tension_pursuit.mid` (138 BPM, driving chase/combat cue, same key family). Independently verified both MIDI files with three tools that share no code with the writer - `file`, macOS `qlmanage`'s MIDI thumbnailer, and a from-scratch verification parser checking every note-on/off pair - all three passed clean, no mismatches. Copied the two WAVs into `Assets/Audio/Ambient/` (new folder, mirrors `Assets/Audio/Dialogue/`), the two MIDI files into `Docs/Story/Audio/Music/` with a new README explaining what they are and aren't (compositional sketches for GarageBand, not an answer to the exploration-vs-combat-only music question), and the generation scripts themselves into `Docs/Story/Audio/generation-scripts/` so they're not lost when the session's scratchpad is cleared. Updated `audio-intake-form.md` to note this first pass exists. **Nothing here has been heard yet.** Attempted a Unity batch-mode build-verify afterward (also to finally verify the still-pending `PulseFrom` refactor from the previous entry) but found the previously-flagged stale Xcode session on this project's tvOS build still open, PLUS an `Instruments.app` process pinned at 98.8% CPU since Saturday night - real, currently-active contention risk for the same file tree. Did not attempt the build against that contention and did not close Orlando's own Xcode/Instruments session unilaterally - flagged for him instead. | `MEMORY.md`, `Assets/Audio/Ambient/new_carthage_night_rain.wav` (new), `Assets/Audio/Ambient/desi_lab_ambience.wav` (new), `Docs/Story/Audio/Music/theme_new_carthage.mid` (new), `Docs/Story/Audio/Music/tension_pursuit.mid` (new), `Docs/Story/Audio/Music/README.md` (new), `Docs/Story/Audio/generation-scripts/*.py` (new, 4 files), `Docs/Story/Audio/audio-intake-form.md` | Next: Orlando should close/check the stale Xcode session + Instruments run on `Builds/TestRange-tvOS/` before any future batch-mode build attempt - it's now confirmed still active, not just suspected. Once clear, a build-verify covers both this audio import AND the still-unverified `PulseFrom` refactor together. |
 | **2026-09-14 (night, Cookie/sonar unification + 2 canon confirmations)** | Claude | Orlando confirmed both flagged Cookie connections as canon (her limbs share Marcus's rebuild's origin; her existence is why Desi's lab was targeted) and chose "unify" for the Cookie/sonar design question. Updated `cookie.md`, `desdemona-cross.md`, and `story-bible.md`'s open questions to match (one narrower question spun off: did Desi also personally know Marcus's own nature, separate from Cookie). Implemented the unification as a small, scoped refactor: `OculusSensorySuite.HandleSonarPulse` now delegates to a new public `PulseFrom(Vector3 origin)`, which is the actual sonar cast/detection pipeline decoupled from the player's input and cooldown - so a future Cookie component can trigger the same detection pipeline from her own position instead of a parallel system, once her movement/control model exists (still open). No behavior change to the existing player sonar path. **Hit the batch-mode stall again immediately after, with iCloud confirmed quiet this time** - see the resume-point note above for the sharpened diagnosis (a genuinely blocked kernel read(), not iCloud, with a stale Xcode session as the new suspect) and the SIGTERM-before-SIGKILL finding. Code change reviewed carefully by eye but not build-verified tonight as a result - flagged for next session. | `MEMORY.md`, `Docs/Story/Characters/cookie.md`, `Docs/Story/Characters/desdemona-cross.md`, `Docs/story-bible.md`, `Assets/Scripts/Optics/OculusSensorySuite.cs` | Next: a real build-verify of `PulseFrom` before trusting it further; Cookie's own movement/control model needs deciding before any of this actually gets used. |
