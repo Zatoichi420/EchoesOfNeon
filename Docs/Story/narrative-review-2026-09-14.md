@@ -1,5 +1,13 @@
 # Narrative Review — 2026-09-14
 
+> **RESOLVED same day.** Orlando approved both connective fixes below. The
+> bioweapons-research/bloodline link and the augment-strain payoff are now canon — see
+> `Docs/story-bible.md`'s "the bloodline is the bioweapon" section, plus updates to
+> `marcus-cross.md`, `desdemona-cross.md`, `the-madame.md`, and the opening scene. The
+> theme statement was rewritten to unify the two threads rather than restated.
+> One sub-question is deliberately still open: whether Desi *discovered* what Marcus is
+> (and died for it) or never knew. Findings below are kept as the original record.
+
 First run of `Docs/narrative-review-checklist.md`, which was marked "not yet runnable"
 when written because no story content existed. It does now: a story bible, five
 character files, a locations doc, and one written scene. Run unattended overnight, so

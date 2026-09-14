@@ -22,10 +22,17 @@ reaches the people paying for it.
 
 ## Theme
 
-Justice for Desi's death, braided together with the resistance's larger fight to
-expose how New Carthage has been controlled and exploited for a decade with nothing
-given back to the people who live in it. Marcus's personal revenge and the
-resistance's public reckoning are the same fight, seen from two different distances.
+**Updated 2026-09-14** — the first narrative review found the old theme statement and
+the ending were paying off different ideas (justice/exploitation vs. family/identity).
+Orlando chose to unify them rather than restate the theme. See "The bloodline is the
+bioweapon" below for the connective tissue that makes this one payoff instead of two
+competing ones.
+
+What a man is willing to become to get justice — and what it costs him to find out he
+was the thing being hunted all along. Marcus's revenge for Desi, the resistance's
+fight to expose a decade of corporate exploitation, and the truth about his own blood
+are not three plots: Aegis-Corvus has been exploiting New Carthage and the Cross
+bloodline with the same hand, and Desi died at the point where those two crimes meet.
 
 ## Tone and genre guardrails
 
@@ -109,6 +116,42 @@ intentional, and should be confirmed.
   them** — and now there's a specific reason why: see **the prophecy**, immediately
   below.
 
+## RESOLVED — the bloodline is the bioweapon (2026-09-14)
+
+Orlando approved both connective fixes from the first narrative review
+(`Docs/Story/narrative-review-2026-09-14.md`). These are now canon:
+
+**1. Aegis-Corvus's illegal bioweapons research was studying the Cross bloodline.**
+This was already listed as an open question and is now answered yes. It converts the
+existing canon into one interlocking motive:
+
+- The "illegal bioweapons experiments" Desi's murder covered up (already canon in the
+  original lore bible) were an attempt to study and weaponize what the Cross line
+  actually is.
+- It explains why they took **Marcus's eyes specifically** rather than simply killing
+  him — his ocular biology was part of what they wanted, not just a witness to silence.
+- It gives The Madame a motive past generic profit: she is monetizing her own
+  bloodline, knowingly, which is a far colder thing than corporate greed.
+- It puts Desi at the exact intersection of both crimes, which is what the theme now
+  turns on.
+
+**Extrapolation flagged, not yet approved** — the tightest version of this is that
+**Desi discovered the truth about her own husband's biology through her research, and
+that discovery is what got her killed.** It's tragic and it closes the loop hard: she
+was murdered by her sister-in-law's company for finding out what Marcus is, and Marcus
+still doesn't know either fact. But Orlando approved the *bioweapons/bloodline
+connection*, not this specific mechanism for how Desi found out — so it's offered here,
+not asserted. Alternatives: the research came to her lab as an anonymous sample; or she
+never knew, and was killed purely for proximity to Marcus.
+
+**2. Marcus's augment strain is the bloodline waking up.** His fear in the opening
+scene that prolonged augment use is unsafe is no longer a loose thread: what he reads
+as his body failing is the bloodline manifesting. This is why his augments do things
+no one else's can — the observation that convinced The Madame and G the prophecy was
+real (see the prophecy section below). His dread and their belief are the same
+phenomenon seen from opposite sides, and the audience gets both halves before Marcus
+does.
+
 ## RESOLVED — the prophecy (2026-09-13, third follow-up)
 
 **The Madame and G have heard rumors of "a prophesied one" their entire lives** — part
@@ -148,11 +191,10 @@ as a real open question, not assumed either way.
 - **Exactly how much do The Madame and G know** — the family/bloodline connection
   specifically, or just "Marcus exists and is dangerous" without the deeper tie? Both
   readings are consistent with what's been confirmed so far.
-- **Is Desi's death/research connected to the vampire bloodline at all** (e.g. was
-  Aegis-Corvus's bioweapons research actually trying to study or weaponize the
-  bloodline's traits, which is what got her killed) — or are the two threads meant to
-  stay separate? This is a real, unresolved connective-tissue question, not
-  something to assume either way.
+- **How exactly did Desi come to be at the intersection of the two crimes?** The
+  bioweapons/bloodline connection is now canon (see the RESOLVED section above), but
+  whether she *discovered* what Marcus is, or was killed without ever knowing, is still
+  open — and it changes how her memory scenes should play.
 - What happens in each main mission's 3+ sub-missions?
 - Marcus's own arc destination beyond "gets his revenge/justice" — does finding out
   about his sister and his bloodline change what he wants, on top of or instead of the

@@ -12,6 +12,13 @@ years, driven purely by profit, with no regard for ordinary people in the street
 long as the money keeps flowing. The specific individual Marcus is hunting — his
 revenge targets her personally, not the corporation as an abstraction.
 
+**Her motive sharpened 2026-09-14**: with the bioweapons research now canonically
+aimed at the Cross bloodline (see the story bible), she isn't just a greedy executive —
+she is knowingly monetizing and weaponizing *her own blood*, including her brother's.
+That's a colder and more specific villainy than corporate profit, and it means "driven
+purely by profit" should read as a public-facing surface, not the whole truth. Whatever
+she believes about the prophecy, she has been selling her family for a decade.
+
 ## Physical description
 
 Highly fashionable, dressed at the height of top fashion — always sharp, precise, and

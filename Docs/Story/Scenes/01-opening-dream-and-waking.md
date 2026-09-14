@@ -39,7 +39,10 @@ pre-dawn or deep night given Marcus's established habit of moving at night.
 5. **Internal conflict.** Marcus is angry and worried — specifically, whether it's
    safe to keep using his augmentations for the long periods he's been pushing them.
    This is the seed of his stated flaw (see `marcus-cross.md`) and should land as a
-   real beat, not a throwaway line.
+   real beat, not a throwaway line. **This beat is load-bearing as of 2026-09-14**: his
+   fear pays off at the ending as the bloodline waking up, not his body failing. Don't
+   cut or soften it, and don't play it as suspicion — he genuinely believes the
+   cyberware is killing him.
 6. **Resolve hardens.** Revenge against Aegis-Corvus Dynamics is already on his mind —
    and specifically against its head, The Madame, not the company as an abstraction.
    Scene ends on this resolve, launching the player into the first real mission.

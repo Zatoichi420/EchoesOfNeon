@@ -14,6 +14,12 @@ see `Docs/Story/Dialogue/dialogue-intake-form.md`, not yet answered.
 - **Flaw:** established directly in the opening scene — he's angry, disoriented, and
   genuinely unsure whether pushing his augments this hard for this long is safe. His
   pursuit of The Madame may be costing him something physical, not just emotional.
+  **Payoff, canon as of 2026-09-14:** what he reads as his body failing is actually the
+  bloodline waking up. It's the same phenomenon The Madame and G read as proof the
+  prophecy is real — they see a man doing what no one else can with the same cyberware;
+  he feels only strain and dread. The audience holds both halves long before Marcus
+  does, which is where the tension in his arc lives. Write his fear as genuine and
+  un-ironic: he is not secretly suspicious of the truth, he thinks he's dying.
 - **Arc destination:** the ending's "tough decision" — per the story bible's now-
   confirmed spoiler, this centers on discovering The Madame is his twin sister and
   that the Cross bloodline is descended from vampires. **Marcus does not know either
