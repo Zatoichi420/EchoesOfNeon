@@ -191,14 +191,16 @@ as a real open question, not assumed either way.
 - **Exactly how much do The Madame and G know** — the family/bloodline connection
   specifically, or just "Marcus exists and is dangerous" without the deeper tie? Both
   readings are consistent with what's been confirmed so far.
-- **How exactly did Desi come to be at the intersection of the two crimes?** The
-  bioweapons/bloodline connection is now canon (see the RESOLVED section above), but
-  whether she *discovered* what Marcus is, or was killed without ever knowing, is still
-  open — and it changes how her memory scenes should play. **A new candidate answer as
-  of 2026-09-14**: Desi built Cookie (see `Docs/Story/Characters/cookie.md`) using
-  living cybernetic flesh-bonding technology — exactly the kind of bio-mechanical work
-  Aegis-Corvus's illegal research would want. Cookie's existence may be *why* the lab
-  was targeted, not incidental to it. Not confirmed, but a strong fit.
+- ~~How exactly did Desi come to be at the intersection of the two crimes?~~
+  **RESOLVED 2026-09-14**: Desi built Cookie (see `Docs/Story/Characters/cookie.md`)
+  using living cybernetic flesh-bonding technology — exactly the bio-mechanical
+  breakthrough Aegis-Corvus's illegal research wanted. Cookie's existence is *why* the
+  lab was targeted, not incidental to it.
+- **Narrower question this leaves open**: did Desi *also* discover the truth about
+  Marcus's own bloodline specifically (separate from Cookie), or does the attack make
+  full sense on Cookie alone, with Marcus's nature staying something only The Madame,
+  G, and Max know? Not the same question as above anymore — Cookie answers "why was
+  the lab hit," this is narrower: "did Desi personally know what her husband was."
 - What happens in each main mission's 3+ sub-missions?
 - Marcus's own arc destination beyond "gets his revenge/justice" — does finding out
   about his sister and his bloodline change what he wants, on top of or instead of the

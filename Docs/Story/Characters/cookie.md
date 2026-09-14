@@ -22,13 +22,11 @@ One cybernetic eye. All four limbs and her tail are made from **Desi's experimen
 cybernetic flesh-bonding technology** — not simple prosthetics, but living tissue
 fused to mechanical structure. Those limbs are **10x stronger than a normal dog's.**
 
-**Likely shared origin with Marcus's own augments, not yet confirmed as fact:** the
-opening scene already establishes Marcus still uses Desi's old lab equipment to build
-out his own augments. Cookie's flesh-bonding limbs use the same kind of experimental
-technology, and both of them were hurt in the same attack — the natural reading is
-that Marcus rebuilt Cookie the same way he rebuilt himself, in the same lab, from the
-same body of research. Flagged as a strong implication, not something Orlando stated
-outright, so it should be confirmed before scenes are written assuming it.
+**Confirmed canon (2026-09-14): Cookie's limbs share the same origin as Marcus's own
+rebuild.** Both were hurt in the attack that killed Desi; Marcus rebuilt them both in
+the same lab, from the same body of Desi's research, using the same equipment he still
+uses today (established in the opening scene). They are, literally, made of the same
+thing.
 
 ## Connection to Marcus
 
@@ -46,14 +44,18 @@ natural fit, not asserted as confirmed mechanism.
   unit.
 - **More to come** — Orlando was explicit that this list isn't finished.
 
-**Notable, not yet confirmed connection to existing game systems:** "scouts ahead and
-locates threats" is functionally very close to what `OculusSensorySuite`'s sonar pulse
-already does for the player directly. Worth a real design conversation before any of
-this gets built: is Cookie a second, independent way to get the same kind of
-information (redundant, but in-fiction justified — a companion who scouts while Marcus
-also can), a way to scout at a distance/around corners the player's own sonar can't
-reach, or something that should be unified with the sonar system rather than
-duplicating it? Not decided; flagged for whenever this moves toward implementation.
+**Design direction confirmed 2026-09-14: unified with the sonar system, not a
+duplicate of it.** Cookie's "scouting" isn't a second, separate detection mechanic —
+it's the *same* `OculusSensorySuite` sonar pulse, triggered from wherever she physically
+is instead of only from Marcus. Narratively, this reads as her literally scanning an
+area with the same sensory suite technology (her own cybernetic eye, presumably built
+alongside her limbs from Desi's research) and relaying it over their wireless link,
+rather than Marcus mysteriously "knowing" things through an unrelated companion
+ability. Mechanically, it means no new detection/scan system needs inventing — see
+`OculusSensorySuite.PulseFrom(origin)` (added 2026-09-14), which the player's own
+sonar button now also calls. Cookie triggering a pulse from her own position is the
+concrete implementation of "scouts ahead," once her own movement/control model exists
+(still an open question below).
 
 ## Open questions this file does NOT answer
 

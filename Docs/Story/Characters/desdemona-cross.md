@@ -49,12 +49,14 @@ story bible's open questions).
 
 Desi's bio-mechanical research wasn't purely theoretical — she built **C.O.Q.I.
 "Cookie,"** a black lab with cybernetic flesh-bonding limbs, before she died. See
-`cookie.md`. This is worth connecting to the bioweapons-research canon above, not yet
-confirmed: living flesh-bonding technology applied to a whole creature is exactly the
-kind of bio-mechanical work Aegis-Corvus's illegal research would want, which raises
-the possibility that Cookie's very existence is *why* Desi's lab was a target, not just
-incidental to it. Offered as a strong candidate answer to "how did Desi come to be at
-the intersection of the two crimes," not asserted.
+`cookie.md`.
+
+**Confirmed canon (2026-09-14): Cookie's existence is why Desi's lab was targeted.**
+Living flesh-bonding technology applied to a whole creature was exactly the
+bio-mechanical breakthrough Aegis-Corvus's illegal research wanted — this is the
+concrete answer to how Desi ended up at the intersection of the corporate crime and
+the blood secret. She wasn't collateral to a break-in aimed at something else; Cookie
+*was* the thing they came for, and Marcus and Desi's home life was in the way of it.
 
 ## Relationships
 

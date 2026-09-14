@@ -115,8 +115,22 @@ namespace EchoesOfNeon.Optics
         {
             if (_sonarCooldownTimer > 0f) return;
             _sonarCooldownTimer = sonarCooldown;
-
             Vector3 origin = originTransform != null ? originTransform.position : transform.position;
+            PulseFrom(origin);
+        }
+
+        /// <summary>The actual sonar cast, decoupled from the player's own
+        /// input/cooldown so any source can trigger one - added 2026-09-14
+        /// so Cookie's "scouts ahead" ability (see
+        /// Docs/Story/Characters/cookie.md) can reuse this exact detection
+        /// pipeline from her own position instead of a second, parallel
+        /// system. Deliberately has no cooldown of its own: the player's
+        /// button press manages its cooldown in HandleSonarPulse above;
+        /// whatever eventually drives Cookie's scouting should manage hers
+        /// independently, since they're different sources with no reason to
+        /// share a cooldown.</summary>
+        public void PulseFrom(Vector3 origin)
+        {
             var hits = Physics.OverlapSphere(origin, sonarRadius, sonarMask);
             foreach (var hit in hits)
             {
