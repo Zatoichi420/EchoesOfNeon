@@ -4,12 +4,10 @@ Run this manually after a writing session, on request — not an automated backg
 agent, per the accessible-game blueprint's Section 6.2 and Orlando's explicit choice
 for this project (2026-09-13).
 
-**Not yet runnable in practice** — this checklist assumes a story bible with a stated
-theme and resolution statement, character voice-notes files, and a scene list, none of
-which exist yet. `Docs/Story/Narrative/story-intake-form.md`,
-`Docs/Story/Dialogue/dialogue-intake-form.md`, and `Docs/Story/Audio/audio-intake-form.md`
-are the open questions standing between here and a real story bible. Keep this file
-ready for when that content exists rather than deleting it for being currently unusable.
+**Runnable as of 2026-09-13** — the story bible, five character files, a locations doc
+and one written scene now exist. First run: `Docs/Story/narrative-review-2026-09-14.md`
+(findings only, no story changes made). Its headline finding is a theme/ending mismatch
+worth resolving before more scenes get written.
 
 ## Checklist (once a story bible and scenes exist)
 
