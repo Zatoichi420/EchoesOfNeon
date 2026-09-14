@@ -23,11 +23,12 @@ exist; don't invent Animator state names for a rig that doesn't exist.
 | Sonar contact detected | none | Target's own `AcousticEmitter.Emit()` answers back — `TacticalEnemyAI.OnSonarPing` | **"Sonar contact, N meters."** — `OculusSensorySuite.DispatchPingAfterDelay`, fires once per pingable hit at the moment it answers back |
 | Neural Dilate engage | none | none | **"Neural Dilate engaged."** — `OculusSensorySuite.HandleDilatePressed` |
 | Neural Dilate disengage | none | none | **"Neural Dilate disengaged."** — `OculusSensorySuite.HandleDilateReleased` |
-| Enemy: Patrol → Alert (spotted) | none | none | **"Enemy spotted you."** — `TacticalEnemyAI.Update` |
-| Enemy: → Investigate (heard something) | none | none | **"Enemy investigating a sound."** — `TacticalEnemyAI.HandleAcousticEvent` |
-| Enemy: Investigate → Patrol (stands down) | none | none | **"Enemy stands down."** — `TacticalEnemyAI.UpdateInvestigate` |
-| Enemy: Alert → Investigate (lost sight) | none | none | **"Enemy lost sight of you."** — `TacticalEnemyAI.UpdateAlert` |
-| Enemy: hit, not killed | none | none | **"Enemy alerted."** — `TacticalEnemyAI.TakeDamage` |
+| Enemy: Patrol → Alert (spotted) | none | Spoken alert bark, 3D-spatialized, random of 2 — `EnemyBarkPlayer` via `TacticalEnemyAI.OnStateChanged` | **"Enemy spotted you."** — `TacticalEnemyAI.Update` |
+| Enemy: → Investigate (heard something) | none | Spoken investigate bark, random of 2 — `EnemyBarkPlayer` | **"Enemy investigating a sound."** — `TacticalEnemyAI.HandleAcousticEvent` |
+| Enemy: Investigate → Patrol (stands down) | none | none — deliberately no bark; the patrol clips are idle muttering, not a reaction, and the announcement already covers this beat | **"Enemy stands down."** — `TacticalEnemyAI.UpdateInvestigate` |
+| Enemy: Alert → Investigate (lost sight) | none | Spoken investigate bark (destination state is Investigate) — `EnemyBarkPlayer` | **"Enemy lost sight of you."** — `TacticalEnemyAI.UpdateAlert` |
+| Enemy: hit, not killed | none | Spoken alert bark (destination state is Alert) — `EnemyBarkPlayer` | **"Enemy alerted."** — `TacticalEnemyAI.TakeDamage` |
+| Enemy: idle patrol chatter | none | Spoken patrol bark on a 12-25s randomized timer while in Patrol — `EnemyBarkPlayer.Update`. Doubles as a stealth affordance: an audibly muttering guard is one a blind player can locate and avoid by ear | none — ambient atmosphere, not a state change to announce |
 | Enemy: die | none — `enabled = false` only, no death system yet | none | **"Enemy down."** — `TacticalEnemyAI.TakeDamage` |
 | Player takes damage | none | none | **none — no system exists.** There is no `PlayerHealth` script and the player doesn't implement `IDamageable`. This is a real gap, not an oversight; flagged for whenever a player-damage system gets built. |
 

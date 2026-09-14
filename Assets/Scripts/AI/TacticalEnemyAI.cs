@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EchoesOfNeon.Accessibility;
 using EchoesOfNeon.Core;
@@ -25,7 +26,19 @@ namespace EchoesOfNeon.AI
     [RequireComponent(typeof(AcousticEmitter))]
     public class TacticalEnemyAI : MonoBehaviour, ISonarPingable, IDamageable
     {
-        private enum State { Patrol, Investigate, Alert }
+        /// <summary>Public so audio/VFX reactions (EnemyBarkPlayer) can switch
+        /// on it without this class needing to know they exist - same
+        /// decoupling as ISonarPingable/IDamageable.</summary>
+        public enum State { Patrol, Investigate, Alert }
+
+        /// <summary>Fires only on an actual change of state, never on a
+        /// same-state re-entry. Transition-specific *narration* deliberately
+        /// stays at the call sites below (the wording differs by how the
+        /// state was entered - spotted vs. shot at, for instance); this event
+        /// is for reactions that only care about the destination state.</summary>
+        public event Action<State> OnStateChanged;
+
+        public State CurrentState => _state;
 
         [Header("Patrol")]
         [SerializeField] private List<Transform> patrolPoints = new List<Transform>();
@@ -80,11 +93,8 @@ namespace EchoesOfNeon.AI
                 case State.Alert: UpdateAlert(); break;
             }
 
-            if (_state != State.Alert && CanSeePlayer())
-            {
-                _state = State.Alert;
+            if (_state != State.Alert && CanSeePlayer() && SetState(State.Alert))
                 Announce("Enemy spotted you.");
-            }
         }
 
         private void UpdatePatrol()
@@ -98,23 +108,19 @@ namespace EchoesOfNeon.AI
         private void UpdateInvestigate()
         {
             MoveTowards(_investigateTarget, investigateSpeed);
-            if (Vector3.Distance(transform.position, _investigateTarget) <= waypointTolerance)
-            {
-                _state = State.Patrol;
+            if (Vector3.Distance(transform.position, _investigateTarget) <= waypointTolerance
+                && SetState(State.Patrol))
                 Announce("Enemy stands down.");
-            }
         }
 
         private void UpdateAlert()
         {
-            if (playerTransform == null) { _state = State.Patrol; return; }
+            if (playerTransform == null) { SetState(State.Patrol); return; }
             MoveTowards(playerTransform.position, investigateSpeed);
             _investigateTarget = playerTransform.position;
-            if (!CanSeePlayer())
-            {
-                _state = State.Investigate; // lost sight - go check the last known position rather than instantly forgetting
+            // Lost sight - go check the last known position rather than instantly forgetting.
+            if (!CanSeePlayer() && SetState(State.Investigate))
                 Announce("Enemy lost sight of you.");
-            }
         }
 
         private void MoveTowards(Vector3 target, float speed)
@@ -142,9 +148,8 @@ namespace EchoesOfNeon.AI
             float distance = Vector3.Distance(transform.position, evt.Position);
             if (distance > evt.Loudness) return; // outside this event's audible radius
             _investigateTarget = evt.Position;
-            bool wasAlreadyInvestigating = _state == State.Investigate;
-            _state = State.Investigate;
-            if (!wasAlreadyInvestigating) Announce("Enemy investigating a sound.");
+            if (SetState(State.Investigate))
+                Announce("Enemy investigating a sound.");
         }
 
         // --- ISonarPingable (Phase 4) ---
@@ -166,10 +171,22 @@ namespace EchoesOfNeon.AI
                 Announce("Enemy down.");
                 return;
             }
-            bool wasAlreadyAlert = _state == State.Alert;
             _investigateTarget = hitPoint;
-            _state = State.Alert;
-            if (!wasAlreadyAlert) Announce("Enemy alerted.");
+            if (SetState(State.Alert))
+                Announce("Enemy alerted.");
+        }
+
+        /// <summary>The single place `_state` is ever written. Returns true
+        /// only if the state actually changed, so callers can gate
+        /// transition-specific narration on it rather than each tracking its
+        /// own "was I already in this state" flag. Fires OnStateChanged for
+        /// decoupled reactions (audio barks, future VFX).</summary>
+        private bool SetState(State next)
+        {
+            if (_state == next) return false;
+            _state = next;
+            OnStateChanged?.Invoke(next);
+            return true;
         }
 
         /// <summary>Every state-change announcement in this file goes through

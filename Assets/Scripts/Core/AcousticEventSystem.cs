@@ -105,19 +105,31 @@ namespace EchoesOfNeon.Core
 
         private void PlayPlaceholderTone(AcousticEvent evt)
         {
-            if (!_placeholderClips.TryGetValue(evt.Type, out var clip) || clip == null) return;
+            if (!_placeholderClips.TryGetValue(evt.Type, out var clip)) return;
+            PlayOneShotAt(clip, evt.Position, evt.Loudness);
+        }
+
+        /// <summary>Fire-and-forget 3D-spatialized playback of an arbitrary
+        /// clip, with no AcousticEvent raised - for sounds that should be
+        /// *heard* positionally without also being something the AI reacts to
+        /// (enemy barks, for instance: an enemy shouting shouldn't make every
+        /// other enemy investigate the shout). Emit() is still the path for
+        /// anything that is a real in-world noise event.</summary>
+        public void PlayOneShotAt(AudioClip clip, Vector3 position, float audibleRadius)
+        {
+            if (clip == null) return;
 
             // A dedicated one-shot AudioSource, not AudioSource.PlayClipAtPoint -
             // spatialBlend must be forced to 1 (fully 3D) so stereo panning
             // actually conveys direction; that's the real accessibility
             // payload here, not a nice-to-have.
             var go = new GameObject("AcousticOneShot");
-            go.transform.position = evt.Position;
+            go.transform.position = position;
             var source = go.AddComponent<AudioSource>();
             source.clip = clip;
             source.spatialBlend = 1f;
             source.minDistance = minAudibleDistance;
-            source.maxDistance = Mathf.Max(evt.Loudness, minAudibleDistance + 1f);
+            source.maxDistance = Mathf.Max(audibleRadius, minAudibleDistance + 1f);
             source.rolloffMode = AudioRolloffMode.Linear;
             source.Play();
             Destroy(go, clip.length + 0.1f);

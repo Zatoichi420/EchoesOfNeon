@@ -32,3 +32,22 @@ here so they're tracked in the same place future playtest findings will be:
 - (Added 2026-09-13) Does a Mac build launch cleanly, or does it hang on a macOS
   Accessibility-permission prompt the way one freshly-rebuilt test binary did this
   session? If it prompts, grant it and note here whether that resolved the hang.
+  **Recurred on the later build too** — the app launches, stays alive, and writes a
+  0-byte `Player.log`. This is currently the single thing blocking every by-ear
+  verification below.
+- (Added 2026-09-13, enemy barks) **Do the spoken enemy barks and the accessibility
+  announcements talk over each other?** Both now fire on the same state transition, by
+  design — the bark is the positional, in-world voice ("Contact! Get eyes on him!"),
+  the announcement is the screen-reader status line ("Enemy spotted you."). They're
+  meant to be complementary channels, but whether they collide in practice can only be
+  judged by ear. If they do, the likely fix is a short delay on one of them (this
+  project already did exactly that once, giving narration a head start over the
+  music-ducking fade), not removing either.
+- (Added 2026-09-13, enemy barks) Is the 12-25s patrol idle-chatter interval right —
+  atmospheric and useful for locating a guard by ear, or annoying/too frequent? Tunable
+  on `EnemyBarkPlayer` (`patrolChatterMinInterval`/`patrolChatterMaxInterval`).
+- (Added 2026-09-13, enemy barks) Does bark spatialization actually convey guard
+  direction/distance usefully? `barkRadius` defaults to 25m with linear rolloff.
+- (Added 2026-09-13) Does the new player footstep emission make the test enemy
+  actually react to you walking near it? That path existed in code but had nothing
+  emitting footsteps until this session.

@@ -188,5 +188,45 @@ public static class TestSceneSetup
         aiSo.FindProperty("eye").objectReferenceValue = eyeGO.transform;
         aiSo.FindProperty("playerTransform").objectReferenceValue = playerTransform;
         aiSo.ApplyModifiedProperties();
+
+        AddBarkPlayer(enemyGO);
+    }
+
+    /// <summary>Wires the generated bark audio (Assets/Audio/Dialogue/, see
+    /// Docs/Story/Dialogue/scripts/enemy-barks-script.md) onto the enemy.
+    /// Missing clips are skipped rather than failing the whole scene build -
+    /// EnemyBarkPlayer no-ops on an empty array, so a scene built before the
+    /// audio existed still works.</summary>
+    private static void AddBarkPlayer(GameObject enemyGO)
+    {
+        var barkPlayer = enemyGO.AddComponent<EnemyBarkPlayer>();
+        var so = new SerializedObject(barkPlayer);
+
+        AssignClips(so, "patrolBarks", new[] { "bark_patrol_01", "bark_patrol_02" });
+        AssignClips(so, "investigateBarks", new[] { "bark_investigate_01", "bark_investigate_02" });
+        AssignClips(so, "alertBarks", new[] { "bark_alert_01", "bark_alert_02" });
+
+        so.ApplyModifiedProperties();
+    }
+
+    private static void AssignClips(SerializedObject so, string propertyName, string[] clipNames)
+    {
+        var loaded = new System.Collections.Generic.List<AudioClip>();
+        foreach (var name in clipNames)
+        {
+            var path = $"Assets/Audio/Dialogue/{name}.mp3";
+            var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+            if (clip == null)
+            {
+                Debug.LogWarning($"[TestSceneSetup] Bark clip not found, skipping: {path}");
+                continue;
+            }
+            loaded.Add(clip);
+        }
+
+        var prop = so.FindProperty(propertyName);
+        prop.arraySize = loaded.Count;
+        for (int i = 0; i < loaded.Count; i++)
+            prop.GetArrayElementAtIndex(i).objectReferenceValue = loaded[i];
     }
 }
