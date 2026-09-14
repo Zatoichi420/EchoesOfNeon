@@ -76,6 +76,17 @@ public static class TestSceneSetup
         oculusSo.FindProperty("originTransform").objectReferenceValue = cameraPivotGO.transform;
         oculusSo.ApplyModifiedProperties();
 
+        // --- Footstep emitter - separate component from the weapon's below,
+        // since AcousticEmitter's eventType is fixed per-instance. Wired into
+        // TacticalPlayerController.footstepEmitter the same private-
+        // [SerializeField] way as cameraPivot above. ---
+        var footstepEmitter = playerGO.AddComponent<AcousticEmitter>();
+        var footstepEmitterSo = new SerializedObject(footstepEmitter);
+        footstepEmitterSo.FindProperty("eventType").enumValueIndex = (int)AcousticEventType.Footstep;
+        footstepEmitterSo.ApplyModifiedProperties();
+        so.FindProperty("footstepEmitter").objectReferenceValue = footstepEmitter;
+        so.ApplyModifiedProperties();
+
         // --- Vanguard 9 Suppressed Pistol (Phase 6) ---
         var weaponEmitter = playerGO.AddComponent<AcousticEmitter>();
         var weaponEmitterSo = new SerializedObject(weaponEmitter);

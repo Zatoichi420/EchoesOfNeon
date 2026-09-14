@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EchoesOfNeon.Accessibility;
 using EchoesOfNeon.Core;
 using EchoesOfNeon.Optics;
 using EchoesOfNeon.Weapons;
@@ -80,7 +81,10 @@ namespace EchoesOfNeon.AI
             }
 
             if (_state != State.Alert && CanSeePlayer())
+            {
                 _state = State.Alert;
+                Announce("Enemy spotted you.");
+            }
         }
 
         private void UpdatePatrol()
@@ -95,7 +99,10 @@ namespace EchoesOfNeon.AI
         {
             MoveTowards(_investigateTarget, investigateSpeed);
             if (Vector3.Distance(transform.position, _investigateTarget) <= waypointTolerance)
+            {
                 _state = State.Patrol;
+                Announce("Enemy stands down.");
+            }
         }
 
         private void UpdateAlert()
@@ -104,7 +111,10 @@ namespace EchoesOfNeon.AI
             MoveTowards(playerTransform.position, investigateSpeed);
             _investigateTarget = playerTransform.position;
             if (!CanSeePlayer())
+            {
                 _state = State.Investigate; // lost sight - go check the last known position rather than instantly forgetting
+                Announce("Enemy lost sight of you.");
+            }
         }
 
         private void MoveTowards(Vector3 target, float speed)
@@ -132,7 +142,9 @@ namespace EchoesOfNeon.AI
             float distance = Vector3.Distance(transform.position, evt.Position);
             if (distance > evt.Loudness) return; // outside this event's audible radius
             _investigateTarget = evt.Position;
+            bool wasAlreadyInvestigating = _state == State.Investigate;
             _state = State.Investigate;
+            if (!wasAlreadyInvestigating) Announce("Enemy investigating a sound.");
         }
 
         // --- ISonarPingable (Phase 4) ---
@@ -151,10 +163,24 @@ namespace EchoesOfNeon.AI
             if (_health <= 0f)
             {
                 enabled = false; // no death system yet (Phase 6+) - just stop moving
+                Announce("Enemy down.");
                 return;
             }
+            bool wasAlreadyAlert = _state == State.Alert;
             _investigateTarget = hitPoint;
             _state = State.Alert;
+            if (!wasAlreadyAlert) Announce("Enemy alerted.");
+        }
+
+        /// <summary>Every state-change announcement in this file goes through
+        /// here rather than calling AccessibilityManager.Announce directly,
+        /// so the null-check (no AccessibilityManager in a headless/edit-mode
+        /// context) lives in one place. AccessibilityManager.Announce itself
+        /// already no-ops quietly when no screen reader is active.</summary>
+        private static void Announce(string text)
+        {
+            if (AccessibilityManager.Instance != null)
+                AccessibilityManager.Instance.Announce(text);
         }
     }
 }

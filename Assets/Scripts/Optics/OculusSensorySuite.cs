@@ -130,10 +130,16 @@ namespace EchoesOfNeon.Optics
             }
         }
 
-        private static IEnumerator DispatchPingAfterDelay(ISonarPingable pingable, float delay, float distance)
+        // Not static (was before) - needs _accessibility to announce the
+        // contact at the same moment it actually "answers back" via its own
+        // AcousticEmitter, not a raw OnSonarPingDetected event fired for
+        // every collider in the sonar radius (ground, walls, props included),
+        // which would be spammy. Only pingable hits reach this coroutine at all.
+        private IEnumerator DispatchPingAfterDelay(ISonarPingable pingable, float delay, float distance)
         {
             yield return new WaitForSecondsRealtime(delay);
             pingable.OnSonarPing(delay, distance);
+            _accessibility?.Announce($"Sonar contact, {distance:F0} meters.");
         }
 
         // --- Neural Dilate ---
@@ -144,6 +150,10 @@ namespace EchoesOfNeon.Optics
             float target = _accessibility != null ? _accessibility.Settings.neuralDilateTimescale : 0.3f;
             _targetTimeScale = Mathf.Clamp(target, 0.05f, 1f);
             OnNeuralDilateStateChanged?.Invoke(true);
+            // Time.timeScale changes globally with zero non-visual signal
+            // otherwise - a blind player would have no way to know the world
+            // just slowed down around them.
+            _accessibility?.Announce("Neural Dilate engaged.");
         }
 
         private void HandleDilateReleased()
@@ -151,6 +161,7 @@ namespace EchoesOfNeon.Optics
             IsDilating = false;
             _targetTimeScale = 1f;
             OnNeuralDilateStateChanged?.Invoke(false);
+            _accessibility?.Announce("Neural Dilate disengaged.");
         }
 
         private void UpdateTimeScale()

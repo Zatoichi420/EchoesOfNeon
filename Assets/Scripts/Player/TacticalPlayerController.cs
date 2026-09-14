@@ -57,9 +57,22 @@ namespace EchoesOfNeon.Player
         [SerializeField] private float interactRange = 2.5f;
         [SerializeField] private LayerMask interactMask = ~0;
 
+        [Header("Footsteps")]
+        // A separate AcousticEmitter from any weapon emitter on this same
+        // GameObject - AcousticEmitter's eventType is fixed per-component, so
+        // footsteps need their own instance (configured Footstep, not
+        // Gunfire) rather than sharing one via GetComponent, which would be
+        // ambiguous with two emitters present. Wired in TestSceneSetup.cs the
+        // same way cameraPivot/originTransform/muzzle already are.
+        [SerializeField] private AcousticEmitter footstepEmitter;
+        [SerializeField] private float footstepInterval = 0.45f; // seconds between steps at walk speed
+        [SerializeField] private float footstepLoudnessWalk = 6f;
+        [SerializeField] private float footstepLoudnessSprint = 14f;
+
         private CharacterController _controller;
         private InputManager _input;
         private AccessibilityManager _accessibility;
+        private float _footstepTimer;
 
         private Vector2 _moveInput;
         private Vector2 _lookInput;
@@ -146,6 +159,7 @@ namespace EchoesOfNeon.Player
             UpdateCrouchHeight();
             UpdateMovementAndGravity();
             UpdateCameraBob();
+            UpdateFootsteps();
         }
 
         private void UpdateLook(bool singleStick)
@@ -247,6 +261,34 @@ namespace EchoesOfNeon.Player
                 _bobTimer = 0f;
                 cameraPivot.localPosition = Vector3.Lerp(cameraPivot.localPosition, _cameraBasePosition, Time.unscaledDeltaTime * 8f);
             }
+        }
+
+        /// <summary>Without this, the player never actually made a sound while
+        /// moving - TacticalEnemyAI.HandleAcousticEvent (the "hears the
+        /// player's footsteps" half of the Acoustic Stealth Loop pillar)
+        /// could never fire from the player's own movement, only from
+        /// gunfire. Sprinting halves the interval (faster cadence) and emits
+        /// louder, matching how sprinting already trades stealth for speed
+        /// everywhere else in this design.</summary>
+        private void UpdateFootsteps()
+        {
+            if (footstepEmitter == null) return;
+
+            Vector3 horizontalVelocity = new Vector3(_controller.velocity.x, 0f, _controller.velocity.z);
+            bool isMoving = _controller.isGrounded && horizontalVelocity.magnitude > 0.1f;
+            if (!isMoving)
+            {
+                _footstepTimer = 0f;
+                return;
+            }
+
+            bool sprinting = _accessibility != null && _accessibility.IsSprinting;
+            _footstepTimer += Time.unscaledDeltaTime;
+            float interval = sprinting ? footstepInterval * 0.6f : footstepInterval;
+            if (_footstepTimer < interval) return;
+
+            _footstepTimer = 0f;
+            footstepEmitter.Emit(sprinting ? footstepLoudnessSprint : footstepLoudnessWalk);
         }
     }
 }
