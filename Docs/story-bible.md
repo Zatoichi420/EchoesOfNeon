@@ -96,23 +96,55 @@ intentional, and should be confirmed.
   Marcus's father in the military — a high-ranking officer killed under suspicious
   circumstances when Marcus was young — and Max had a hand in that assassination. He
   has never told Marcus. This means Max's connection to the Cross family predates his
-  and Marcus's own shared unit; he knew the father first. See `max-gomez.md` for the
-  full detail and the new questions this raises (was the father's death connected to
-  the bloodline secret; was Max ordered or acting alone).
+  and Marcus's own shared unit; he knew the father first. See `max-gomez.md`.
+- **The father's death WAS connected to the vampire bloodline secret** — confirmed,
+  not a separate thread.
+- **Max was ordered to kill the father** — not acting alone, not a personal decision.
+  **Who gave that order is not yet specified** — do not assume it was The Madame
+  herself; she and Marcus were both "really young" when the father died (they're
+  twins), which makes her personally issuing that order unlikely unless someone was
+  acting in her name or on behalf of whatever authority governs the bloodline. Flagged
+  below, not resolved.
 - **The Madame and G both already know about Marcus and see him as a threat to
-  them** — this resolves the "does she know he's her brother" question with at least
-  a partial yes: whatever the exact scope of what she knows, she is not ignorant of
-  Marcus's existence or danger during the present-day story. See `the-madame.md` and
-  `geoffrey-g.md`.
+  them** — and now there's a specific reason why: see **the prophecy**, immediately
+  below.
+
+## RESOLVED — the prophecy (2026-09-13, third follow-up)
+
+**The Madame and G have heard rumors of "a prophesied one" their entire lives** — part
+of the bloodline's own lore, treated as legend rather than literal fact for most of
+that time. **They didn't actually believe it until Marcus's resurrection**, when they
+began observing things he could do with his augments — as a blind man — that no one
+else could. That's what convinced them: not that Marcus is dangerous in some generic
+sense, but that he may be the specific figure their own family's prophecy described,
+now demonstrably real in front of them.
+
+This reframes something important: **Marcus's abilities may not be purely
+technological.** The story so far has treated his sonar/data-perception as
+black-market cybernetics doing something remarkable — and that may still be
+mechanically true in the game systems — but in-world, The Madame and G's read on it is
+that the augments are succeeding *because of what he is*, not succeeding on
+engineering alone. Worth deciding deliberately whether the game ever confirms this to
+the player, or leaves it as something only the antagonists believe.
+
+**"Marcus's resurrection"** — Orlando's own phrase, used deliberately rather than
+"recovery" or "rebuild." **Not yet clarified whether this is literal** (Marcus
+actually died and came back, consistent with the vampire bloodline's supernatural
+register) **or a dramatic way of describing his rebirth as "Echo"** after the
+attack that destroyed his eyes. This materially affects how the origin-story
+flashback content (if any beyond the opening dream) should be written, and is flagged
+as a real open question, not assumed either way.
 
 ## Open questions this bible does NOT answer (flagged, not resolved)
 
-- **Was Marcus's father's assassination connected to the vampire bloodline secret**
-  (e.g. he knew something and was silenced), or is that a separate thread from the
-  Aegis-Corvus/twin/vampire plot entirely?
-- **Was Max ordered to kill the father, acting alone, or something else** — and if
-  ordered, by whom? Possibly connects to whoever enabled The Madame's rise, but that's
-  speculation, not confirmed.
+- **Who ordered Max to kill Marcus's father?** Not The Madame personally (see above,
+  age problem) — some other authority within or connected to the bloodline. Unnamed,
+  unconfirmed.
+- **Is "Marcus's resurrection" literal death-and-revival, or figurative rebirth
+  through augmentation?**
+- **Does the game ever confirm to the player that Marcus's abilities are
+  supernatural, not just technological** — or does that stay an antagonists-only
+  belief, possibly even a wrong one?
 - **Exactly how much do The Madame and G know** — the family/bloodline connection
   specifically, or just "Marcus exists and is dangerous" without the deeper tie? Both
   readings are consistent with what's been confirmed so far.
