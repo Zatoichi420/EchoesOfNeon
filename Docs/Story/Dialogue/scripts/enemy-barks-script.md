@@ -11,6 +11,10 @@ pure accessibility callouts ("Enemy spotted you," etc.).
 See `README.md` in this folder for how to use this table. Delivery direction is
 reference only — never paste it into ElevenLabs.
 
+**Generated 2026-09-13** with ElevenLabs voice "The Duke – Gritty Mob Boss"
+(`QyX5mnB5hVBPeNS1oyvU`). Audio files are in `Assets/Audio/Dialogue/`. Flow for
+regenerating/trying alternates: https://elevenlabs.io/app/flows/wowum720BJ0x3GUneC7X
+
 | Line ID | Scene / Context (reference only) | Delivery direction (reference only) | Script text (paste this) | Suggested output filename |
 |---|---|---|---|---|
 | bark-patrol-01 | Patrol state, low intensity | Bored muttering | ...another dead shift. | `bark_patrol_01.mp3` |

@@ -23,14 +23,25 @@ ElevenLabs) or recorded (by you) one line at a time.
 - **Suggested output filename** — name the generated/recorded file this when you save
   it, so it's traceable back to this table later.
 
-## Voice casting — not yet decided
+## Voice casting — decided 2026-09-13
 
-Which ElevenLabs voice (or your own voice) goes with which character isn't specified
-yet. `voice-notes-draft.md` has a proposed tone per character if that helps pick a
-voice — Marcus (controlled, terse), The Madame (precise, cold), Max (warm-but-
-deflecting), G (flat, minimal), Desi (warm, unhurried). Enemy barks are generic corp
-security, not a named character — one consistent voice is enough unless you want
-variety across different guards.
+- **Marcus "Echo" Cross** — Orlando's own voice. Not generated via ElevenLabs.
+- **The Madame** — ElevenLabs "Nora Vale - Mission Control" (`iV1OKYxbmgRtpzJ2q8kx`)
+- **Maximilian "Max" Gomez** — ElevenLabs "Santiago - Gravelly and commanding" (`VXZKNah1ssrzM8c81OiY`)
+- **Geoffrey "G"** — ElevenLabs "Taras Vovk - Tactical Game NPC" (`11JUpgNlQsWfppULB2T8`)
+- **Desdemona "Desi" Cross** — ElevenLabs "Maryanne" (`wGkDFmrqhadewOUJsHKq`) — the
+  first pick, "Laura - Calm Mediterranean," required a higher ElevenLabs account tier
+  and failed; Maryanne was the fallback.
+- **Enemy barks** (generic corp security) — ElevenLabs "The Duke – Gritty Mob Boss"
+  (`QyX5mnB5hVBPeNS1oyvU`)
+
+**All 15 non-Marcus lines have already been generated** (one take each) and downloaded
+into `Assets/Audio/Dialogue/` in this project, named per each script's "Suggested
+output filename" column. They're also still live on ElevenLabs in five flows (one per
+character) if you want to regenerate a line, try a different voice, or hear alternate
+takes — the flow URLs are in each character's script file below. Re-running a line
+there starts and charges a new generation; it doesn't touch the files already
+downloaded into this project.
 
 ## Files
 
