@@ -1,5 +1,11 @@
 # Echoes of Neon — Dialogue Intake Form
 
+**Voice/tone drafted 2026-09-13** in `voice-notes-draft.md` — proposed, not confirmed,
+since Orlando hadn't directly answered these questions yet when the draft was made.
+Production method (real VO vs. TTS vs. text-only) remains explicitly undecided by
+Orlando's own choice. Review `voice-notes-draft.md` and correct it the same way the
+story bible got corrected.
+
 A fill-in questionnaire, matching `Narrative/story-intake-form.md`'s approach — answer
 what you can, skip what you can't yet.
 

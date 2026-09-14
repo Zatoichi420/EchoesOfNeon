@@ -62,15 +62,17 @@ pre-dawn or deep night given Marcus's established habit of moving at night.
   above is what carries the actual "this is a memory" signal for a blind player.
 - **Lab (reality):** dark and dingy, per the established New Carthage interior look.
 
-## Dialogue (placeholder — see note above)
+## Dialogue (draft, per `Docs/Story/Dialogue/voice-notes-draft.md` — still not final)
 
-- Desi (dream, warm): *"[placeholder line reflecting the fond memory beat above]"*
-- Marcus (waking, disoriented): *"[placeholder — registers he's awake, in the lab,
-  alone]"*
-- Marcus (internal, resolve-hardening): *"[placeholder — names his intent to go after
-  the head of Aegis-Corvus specifically]"*
+Per the dialogue voice-notes draft, Marcus narrates sparingly, so his waking/resolve
+lines are proposed as spoken (in-fiction narration), not silent internal-monologue-as-
+text — matching his sparing-but-present self-narration pattern.
 
-Whether Marcus's waking/resolve lines are spoken aloud (narrated dialogue) or
-internal-monologue-as-text depends on the still-open "does Marcus narrate to himself"
-question in the Dialogue intake form — worth answering that before this scene's
-dialogue gets written for real.
+- Desi (dream, warm): *"You're doing that thing again — thinking so loud I can hear it
+  from here."*
+- Marcus (waking, disoriented): *"...Not real. None of that's real anymore."*
+- Marcus (internal, resolve-hardening): *"The Madame. Ten years she's run this city
+  like she owns it. She's about to find out what she actually took from me."*
+
+These are draft samples matching the proposed voice notes, not confirmed final lines —
+correct freely.

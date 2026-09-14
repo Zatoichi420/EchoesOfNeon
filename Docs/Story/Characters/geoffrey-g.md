@@ -19,23 +19,25 @@ ordinary corporate security.
 ## MAJOR SPOILER — do not let this leak into early dialogue, files, or barks
 
 **G is a vampire, and a cousin to both Marcus and The Madame** — a third member of the
-same bloodline established in `Docs/story-bible.md`'s spoiler section. Unlike Marcus,
-he almost certainly knows what he is (an assassin this precise, this untraceable,
-having spent his whole career undetected, reads as someone who understands and uses
-his own nature deliberately — though this is Claude's inference from his stated
-skillset, not something Orlando confirmed explicitly; flag if wrong). Whether he knows
-about Marcus and The Madame being twins, and whether The Madame knows he's family at
-all, are open questions — see below.
+same bloodline established in `Docs/story-bible.md`'s spoiler section. **G knows about
+Marcus and knows he's a threat** — confirmed by Orlando, 2026-09-13, alongside the
+same confirmation for The Madame. Unlike Marcus, he almost certainly knows what he is
+as a vampire too (an assassin this precise, this untraceable, having spent his whole
+career undetected, reads as someone who understands and uses his own nature
+deliberately — though that specific inference is Claude's, not explicitly confirmed;
+flag if wrong).
 
 ## Open questions this file does NOT answer
 
-- Does G know he's related to Marcus and The Madame? Does The Madame know G is family,
-  or does she just see him as her most reliable asset?
-- Does G know about Marcus specifically, or has he simply never had reason to cross
-  paths with him before the story starts?
+- Does G know *specifically* that he's a blood cousin to Marcus and The Madame, or
+  does he just know Marcus by reputation/identity as an enemy without necessarily
+  knowing the family tie? (Orlando confirmed G "knows of Marcus" and sees him as a
+  threat - whether that includes full awareness of the cousin relationship, the same
+  way it's unclear for The Madame, isn't separately specified.)
+- Does The Madame know G is her cousin, or does she just see him as her most reliable
+  asset?
 - Is G aware of his own vampiric nature and actively using it (enhanced senses,
-  resilience, whatever the bloodline actually grants), or does he not know either,
-  the same way Marcus doesn't?
+  resilience, whatever the bloodline actually grants)?
 - Does G ever appear as a recurring mid-game threat (a mini-boss across multiple
   missions, matching his "always covers his tracks, never caught" reputation), or
   primarily at the climax alongside The Madame? Not yet specified.

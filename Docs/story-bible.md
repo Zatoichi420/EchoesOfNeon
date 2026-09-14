@@ -90,16 +90,32 @@ he has** — worth leaning into as the story gets built out further, though this
 connection is Claude's observation, not something Orlando explicitly stated as
 intentional, and should be confirmed.
 
+## RESOLVED (2026-09-13, second follow-up)
+
+- **Max's secret has concrete content, not just abstract knowledge**: Max knew
+  Marcus's father in the military — a high-ranking officer killed under suspicious
+  circumstances when Marcus was young — and Max had a hand in that assassination. He
+  has never told Marcus. This means Max's connection to the Cross family predates his
+  and Marcus's own shared unit; he knew the father first. See `max-gomez.md` for the
+  full detail and the new questions this raises (was the father's death connected to
+  the bloodline secret; was Max ordered or acting alone).
+- **The Madame and G both already know about Marcus and see him as a threat to
+  them** — this resolves the "does she know he's her brother" question with at least
+  a partial yes: whatever the exact scope of what she knows, she is not ignorant of
+  Marcus's existence or danger during the present-day story. See `the-madame.md` and
+  `geoffrey-g.md`.
+
 ## Open questions this bible does NOT answer (flagged, not resolved)
 
-- **How far back does Max's knowledge/protection go?** Before the shared military
-  unit, or did that assignment/meeting itself happen *because* of the family secret,
-  not coincidentally alongside it?
-- **Does Aegis-Corvus (run by Marcus's own twin) know Marcus is her brother** during
-  the present-day story, or is that also part of what gets revealed at the end? This
-  materially changes how The Madame's dialogue/behavior should read throughout - if
-  she's known all along, her role as antagonist has a very different texture than if
-  she finds out partway through, or only at the confrontation itself.
+- **Was Marcus's father's assassination connected to the vampire bloodline secret**
+  (e.g. he knew something and was silenced), or is that a separate thread from the
+  Aegis-Corvus/twin/vampire plot entirely?
+- **Was Max ordered to kill the father, acting alone, or something else** — and if
+  ordered, by whom? Possibly connects to whoever enabled The Madame's rise, but that's
+  speculation, not confirmed.
+- **Exactly how much do The Madame and G know** — the family/bloodline connection
+  specifically, or just "Marcus exists and is dangerous" without the deeper tie? Both
+  readings are consistent with what's been confirmed so far.
 - **Is Desi's death/research connected to the vampire bloodline at all** (e.g. was
   Aegis-Corvus's bioweapons research actually trying to study or weaponize the
   bloodline's traits, which is what got her killed) — or are the two threads meant to

@@ -23,12 +23,17 @@ world than the one she's built.)
 ## MAJOR SPOILER — do not let this leak into early dialogue, files, or barks
 
 **The Madame is Marcus's twin sister.** He does not know this for the entire game
-until the ending reveal. She is also, per the story bible's supernatural thread,
-descended (with Marcus) from vampires — whether *she* knows this about herself, or
-whether she knows Marcus is her brother, during the present-day story is an open
-question (see `Docs/story-bible.md`'s open questions) that materially affects how her
-dialogue and on-screen behavior should read throughout the whole game, not just at the
-end. Until that's decided, don't write her scenes assuming either answer.
+until the ending reveal. **She already knows about Marcus, and she knows he's a
+threat to her and G** — confirmed by Orlando, 2026-09-13. This means her entire
+present-day behavior toward Marcus's manhunt is informed by knowing exactly who's
+coming for her, even though the player doesn't know she knows. Write her accordingly:
+she should never be genuinely surprised that Marcus exists or that he's dangerous,
+even in scenes played from Marcus's ignorant point of view.
+
+Not yet specified: whether she's known his identity from the very start of the
+present-day story, or found out somewhere earlier than the ending but after some
+initial period of not knowing — the confirmed fact is that she knows *now* (during
+the game's present), not necessarily that she's always known.
 
 ## Relationships
 
