@@ -194,7 +194,11 @@ as a real open question, not assumed either way.
 - **How exactly did Desi come to be at the intersection of the two crimes?** The
   bioweapons/bloodline connection is now canon (see the RESOLVED section above), but
   whether she *discovered* what Marcus is, or was killed without ever knowing, is still
-  open — and it changes how her memory scenes should play.
+  open — and it changes how her memory scenes should play. **A new candidate answer as
+  of 2026-09-14**: Desi built Cookie (see `Docs/Story/Characters/cookie.md`) using
+  living cybernetic flesh-bonding technology — exactly the kind of bio-mechanical work
+  Aegis-Corvus's illegal research would want. Cookie's existence may be *why* the lab
+  was targeted, not incidental to it. Not confirmed, but a strong fit.
 - What happens in each main mission's 3+ sub-missions?
 - Marcus's own arc destination beyond "gets his revenge/justice" — does finding out
   about his sister and his bloodline change what he wants, on top of or instead of the

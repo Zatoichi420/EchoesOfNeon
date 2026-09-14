@@ -45,6 +45,18 @@ the memories stay clean and the tragedy is simpler. The tightest version is that
 discovery is precisely what got her killed, but that hasn't been chosen yet (see the
 story bible's open questions).
 
+## Her other legacy: Cookie
+
+Desi's bio-mechanical research wasn't purely theoretical — she built **C.O.Q.I.
+"Cookie,"** a black lab with cybernetic flesh-bonding limbs, before she died. See
+`cookie.md`. This is worth connecting to the bioweapons-research canon above, not yet
+confirmed: living flesh-bonding technology applied to a whole creature is exactly the
+kind of bio-mechanical work Aegis-Corvus's illegal research would want, which raises
+the possibility that Cookie's very existence is *why* Desi's lab was a target, not just
+incidental to it. Offered as a strong candidate answer to "how did Desi come to be at
+the intersection of the two crimes," not asserted.
+
 ## Relationships
 
 - **Marcus "Echo" Cross** — husband. See `marcus-cross.md`.
+- **C.O.Q.I. "Cookie"** — her creation, later Marcus's companion. See `cookie.md`.
