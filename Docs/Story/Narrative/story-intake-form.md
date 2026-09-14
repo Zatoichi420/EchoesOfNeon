@@ -1,5 +1,11 @@
 # Echoes of Neon — Story Intake Form
 
+**Answered 2026-09-13** (`Echoes_of_Neon_Story_Intake.docx`, plus a follow-up
+conversation confirming the ending's familial revelation, supernatural twist, and
+Max's secret). Full drafted content now lives in `Docs/story-bible.md` and
+`Docs/Story/Characters/`. This original questionnaire is kept as-is for reference —
+the questions below are what prompted those answers.
+
 This is a fill-in questionnaire, not a finished story bible. It exists so the actual
 creative direction comes from Orlando, not from an AI extrapolating a full plot from a
 one-paragraph premise. Answer as much or as little as you want, in any order — nothing

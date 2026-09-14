@@ -56,22 +56,58 @@ not a claim about what happens in them.
   in the slums, and the resistance's own hideout.
 - **Act 3 — Bonus mission** and the confrontation with The Madame at Aegis-Corvus
   Tower.
-- **Ending:** a familial revelation involving The Madame forces Marcus into a genuine,
-  difficult choice, and the story resolves on a supernatural twist. **The specific
-  content of the revelation and the twist is intentionally not invented here** — that's
-  a real, structurally load-bearing decision that should come from Orlando directly,
-  not be guessed at to fill in this document.
+- **Ending:** see the **MAJOR SPOILER** block below. This is the story's central
+  reveal — keep it out of any early dialogue, marketing copy, or ambient barks. Early
+  material can plant clues that only read as clues in hindsight; it should never
+  state or imply the truth outright before the reveal scene.
 - **Linearity:** fully linear for now, no branching defeat states (may change later).
+
+## MAJOR SPOILER — the ending reveal (confirmed by Orlando, 2026-09-13)
+
+**The Madame is Marcus's twin sister.** Marcus does not know this — the entire game is
+played not knowing it. **The supernatural twist: the Cross bloodline is descended from
+vampires.** Marcus doesn't know this either. **Max Gomez has known the whole family
+secret (the twins, the bloodline) the entire time**, and has secretly been protecting
+Marcus as a guardian-angel figure — meaning Max's entire role in the story, including
+everything in `max-gomez.md`'s established backstory (the shared military unit, the
+tech supplier relationship), has been shaped by a hidden agenda Marcus has no idea
+exists.
+
+**The bloodline extends further than just the twins**: **Geoffrey "G"** — The Madame's
+right-hand enforcer, an untraceable, highly trained military asset — is also a cousin
+to both Marcus and The Madame, and also a vampire. See `Docs/Story/Characters/geoffrey-g.md`.
+Whether he knows about the family connection, whether The Madame knows he's family,
+and whether he's consciously aware of and using his own vampiric nature are all open
+questions, same treatment as everything else in this section.
+
+This resolves what were flagged as open questions in the first draft of this document
+and in `max-gomez.md`, `the-madame.md`, and `marcus-cross.md` — those files are updated
+to match. It also retroactively explains details already established before this
+reveal was given: Marcus's insistence on moving only at night and keeping to shadows,
+and his augments prioritizing enhanced hearing/echolocation over restored sight, now
+read as **thematically consistent with vampiric traits Marcus doesn't consciously know
+he has** — worth leaning into as the story gets built out further, though this
+connection is Claude's observation, not something Orlando explicitly stated as
+intentional, and should be confirmed.
 
 ## Open questions this bible does NOT answer (flagged, not resolved)
 
-- What exactly is the familial revelation about The Madame, and what is the "tough
-  decision" it forces?
-- What is the supernatural twist, and how early do supernatural elements need to
-  start appearing for it to land as built-up rather than sudden?
+- **How far back does Max's knowledge/protection go?** Before the shared military
+  unit, or did that assignment/meeting itself happen *because* of the family secret,
+  not coincidentally alongside it?
+- **Does Aegis-Corvus (run by Marcus's own twin) know Marcus is her brother** during
+  the present-day story, or is that also part of what gets revealed at the end? This
+  materially changes how The Madame's dialogue/behavior should read throughout - if
+  she's known all along, her role as antagonist has a very different texture than if
+  she finds out partway through, or only at the confrontation itself.
+- **Is Desi's death/research connected to the vampire bloodline at all** (e.g. was
+  Aegis-Corvus's bioweapons research actually trying to study or weaponize the
+  bloodline's traits, which is what got her killed) — or are the two threads meant to
+  stay separate? This is a real, unresolved connective-tissue question, not
+  something to assume either way.
 - What happens in each main mission's 3+ sub-missions?
-- Marcus's own arc destination beyond "gets his revenge/justice" — does the
-  resistance's larger cause change what he wants by the end, or does he stay
-  singularly focused on The Madame throughout? (The premise above infers a possible
-  shift; this is Claude's inference, not something Orlando stated, and should be
-  confirmed or corrected.)
+- Marcus's own arc destination beyond "gets his revenge/justice" — does finding out
+  about his sister and his bloodline change what he wants, on top of or instead of the
+  resistance's larger cause? (The previous draft inferred a possible shift toward the
+  resistance's cause; this reveal adds a second, probably bigger, candidate for what
+  actually changes him by the end.)

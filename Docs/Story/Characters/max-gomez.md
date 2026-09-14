@@ -24,15 +24,30 @@ sonic weapons (pulses of energy/sound to disable rather than kill) over traditio
 firearms comes from Max. Operates out of "the builder's workshop," in the slums of the
 mega-corp city, in an area with no surveillance.
 
-## The planted setup — do not resolve this without Orlando
+## MAJOR SPOILER — the planted secret, resolved (confirmed by Orlando, 2026-09-13)
 
-**Max is carrying a secret he has never told Marcus, and it is unknown to the
-audience as well.** This is a real, deliberate narrative setup per the blueprint's own
-narrative-review-checklist ("are there unresolved setups without a matching payoff
-anywhere in the scene list?") — it needs an eventual payoff scene, but what the secret
-actually is has not been decided. Do not invent it to fill a gap in a future scene;
-this is exactly the kind of thing that needs to come from Orlando, the same way The
-Madame's familial revelation does.
+**Max has known the entire family secret the whole time** — that The Madame is
+Marcus's twin sister, and the Cross bloodline's vampire descent (see
+`Docs/story-bible.md`'s spoiler section) — and has secretly been protecting Marcus
+this whole time as a **guardian-angel figure**. Marcus has no idea any of this is
+true, and doesn't know Max's help has ever been anything other than a war buddy
+looking out for him.
+
+This means Max's established backstory (same military unit, war-injury limp, current
+role as tech/weapons supplier) has all happened under a hidden agenda the player
+doesn't know about either, until the reveal. **Open question, not yet answered**: how
+far back does this go — did Max know Desi's husband was "the Cross twin" before they
+ever served together, making their meeting non-coincidental? Or did he learn the
+secret later and has been protecting Marcus retroactively since? This changes how
+early scenes with Max should be written (how much dramatic irony is actually available
+to plant) and is flagged in `Docs/story-bible.md`'s open questions rather than
+resolved here.
+
+**Writing guidance until the reveal**: Max can be written with subtle protectiveness
+that reads as loyalty-from-shared-service on a first pass, but should support a
+re-read as something deeper once the player knows the truth — the classic "clues that
+only make sense in hindsight" approach the story bible calls for. He should never say
+or imply anything that gives away the secret outright before the actual reveal scene.
 
 ## Relationships
 

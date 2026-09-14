@@ -14,8 +14,26 @@ see `Docs/Story/Dialogue/dialogue-intake-form.md`, not yet answered.
 - **Flaw:** established directly in the opening scene — he's angry, disoriented, and
   genuinely unsure whether pushing his augments this hard for this long is safe. His
   pursuit of The Madame may be costing him something physical, not just emotional.
-- **Arc destination:** the ending's "tough decision," content TBD (see story bible's
-  open questions).
+- **Arc destination:** the ending's "tough decision" — per the story bible's now-
+  confirmed spoiler, this centers on discovering The Madame is his twin sister and
+  that the Cross bloodline is descended from vampires. **Marcus does not know either
+  fact for the entire game** until the reveal; write him with zero awareness of it,
+  not subconscious hints he'd recognize as such.
+
+## MAJOR SPOILER — do not let this leak into early dialogue or narration
+
+Marcus is unknowingly descended from vampires, and The Madame — the woman he's hunting
+for revenge — is his twin sister. Neither fact should be stated or implied by Marcus
+himself, or by any narration/UI text, before the actual reveal. See
+`Docs/story-bible.md` for the full reveal and its still-open follow-up questions
+(does The Madame already know; does this connect to Desi's death).
+
+Worth noting, not asserting as intentional: his established habits — moving only at
+night, keeping to shadows, and augments that prioritize hearing/echolocation over
+restored sight — already read as thematically consistent with vampiric traits he
+doesn't consciously know he has. This is Claude's observation from the two pieces of
+canon landing together, not something Orlando stated as deliberate; flagged for
+confirmation.
 
 ## Physical description
 
@@ -60,7 +78,10 @@ framing, not sight restored. Worth keeping the two in sync as both develop furth
   `desdemona-cross.md`.
 - **Maximilian "Max" Gomez** — military brother, mentor/supplier figure. See
   `max-gomez.md`.
-- **The Madame** — the specific target of Marcus's revenge. See `the-madame.md`.
+- **The Madame** — the specific target of Marcus's revenge, and (secret, see above)
+  his twin sister. See `the-madame.md`.
+- **Geoffrey "G"** — a cousin Marcus has no idea exists, working as The Madame's
+  enforcer. See `geoffrey-g.md`.
 
 ## Visual reference
 

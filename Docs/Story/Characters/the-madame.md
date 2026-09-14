@@ -20,16 +20,20 @@ point against New Carthage's dark, dingy, retro-future-modern interiors and Marc
 own utilitarian tactical gear — she looks like she belongs to a different, cleaner
 world than the one she's built.)
 
-## The open question this file does NOT answer — do not resolve without Orlando
+## MAJOR SPOILER — do not let this leak into early dialogue, files, or barks
 
-The story bible's ending involves **a familial revelation involving The Madame that
-forces Marcus into a tough decision.** What that revelation actually is — how she's
-connected to Marcus or to Desi, and why it complicates a straightforward revenge story
-— is a real, structurally central creative decision that has not been made yet. This
-file deliberately does not guess at it.
+**The Madame is Marcus's twin sister.** He does not know this for the entire game
+until the ending reveal. She is also, per the story bible's supernatural thread,
+descended (with Marcus) from vampires — whether *she* knows this about herself, or
+whether she knows Marcus is her brother, during the present-day story is an open
+question (see `Docs/story-bible.md`'s open questions) that materially affects how her
+dialogue and on-screen behavior should read throughout the whole game, not just at the
+end. Until that's decided, don't write her scenes assuming either answer.
 
 ## Relationships
 
-- **Marcus "Echo" Cross** — the target of his revenge; the exact nature of any deeper
-  connection is the story's central unresolved question (see above).
+- **Marcus "Echo" Cross** — twin brother (secret, see above) and the target of his
+  revenge; he pursues her with no idea of the relationship.
+- **Geoffrey "G"** — her right-hand enforcer, and (see spoiler section) also her
+  cousin — whether she knows that is an open question. See `geoffrey-g.md`.
 - **Aegis-Corvus Dynamics** — founder and head.
