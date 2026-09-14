@@ -45,6 +45,7 @@ namespace EchoesOfNeon.AI
         private TacticalEnemyAI _ai;
         private float _lastBarkTime = float.NegativeInfinity;
         private float _nextPatrolChatterTime;
+        private bool _warnedNoAcousticSystem;
 
         private void Awake()
         {
@@ -105,9 +106,27 @@ namespace EchoesOfNeon.AI
 
         private void PlayRandom(AudioClip[] clips)
         {
+            // An empty array is a legitimate configuration (an enemy type that
+            // simply doesn't bark), so it stays silent without complaint.
             if (clips == null || clips.Length == 0) return;
             if (Time.time - _lastBarkTime < minSecondsBetweenBarks) return;
-            if (AcousticEventSystem.Instance == null) return;
+
+            // A missing AcousticEventSystem is NOT legitimate - it means the
+            // scene is misconfigured, and without this warning the only
+            // symptom is barks never playing with no reason given. Silent
+            // failure is this project's documented recurring bug class (see
+            // Docs/code-review-checklist.md), so say something - once per
+            // enemy, not once per bark attempt, which would spam every
+            // patrol tick.
+            if (AcousticEventSystem.Instance == null)
+            {
+                if (!_warnedNoAcousticSystem)
+                {
+                    _warnedNoAcousticSystem = true;
+                    Debug.LogWarning($"[EnemyBarkPlayer] No AcousticEventSystem in scene - '{name}' will never bark.", this);
+                }
+                return;
+            }
 
             var clip = clips[Random.Range(0, clips.Length)];
             if (clip == null) return;

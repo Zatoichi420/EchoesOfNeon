@@ -37,7 +37,14 @@ ElevenLabs) or recorded (by you) one line at a time.
 
 **All 15 non-Marcus lines have already been generated** (one take each) and downloaded
 into `Assets/Audio/Dialogue/` in this project, named per each script's "Suggested
-output filename" column. They're also still live on ElevenLabs in five flows (one per
+output filename" column.
+
+**Known quality caveat, not yet acted on:** these came down as `.mp3`, which is a
+lossy *source* format. Unity re-encodes audio at build time, so an mp3 source means
+lossy-on-lossy. It's fine for development and probably fine for barks, but if any line
+ever needs to be pristine — Desi's dream line especially, since it carries real
+emotional weight — regenerate it from ElevenLabs as WAV and replace the file. Worth
+deciding once the lines have actually been heard, not before. They're also still live on ElevenLabs in five flows (one per
 character) if you want to regenerate a line, try a different voice, or hear alternate
 takes — the flow URLs are in each character's script file below. Re-running a line
 there starts and charges a new generation; it doesn't touch the files already
