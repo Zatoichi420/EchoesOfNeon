@@ -11,8 +11,17 @@ A fill-in questionnaire, matching the other two intake forms in `Docs/Story/`.
   `Assets/Scripts/Core/`) for gunfire and mechanical/sonar-answer sounds — synthesized,
   not produced sound design, and explicitly called "placeholder" in the project's own
   changelog
-- No ambient beds, music, or real sound design exist for any location, because no
-  locations/scenes are written yet (see the Narrative intake form)
+- **First-pass ambient beds exist as of 2026-09-14** for the two locations that
+  already have real descriptive detail written (New Carthage night exterior, Desi's
+  lab) — `Assets/Audio/Ambient/new_carthage_night_rain.wav` and
+  `desi_lab_ambience.wav`, procedurally synthesized, loop-safe, 30s each. Not yet
+  wired into any scene, not yet heard by Orlando. The other named locations (Aegis-
+  Corvus Tower, resistance base, black market, builder's workshop) still have no
+  ambient bed because they don't have descriptive detail to synthesize from yet.
+- **First-pass music sketches exist as of 2026-09-14** — two MIDI compositions
+  (`Docs/Story/Audio/Music/theme_new_carthage.mid`, `tension_pursuit.mid`) for Orlando
+  to open in GarageBand and produce. See that folder's README. These don't answer
+  Music Q1 below — they're offered as options for whichever answer it gets.
 
 ## Open questions
 
