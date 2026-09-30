@@ -176,6 +176,42 @@ namespace EchoesOfNeon.Core
             _gameplayMap.LoadBindingOverridesFromJson(PlayerPrefs.GetString(RebindsPrefsKey));
         }
 
+        /// <summary>Every rebindable action name, in the fixed order they
+        /// were added in BuildActions() - the keybinding menu lists these
+        /// rather than hardcoding its own copy of the action list, so a new
+        /// action added here shows up in the UI automatically.</summary>
+        public string[] GetActionNames()
+        {
+            var names = new string[_gameplayMap.actions.Count];
+            for (int i = 0; i < names.Length; i++) names[i] = _gameplayMap.actions[i].name;
+            return names;
+        }
+
+        /// <summary>Human-readable current binding for one action (e.g.
+        /// "W/A/S/D" or "Space") for the given device kind, for the
+        /// keybinding menu to display next to each "press to rebind"
+        /// button. Returns "-" if the action isn't found rather than
+        /// throwing, since a menu row shouldn't crash the whole screen over
+        /// one bad lookup.</summary>
+        public string GetBindingDisplayString(string actionName, DeviceKind deviceKind)
+        {
+            var action = _gameplayMap.FindAction(actionName);
+            if (action == null) return "-";
+
+            var group = deviceKind == DeviceKind.Gamepad ? "Gamepad" : "Keyboard&Mouse";
+            for (int i = 0; i < action.bindings.Count; i++)
+            {
+                var binding = action.bindings[i];
+                if (binding.isComposite) continue;
+                var path = binding.effectivePath;
+                bool matches = deviceKind == DeviceKind.Gamepad
+                    ? path.Contains("<Gamepad>")
+                    : (path.Contains("<Keyboard>") || path.Contains("<Mouse>"));
+                if (matches) return InputControlPath.ToHumanReadableString(path, InputControlPath.HumanReadableStringOptions.OmitDevice);
+            }
+            return "-";
+        }
+
         /// <summary>Starts interactive rebinding for the named action (e.g.
         /// "Jump", "SonarPulse"). Caller is responsible for prompting the
         /// player and calling SaveBindingOverrides() in onComplete.</summary>

@@ -33,6 +33,16 @@ namespace EchoesOfNeon.Accessibility
         public bool cameraBobEnabled = true;
         public float screenShakeScale = 1f;
         public bool reduceMotion = false;
+
+        // Stubs added 2026-09-28 alongside the menu's Accessibility screen,
+        // ahead of the systems that would actually use them (cutscene audio
+        // description track, subtitle rendering - see
+        // echoes-of-neon-audio-and-accessibility-implementation memory /
+        // this session's MEMORY.md entry). Wired to real toggles now so the
+        // menu doesn't need revisiting once those systems land; both no-op
+        // until then.
+        public bool audioDescriptionEnabled = false;
+        public bool subtitlesEnabled = true;
     }
 
     /// <summary>
@@ -43,11 +53,16 @@ namespace EchoesOfNeon.Accessibility
     ///    stays unaware of this preference - see its own header comment).
     /// 2. The native screen-reader hookup (UnityEngine.Accessibility,
     ///    UI-Automation-based on Windows - the reason this project targets
-    ///    Unity 6.3+ instead of the 6.0 LTS line). This wires the one-off
-    ///    "announce this" path now (Announce(string)); building out a full
-    ///    AccessibilityNode tree for real menu buttons is Phase 5/6 work,
-    ///    once actual menu UI exists to attach nodes to - an empty
-    ///    AccessibilityHierarchy is registered now so that plumbing is ready.
+    ///    Unity 6.3+ instead of the 6.0 LTS line). Announce(string) covers
+    ///    one-off toasts. CreateMenuNode/RemoveMenuNode/NotifyLayoutChanged
+    ///    (below) are the Phase 5/6 groundwork for real menu buttons -
+    ///    Assets/Scripts/UI/AccessibleButton.cs, AccessibleToggle.cs, and
+    ///    AccessibleSlider.cs are the components that actually call them,
+    ///    each pairing with a standard UGUI Button/Toggle/Slider. No real
+    ///    menu Canvas exists in the project yet to drop these onto - this is
+    ///    the wiring, not a built menu. Unverified in the Editor as of
+    ///    2026-09-28 (written outside Unity); compile and test against
+    ///    VoiceOver before relying on it.
     /// </summary>
     public class AccessibilityManager : MonoBehaviour
     {
@@ -175,6 +190,82 @@ namespace EchoesOfNeon.Accessibility
         {
             if (string.IsNullOrEmpty(text) || !AssistiveSupport.isScreenReaderEnabled) return;
             AssistiveSupport.notificationDispatcher.SendAnnouncement(text);
+        }
+
+        /// <summary>Registers one focusable menu element (button, toggle,
+        /// slider, ...) in the active AccessibilityHierarchy and points its
+        /// on-screen frame at the given RectTransform, so the OS screen
+        /// reader can hit-test and focus it. Prefer going through
+        /// AccessibleButton/AccessibleToggle/AccessibleSlider rather than
+        /// calling this directly - they also handle state/value updates and
+        /// cleanup on disable. Returns null if called before a screen
+        /// reader hierarchy exists (e.g. from Awake() on the very first
+        /// frame) - callers should call this from OnEnable(), by which
+        /// point AccessibilityManager.Awake() has already run.</summary>
+        public AccessibilityNode CreateMenuNode(string label, AccessibilityRole role, RectTransform rect, AccessibilityNode parent = null)
+        {
+            if (_hierarchy == null) return null;
+
+            var node = _hierarchy.AddNode(label: label, parent: parent);
+            node.role = role;
+            node.isActive = true;
+            if (rect != null)
+            {
+                // Unity does not read Canvas/RectTransform layout on its
+                // own - frameGetter is the only way the screen reader learns
+                // where this element actually is on screen, and it must
+                // stay a live delegate (not a one-time Rect) so it tracks
+                // the element if the canvas resizes or the layout reflows.
+                node.frameGetter = () => RectTransformToScreenRect(rect);
+            }
+            return node;
+        }
+
+        /// <summary>Removes a node created by CreateMenuNode - call this
+        /// on OnDisable() for any menu panel/element that can close, so the
+        /// hierarchy never points the screen reader at a destroyed or
+        /// hidden element. Unity does not do this automatically; per the
+        /// "lost focus after actions" failure mode
+        /// (~/ACCESSIBILITY_WORKFLOW.md), a stale node left in place after
+        /// a panel closes is exactly the kind of silent gap that rule
+        /// exists to catch.</summary>
+        public void RemoveMenuNode(AccessibilityNode node)
+        {
+            if (node == null || _hierarchy == null) return;
+            _hierarchy.RemoveNode(node);
+        }
+
+        /// <summary>Tells the OS something in the hierarchy changed shape
+        /// (a panel opened/closed, focus should move) - Unity does not
+        /// infer this from AddNode/RemoveNode calls on its own. Call after
+        /// opening a menu panel, closing one, or any action whose result
+        /// should be what the screen reader announces next; pass the node
+        /// that should receive focus when known (e.g. the first control in
+        /// a newly-opened panel), or omit it to just signal a layout
+        /// change without forcing focus anywhere specific.</summary>
+        public void NotifyLayoutChanged(AccessibilityNode focusTarget = null)
+        {
+            if (!AssistiveSupport.isScreenReaderEnabled) return;
+            AssistiveSupport.notificationDispatcher.SendLayoutChanged(focusTarget);
+        }
+
+        private static Rect RectTransformToScreenRect(RectTransform rect)
+        {
+            var corners = new Vector3[4];
+            rect.GetWorldCorners(corners);
+
+            var canvas = rect.GetComponentInParent<Canvas>();
+            var cam = (canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay) ? canvas.worldCamera : null;
+
+            var min = RectTransformUtility.WorldToScreenPoint(cam, corners[0]);
+            var max = RectTransformUtility.WorldToScreenPoint(cam, corners[2]);
+
+            // Screen-space Y grows upward from WorldToScreenPoint but the
+            // accessibility frame (like most screen/OS coordinate spaces)
+            // expects Y growing downward from the top - flip here so the
+            // reported frame actually lines up with where VoiceOver/Narrator
+            // expect to hit-test on screen.
+            return new Rect(min.x, Screen.height - max.y, max.x - min.x, max.y - min.y);
         }
     }
 }
