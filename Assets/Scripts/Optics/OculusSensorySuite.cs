@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using EchoesOfNeon.Accessibility;
 using EchoesOfNeon.Core;
+using EchoesOfNeon.Progression;
 using UnityEngine;
 
 namespace EchoesOfNeon.Optics
@@ -32,10 +33,23 @@ namespace EchoesOfNeon.Optics
         [SerializeField] private Transform originTransform; // camera/head - sonar center, ballistics origin
 
         [Header("Sonar Pulse")]
-        [SerializeField] private float sonarRadius = 25f;
+        [SerializeField] private ModifiableStat sonarRadius = new ModifiableStat(25f);
         [SerializeField] private float sonarWaveSpeed = 15f; // units/sec - controls each hit's reveal delay
         [SerializeField] private float sonarCooldown = 1.5f;
         [SerializeField] private LayerMask sonarMask = ~0;
+
+        /// <summary>Exposed for UpgradeManager (Assets/Scripts/Progression/) -
+        /// a purchased "wider sonar" augment. Returns true (always succeeds,
+        /// the stat always exists) so UpgradeManager's generic apply-or-warn
+        /// pattern reads consistently across every target stat.</summary>
+        public bool AddSonarRadiusModifier(ModifierType type, float amount)
+        {
+            if (type == ModifierType.Flat) sonarRadius.AddFlatModifier(amount);
+            else sonarRadius.AddPercentModifier(amount);
+            return true;
+        }
+
+        public void ClearSonarRadiusModifiers() => sonarRadius.ClearModifiers();
 
         [Header("Neural Dilate")]
         [SerializeField] private float dilateTransitionSpeed = 6f; // how fast Time.timeScale eases toward its target
@@ -131,7 +145,7 @@ namespace EchoesOfNeon.Optics
         /// share a cooldown.</summary>
         public void PulseFrom(Vector3 origin)
         {
-            var hits = Physics.OverlapSphere(origin, sonarRadius, sonarMask);
+            var hits = Physics.OverlapSphere(origin, sonarRadius.Value, sonarMask);
             foreach (var hit in hits)
             {
                 float distance = Vector3.Distance(origin, hit.transform.position);

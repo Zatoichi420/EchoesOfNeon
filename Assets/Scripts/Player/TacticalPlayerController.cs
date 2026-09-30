@@ -1,5 +1,6 @@
 using EchoesOfNeon.Accessibility;
 using EchoesOfNeon.Core;
+using EchoesOfNeon.Progression;
 using UnityEngine;
 
 namespace EchoesOfNeon.Player
@@ -30,12 +31,43 @@ namespace EchoesOfNeon.Player
         [SerializeField] private Transform cameraPivot;
 
         [Header("Movement")]
-        [SerializeField] private float walkSpeed = 4f;
-        [SerializeField] private float sprintSpeed = 7f;
-        [SerializeField] private float crouchSpeed = 2f;
+        [SerializeField] private ModifiableStat walkSpeed = new ModifiableStat(4f);
+        [SerializeField] private ModifiableStat sprintSpeed = new ModifiableStat(7f);
+        [SerializeField] private ModifiableStat crouchSpeed = new ModifiableStat(2f);
         [SerializeField] private float aimMovementMultiplier = 0.6f;
         [SerializeField] private float jumpHeight = 1.1f;
         [SerializeField] private float gravity = -18f;
+
+        /// <summary>Exposed for UpgradeManager (Assets/Scripts/Progression/) -
+        /// a purchased augment upgrade raises walk/sprint/crouch speed
+        /// together rather than one alone, so "faster" reads as a general
+        /// speed upgrade, not a walk-only buff. Returns true (matches the
+        /// pattern OculusSensorySuite.AddSonarRadiusModifier uses) so
+        /// UpgradeManager can log when a target has no live stat - this one
+        /// always succeeds since the stats always exist on this component.</summary>
+        public bool AddMoveSpeedModifier(ModifierType type, float amount)
+        {
+            if (type == ModifierType.Flat)
+            {
+                walkSpeed.AddFlatModifier(amount);
+                sprintSpeed.AddFlatModifier(amount);
+                crouchSpeed.AddFlatModifier(amount);
+            }
+            else
+            {
+                walkSpeed.AddPercentModifier(amount);
+                sprintSpeed.AddPercentModifier(amount);
+                crouchSpeed.AddPercentModifier(amount);
+            }
+            return true;
+        }
+
+        public void ClearMoveSpeedModifiers()
+        {
+            walkSpeed.ClearModifiers();
+            sprintSpeed.ClearModifiers();
+            crouchSpeed.ClearModifiers();
+        }
 
         [Header("Crouch")]
         [SerializeField] private float standingHeight = 1.8f;
@@ -212,11 +244,11 @@ namespace EchoesOfNeon.Player
 
         private void UpdateMovementAndGravity()
         {
-            float speed = walkSpeed;
+            float speed = walkSpeed.Value;
             if (_accessibility != null)
             {
-                if (_accessibility.IsSprinting) speed = sprintSpeed;
-                else if (_accessibility.IsCrouching) speed = crouchSpeed;
+                if (_accessibility.IsSprinting) speed = sprintSpeed.Value;
+                else if (_accessibility.IsCrouching) speed = crouchSpeed.Value;
                 if (_accessibility.IsAiming) speed *= aimMovementMultiplier;
             }
 
@@ -252,7 +284,7 @@ namespace EchoesOfNeon.Player
 
             if (bobEnabled && isMoving)
             {
-                _bobTimer += Time.unscaledDeltaTime * bobFrequency * (horizontalVelocity.magnitude / walkSpeed);
+                _bobTimer += Time.unscaledDeltaTime * bobFrequency * (horizontalVelocity.magnitude / walkSpeed.Value);
                 float bobOffset = Mathf.Sin(_bobTimer * Mathf.PI * 2f) * bobAmplitude;
                 cameraPivot.localPosition = _cameraBasePosition + new Vector3(0f, bobOffset, 0f);
             }

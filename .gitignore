@@ -50,3 +50,17 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Raw studio-master SFX staged from the Sonniss GDC bundle (2026-09-28): 30 s - 4.5 min, up to 90 MB each (416 MB total).
+# Kept out of git; the sources live in ~/Documents/GameAudioLibraries/SonnissGDC2026 and are logged in Docs/asset-credits.md.
+# Trim/loop-edit a file to a short clip before moving it out of these folders and committing it.
+/Assets/Audio/Weather/
+/Assets/Audio/Weather.meta
+/Assets/Audio/Lab/
+/Assets/Audio/Lab.meta
+
+# Third-party source archives and Blender sources (re-downloadable; provenance in Docs/asset-credits.md)
+/Assets/ThirdParty/**/*.zip
+/Assets/ThirdParty/**/*.zip.meta
+/Assets/ThirdParty/**/*.blend
+/Assets/ThirdParty/**/*.blend.meta
