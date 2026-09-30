@@ -98,3 +98,13 @@ framing, not sight restored. Worth keeping the two in sync as both develop furth
 bald, bearded man in dark tactical gear and sunglasses, walking through a rain-soaked,
 fire-lit industrial alley at night, carrying a glowing cane. Designated as visual
 inspiration for both Marcus's look and New Carthage's overall tone.
+
+`~/Desktop/EchoesOfNeon_ConceptArt/Marcus_Cross.png` (and `.jpg`) — AI-generated
+2026-09-22 (gemini-3-pro-image, via ElevenLabs) from the original as a likeness/style
+reference: same character, pose, gear, and scene, but as a clean full-bleed image with
+no phone UI/status bar chrome. Moved into the shared concept-art folder alongside
+Cookie/Max_Gomez/The_Madame on 2026-09-22. Use this version when a clean asset is
+needed; the original screenshot above stays as Orlando's source reference.
+
+Note: any future Marcus image generation must show him with only his glowing mobility
+cane — never the cell phone (standing rule set 2026-09-22).

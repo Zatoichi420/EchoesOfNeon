@@ -41,9 +41,26 @@ natural fit, not asserted as confirmed mechanism.
 ## Abilities
 
 - **Scouts ahead** and **locates threats.**
+- **Guides Marcus through the world** (confirmed 2026-09-16, Mission 1 draft) —
+  distinct from threat-scouting: she also helps him navigate/maneuver, closer to a
+  real guide dog's role. Mechanically this is a **new requirement, not yet
+  implemented** — the existing `OculusSensorySuite.PulseFrom(origin)` covers her
+  scouting/threat-detection reuse of the sonar system, but wayfinding/guidance
+  (e.g., leading Marcus toward an objective, or the player following an audio cue
+  from her position) is a different mechanic and hasn't been designed yet.
 - **Lethal up close** — a real combat asset in melee range, not just a utility/scout
   unit.
 - **More to come** — Orlando was explicit that this list isn't finished.
+
+**Guide-dog design decided 2026-09-29 (Orlando), first playable version built:** Cookie **leads automatically toward
+the current objective**, staying a few metres ahead. She never forces the player: if Marcus falls behind she **stops and
+waits, turned back toward him**; she resumes when he closes up, and **comes back for him** if he wanders far away; when the
+two of them reach the objective she stops (Arrived). The player follows her **by ear**: her real 3D-positioned pawsteps
+plus a distinct **collar jingle** while she moves, and a quieter **collar rustle every couple of seconds while she waits**,
+so her position can always be located without sight. Implemented as `CompanionGuide` (Leading/Waiting/Returning/Arrived)
+and `CompanionAudio` in `Assets/Scripts/Player/`; verified in a real Play Mode test (`GuideDogPlayTest`). Still open:
+obstacle avoidance/pathfinding (she walks in a straight line), how objectives are handed to her from missions, her voice/
+personality, and whether the player can also *command* her.
 
 **Design direction confirmed 2026-09-14: unified with the sonar system, not a
 duplicate of it.** Cookie's "scouting" isn't a second, separate detection mechanic —

@@ -17,6 +17,10 @@ pre-dawn or deep night given Marcus's established habit of moving at night.
 - **Marcus "Echo" Cross** — both the dreaming self (whole, unaugmented, sighted per
   the pre-accident memory) and the waking self (present-day, augmented).
 - **Desdemona "Desi" Cross** — present only within the dream/memory.
+- **COOQI "Cookie"** — present in the waking/reality portion (added 2026-09-16,
+  per Orlando). She's already in the lab with him when he wakes — consistent with
+  both of them having been rebuilt here, from the same attack, using the same
+  equipment (see `cookie.md`).
 
 ## Beat-by-beat action list
 
@@ -30,12 +34,20 @@ pre-dawn or deep night given Marcus's established habit of moving at night.
    — e.g. a faint reverb/warmth on Desi's voice that never occurs in "real" present-
    day dialogue elsewhere, so a blind player gets the same signal a sighted player
    gets from a soft-focus visual treatment. (Suggestion, not a locked decision.)
-3. **Transition/wake.** Marcus wakes on a bed in Desi's former laboratory.
+3. **Transition/wake.** Marcus wakes on a bed in Desi's former laboratory. **Cookie is
+   already there with him, physically looking at him** (Orlando, 2026-09-16) — she's
+   the first thing present in the waking world, before Marcus has even reoriented
+   himself.
 4. **Disorientation beat.** Marcus registers where he is — the lab, still full of
    Desi's old equipment, which he now uses to maintain his own augments. This is a
    natural moment for the player to first exercise Oculus Sensory Suite mechanics
    (sonar pulse to get his bearings) as a diegetic, story-motivated action rather than
-   a pure tutorial prompt.
+   a pure tutorial prompt. *(Suggestion, not locked: his first sonar pulse could be
+   what confirms Cookie's presence for the player — for a blind player, "looking at
+   him physically" needs an audio equivalent, e.g. the pulse returning her shape
+   right next to the bed, plus a small sound of her own — tags, breathing, a shift of
+   weight — landing before the pulse even resolves. Correct freely if you want her
+   presence conveyed a different way.)*
 5. **Internal conflict.** Marcus is angry and worried — specifically, whether it's
    safe to keep using his augmentations for the long periods he's been pushing them.
    This is the seed of his stated flaw (see `marcus-cross.md`) and should land as a

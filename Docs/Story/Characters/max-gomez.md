@@ -24,6 +24,60 @@ sonic weapons (pulses of energy/sound to disable rather than kill) over traditio
 firearms comes from Max. Operates out of "the builder's workshop," in the slums of the
 mega-corp city, in an area with no surveillance.
 
+**Confirmed 2026-09-16: the workshop is a recurring upgrade hub, not a one-off
+visit.** Marcus can return throughout the game for:
+- **Cane upgrades** (his mobility cane per `marcus-cross.md` — blinding flash +
+  embedded blade).
+- **Augment upgrades** — faster movement, and "more in tune with everything in the
+  world" (Orlando's own phrasing). Proposed, not confirmed: this likely maps to
+  `TacticalPlayerController` move speed and `OculusSensorySuite` sonar range/
+  clarity/`Neural Dilate` effectiveness — a real gameplay system, not yet
+  designed or built. Flagged in the project's own `MEMORY.md` task tracking.
+- **Cookie upgrades** too — exact scope not yet specified (her scouting/guiding/
+  combat abilities are all candidates, per `cookie.md`).
+
+## MID-STORY REVEAL — Max secretly leads the resistance (confirmed by Orlando, 2026-09-16)
+
+**Max Gomez is the leader of the resistance.** This is separate from, and revealed
+earlier than, the deeper guardian-angel/father's-death/bloodline secret below — it
+comes to light at the end of **Mission 2** (`Docs/Story/Scenes/03-mission-two-the-
+resistance.md`), not the final act. The lead Marcus forces out of the Mission 1
+contact leads him to infiltrate the resistance's hidden base — and the leader he
+finally confronts there turns out to be Max. **Marcus is caught completely off
+guard by this — he has no idea beforehand.**
+
+This means Max now operates in two capacities in Marcus's life that the player must
+be able to tell apart while writing: the mentor/supplier persona Marcus already
+knows from earlier in the game (see "Role" above), and the secret resistance
+leadership, hidden even from Marcus, until Mission 2's end. **Per Orlando (2026-09-
+16), Marcus and Max need real screen time together as friends, in Max's known
+persona, before Mission 2's reveal** — so the reveal actually lands as a betrayal-
+shaped shock rather than meeting a stranger. Where that friend-time content lives in
+the mission structure is still an open question (see the note in
+`03-mission-two-the-resistance.md`).
+
+**Confirmed 2026-09-16: after the reveal, Max does not come clean.** He stalls and
+deflects, and actively sends Marcus on wild goose chases and red herrings — false
+leads that keep Marcus busy and (presumably, protectively) away from the real
+truth. This isn't a one-scene beat; it's a throughline for however much of the
+mid-game follows Mission 2, until it eventually unravels. **RESOLVED 2026-09-16: Mission 3 is a partial red herring** — see
+`Docs/Story/Scenes/04-mission-three-the-lie-unravels.md`. During that mission,
+Marcus figures out for himself that Max has been lying to him, and it hardens his
+resolve rather than breaking him. Exact mechanism of discovery and what's "partial"
+about the herring are still open in that file.
+
+**Inferred, not confirmed** — worth checking with Orlando: since stalling/
+deflecting is a manipulation tactic, not a combat one, this suggests the Mission 2
+confrontation itself de-escalates once Max reveals himself (he pivots to talking
+his way out, rather than the fight continuing) — but that's Claude's read of the
+implication, not something stated outright.
+
+Writing guidance: nothing in Max's earlier friendly appearances should tip his
+resistance leadership before Mission 2 - same hindsight-clue discipline already used
+for his deeper secret below. Once past Mission 2, Max's dialogue needs to support a
+second re-read too: red herrings that feel like genuine leads on a first playthrough
+but read as deliberate misdirection once the player knows what he's protecting.
+
 ## MAJOR SPOILER — the planted secret, now concrete (confirmed by Orlando, 2026-09-13)
 
 **The timeline goes back further than Marcus and Max's shared unit.** Max knew

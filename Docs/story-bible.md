@@ -201,7 +201,17 @@ as a real open question, not assumed either way.
   full sense on Cookie alone, with Marcus's nature staying something only The Madame,
   G, and Max know? Not the same question as above anymore — Cookie answers "why was
   the lab hit," this is narrower: "did Desi personally know what her husband was."
-- What happens in each main mission's 3+ sub-missions?
+- What happens in each main mission's 3+ sub-missions? **All 3 main missions now
+  have first-pass drafts as of 2026-09-16** - see
+  `Docs/Story/Scenes/02-mission-one-black-market.md` (Cookie/movement tutorial,
+  market search, forced confrontation → lead to the resistance),
+  `Docs/Story/Scenes/03-mission-two-the-resistance.md` (infiltrating the
+  resistance's hidden base → the leader turns out to be Max Gomez, a mid-story
+  reveal separate from the ending twist), and
+  `Docs/Story/Scenes/04-mission-three-the-lie-unravels.md` (a partial red herring
+  from Max that Marcus sees through, hardening his resolve). Each still has real
+  open questions flagged inline - none are final. The bonus mission is still
+  fully open.
 - Marcus's own arc destination beyond "gets his revenge/justice" — does finding out
   about his sister and his bloodline change what he wants, on top of or instead of the
   resistance's larger cause? (The previous draft inferred a possible shift toward the
