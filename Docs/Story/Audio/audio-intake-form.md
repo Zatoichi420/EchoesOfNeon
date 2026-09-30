@@ -48,3 +48,45 @@ audio-budget decision: real voice acting vs. synthesized TTS vs. text-only?
    once the game is further along?
 2. Any reference games/sound palettes you want this to feel like (or explicitly not
    feel like)?
+
+### Audio description for cutscenes/story scenes (confirmed requirement, 2026-09-16)
+
+Orlando confirmed this project needs **audio description** — spoken narration of
+visually-conveyed action and detail, the same concept as descriptive audio tracks
+on film/TV — for story scenes/cutscenes once they exist. **No scenes are built yet**
+(the mission drafts in `Docs/Story/Scenes/` are still narrative-only text, not
+implemented cutscenes), so nothing needs building right now, but this is a real
+requirement to design for going forward, not an afterthought to bolt on later.
+
+**This is a third, distinct audio/accessibility layer, easy to conflate with the two
+that already exist — worth keeping clearly separated:**
+
+1. **Menu/UI screen-reader narration** (built) — `AccessibilityManager` +
+   `AssistiveSupport`/`AccessibilityHierarchy`, reads static menu items via the
+   native OS screen reader. Menus/UI only, never live gameplay.
+2. **Live gameplay sonar/acoustic system** (built) — `OculusSensorySuite`,
+   `AcousticEventSystem`. Spatial/tactical information during interactive play
+   (where things are, what's happening right now) — not descriptive narration, and
+   deliberately not screen-reader-based (see the screen-reader architecture
+   decision in the project's `MEMORY.md`).
+3. **Audio description for cutscenes/story moments** (this section, not yet built)
+   — spoken description of what a sighted player would see during non-interactive
+   story beats: character actions, expressions, environmental detail that matters
+   to the scene but isn't conveyed by dialogue or the acoustic gameplay systems.
+   Distinct from both above: it's narration over *non-interactive* content, exists
+   only in scenes with visual storytelling (not live gameplay), and needs its own
+   voice/delivery treatment (likely a neutral narrator, separate from any character
+   voice) rather than routing through either the screen reader or the sonar system.
+
+**Open questions this raises, not yet answered:**
+- Delivery: a neutral third-person narrator voice, or does it route through
+  Marcus's own perception somehow (since his cybernetics are already established as
+  "data not images")? The latter could double as in-fiction justification rather
+  than a bolted-on accessibility feature — worth deciding deliberately either way.
+- Density/scope: full film-style audio description (every visually meaningful
+  detail) or a lighter touch focused only on story-critical beats?
+- Production: same voice-production question as Dialogue/Music (real VO vs. TTS)
+  applies here too, and could reuse whichever answer those get.
+- Implementation timing: since no scenes/cutscenes exist yet, this has no target
+  files today — flagged in `MEMORY.md`'s task tracking so it isn't forgotten once
+  the first real cutscene gets built.
