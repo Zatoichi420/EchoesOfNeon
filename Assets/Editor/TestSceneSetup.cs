@@ -4,6 +4,7 @@
 // Run via:
 //   Unity.exe -batchmode -nographics -projectPath <path>
 //     -executeMethod TestSceneSetup.BuildTestScene -quit -logFile <log>
+using System.Linq;
 using EchoesOfNeon.Accessibility;
 using EchoesOfNeon.AI;
 using EchoesOfNeon.Core;
@@ -52,6 +53,20 @@ public static class TestSceneSetup
         characterController.height = 1.8f;
         characterController.radius = 0.35f;
         var playerController = playerGO.AddComponent<TacticalPlayerController>();
+
+        // --- Marcus's body: a child of the Player so it moves/turns with the real controller. The bridge feeds
+        // his real velocity/sprint state to the Animator; the visibility component keeps the body out of the
+        // first-person camera (shadows-only) since the camera is inside his head. ---
+        var marcusPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Marcus.prefab");
+        if (marcusPrefab != null)
+        {
+            var body = (GameObject)PrefabUtility.InstantiatePrefab(marcusPrefab, playerGO.transform);
+            body.name = "MarcusBody";
+            body.transform.localPosition = Vector3.zero; body.transform.localRotation = Quaternion.identity;
+            var bridge = playerGO.AddComponent<PlayerAnimationBridge>(); bridge.animator = body.GetComponentInChildren<Animator>();
+            var vis = playerGO.AddComponent<PlayerBodyVisibility>(); vis.body = body;
+        }
+        else Debug.LogWarning("[TestSceneSetup] Assets/Prefabs/Marcus.prefab missing - player has no body model.");
 
         var cameraPivotGO = new GameObject("CameraPivot");
         cameraPivotGO.transform.SetParent(playerGO.transform);
@@ -128,6 +143,28 @@ public static class TestSceneSetup
 
         // --- Save scene + register it in Build Settings ---
         const string scenePath = "Assets/Scenes/TestRange_Proto.unity";
+        // --- Cookie as guide dog: leads toward the Objective marker, waits if Marcus falls behind, comes back if
+        // he wanders off. Distances here are test-range sized (the range is small); the component defaults suit
+        // real levels. Guiding by ear = 3D pawsteps + collar (CompanionAudio). ---
+        var cookiePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Cookie.prefab");
+        if (cookiePrefab != null)
+        {
+            var objective = GameObject.CreatePrimitive(PrimitiveType.Cylinder); objective.name = "Objective";
+            objective.transform.position = new Vector3(0f, 0.25f, 7.5f); objective.transform.localScale = new Vector3(0.6f, 0.25f, 0.6f);
+            Object.DestroyImmediate(objective.GetComponent<Collider>());
+
+            var cookie = (GameObject)PrefabUtility.InstantiatePrefab(cookiePrefab);
+            cookie.name = "Cookie"; cookie.transform.position = new Vector3(0.8f, 0f, 1.5f);
+            var guide = cookie.AddComponent<CompanionGuide>();
+            guide.player = playerGO.transform; guide.objective = objective.transform; guide.animator = cookie.GetComponentInChildren<Animator>();
+            guide.waitDistance = 4f; guide.resumeDistance = 2.5f; guide.returnDistance = 8f;
+            var audio = cookie.AddComponent<CompanionAudio>();
+            audio.pawsteps = new[] { 1, 2, 3, 4 }.Select(i => AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/Footsteps/cookie_pawstep_wet_{i:00}.wav")).Where(c => c != null).ToArray();
+            audio.collar = new[] { 1, 2, 3 }.Select(i => AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/Companion/cookie_collar_{i:00}.wav")).Where(c => c != null).ToArray();
+            Debug.Log($"[TestSceneSetup] Cookie guide added: {audio.pawsteps.Length} pawstep clips, {audio.collar.Length} collar clips.");
+        }
+        else Debug.LogWarning("[TestSceneSetup] Assets/Prefabs/Cookie.prefab missing - no guide dog in the scene.");
+
         EditorSceneManager.SaveScene(scene, scenePath);
 
         var buildScenes = new System.Collections.Generic.List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
