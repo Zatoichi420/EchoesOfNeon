@@ -42,3 +42,59 @@ saving; a cue never goes fully silent (its power-outage level removes all feedba
   scene needs a rebuild).
 - Next: pickups + exit hum, hazard loops (pit rumble), audio priority/ducking, damage/death feedback, camera-less level
   readout, a tutorial room, replace procedural tones with real SFX (Sonniss library).
+
+---
+# Progression / recovery / augments plan (2026-09-30, DRAFT - awaiting Orlando's answers)
+
+## Canon conflicts to confirm
+1. Story bible: Marcus has NO awareness of the vampire bloodline / twin sister until the ending. Per-level "bloodline clues"
+   must therefore be worded about his past, Desi, the attack and augment "strain" only, ambiguous until the reveal (no
+   "vampire"/"twin" early) - unless Orlando loosens the rule.
+2. Overt blood-feeding heal would break (1); use covert "Resonance" (heal on fend/finisher, framed as augments feeding back).
+3. Character doc mentions a smartphone; standing rule is cane only - no phone abilities.
+Canon already gives Marcus: smart glasses, cybernetic eyes, enhanced hearing/sonar, cane (flash + hidden blade), Max's
+non-lethal sonic weapons. Opening flaw: fears prolonged augment use is killing him (strain = bloodline waking). Max's
+workshop = upgrade hub. Cookie: 10x limbs, wireless voice only Marcus hears.
+
+## Levels 1-10 (each level also +10 max health, +3% damage; spoken "Level N. X unlocked. Clue available."; Journal key replays clue)
+| Lv | Gain | Marcus augment | Cookie augment | Clue |
+|1|base|Cane combo, Fend|Whistle bite|"My name is Echo. Before that, I had another one. I can't hear it."|
+|2|+10% speed|Echo Step [D] dash through attack|Collar Ping marks threats|"Desi's tools still know my hands better than I do."|
+|3|+0.1s fend|Sonar Lock [O] next hit crits|whistle cooldown -1.5s|"Max says I move like my father did..."|
+|4|+15% sonar|Flash-Blind [D/O] stuns group|Cyber-Eye calls ledges/enemies above|"The strain again. My hands hum for an hour..."|
+|5|+20 hp|Sonic Pulse [O] ranged knockback|Titan Bite breaks guard|"They took my eyes and left everything else. Why only the eyes?"|
+|6|+10% dmg|Shadow Veil [D] quiet movement|Guard Mode absorbs a hit|"I do better at night..."|
+|7|-20% dmg taken|Resonance [D] heal on fend/finisher|Rally heals Marcus <30%|"The woman on the news speaks like someone I used to know."|
+|8|+0.1s combo|Overclock [O/D] 6s boost, strain cost|mirrors Overclock|"Desi was frightened the night before..."|
+|9|+15% dmg|Execution Chain [O] blade finisher|Shock Howl sonic stun|"I died once, or something close..."|
+|10|lower strain|Echo Storm [O] screen stun|Tandem Strike|"Whatever is waking up in me is not broken. It is mine."|
+Marcus's sonic attacks stay stun/knockdown only; the cane blade is the only lethal tool.
+
+## Recovery (ranked)
+Rest points (workshop/safe nooks, hum + "rested") > Cookie Rally (Lv7) > Resonance (Lv7) > med-cell pickups with locator
+beep (+25%) > slow out-of-combat regen as an assist toggle > overt feeding (post-reveal only).
+
+## Street enemies (each: unique audio signature, wind-up tell, counter)
+Pipe Thug (overhead swing; fend) | Knife Runner (lunge; jump) | Bottle Thrower (projectile; fend/duck) | Shield Guard
+(front-immune; Cookie from behind) | Zip-Gun Punk (shoots along plane; jump/Echo Step) | Alley Swarm (x3 weak; Flash-Blind) |
+Drone Hawk (aerial dive; jump-strike/Cookie Eye) | Brute Bouncer (unblockable slam; jump/Titan Bite).
+
+## Specials
+Meter fills on hits/fends; "special ready" spoken. Sonic Pulse, Flash-Blind, Execution Chain, Overclock, Cookie Titan
+Bite/Shock Howl, Echo Storm (Lv10). Costs/cooldowns in the agent plan (15-60 special, 4-45 s).
+
+## Code mapping
+Extend UpgradeDefinition.TargetStat (MaxHealth, StrikeDamage, FendWindow, ComboWindow, CookieCooldown, CookieBiteDamage,
+SpecialCap, DamageTaken); new PlayerXP/LevelProgression (+save), LoreClueLibrary, SpecialMeter, Healer (rest points,
+pickups, Resonance, Rally), more SideScrollEnemy archetypes (data-driven), audio-cue registry test (every enemy/hazard/pickup
+must have a unique cue).
+
+## Super Liam local inspection (2026-09-30)
+App at ~/Desktop/Super Liam/Super Liam.app: NVGT runtime + Steam Audio (Phonon HRTF) + 115 MB encrypted asset pack
+(`Resources/exec`) - individual sound names NOT readable (we did not attempt to crack it) - plus a readable manual.html.
+From the manual: 100 hp / 3 lives; health boost +25; extra life; pickups = slow beeping locator; harder modes suppress heals;
+bosses: one gimmick each (jump-and-land, charge-then-jump, duck overhead swing, two timed escapes, chase + voiced taunt,
+final 3-platform boss with tracking laser); end-of-act score tally spoken (kills, time, health %, lives); S/H/L/T status keys
+speak the number first; unlockables: boss rush, survival waves, no-damage, one-life, cheat menu (disables score).
+Adopt: pickup locator beacons, terrain-keyed footsteps/cane taps, fixed warning lead-time per hazard, spoken boss taunt that
+follows the boss in 3D, escape/chase set-pieces, act-end read-out + personal-best sting, status hotkeys, extras/modes.
