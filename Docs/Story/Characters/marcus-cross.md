@@ -48,7 +48,13 @@ scar under his left eye.
 
 ## Costume and gear
 
-- Black tactical military gear.
+- **UPDATED 2026-10-01 (Orlando): a long black trenchcoat** over dark tactical clothing - calf-length, high collar, flows and
+  billows as he walks. It is a utility garment: concealed inner pockets store his mobile device (never shown in hand - cane-only
+  rule), and slim inner-chest loops hold offensive and defensive countermeasures (sonic emitters, flash device, smoke capsules,
+  a compact shield-field projector). Faint cyan/violet glowing seams. Concept art:
+  `~/Desktop/EchoesOfNeon_ConceptIdeas/trenchcoat/Marcus_Cross_trenchcoat_v1.png`. The 3D model (Blender, `Assets/Models/Marcus`)
+  has NOT been updated yet and still wears the tactical gear.
+- Previous: black tactical military gear.
 - Black smart glasses that enhance his ocular sensors, feeding him more information
   about the world around him.
 - A mobility cane that doubles as a weapon: flashing lights capable of blinding an
