@@ -46,9 +46,11 @@ namespace EchoesOfNeon.Core
         public event Action OnSonarPulse;          // Oculus Sensory Suite: echolocation ping
         public event Action OnNeuralDilatePressed; // Oculus Sensory Suite: focus/slow-mo, held
         public event Action OnNeuralDilateReleased;
+        public event Action OnFendPressed;         // Side-scroller: cane fend-off (parry)
+        public event Action OnWhistlePressed;      // Side-scroller: whistle sends Cookie after an enemy
 
         private InputActionMap _gameplayMap;
-        private InputAction _move, _look, _fire, _aim, _jump, _interact, _sprint, _crouch, _reload, _pause, _sonar, _dilate;
+        private InputAction _move, _look, _fire, _aim, _jump, _interact, _sprint, _crouch, _reload, _pause, _sonar, _dilate, _fend, _whistle;
 
         private const string RebindsPrefsKey = "EchoesOfNeon.InputRebinds";
 
@@ -119,6 +121,14 @@ namespace EchoesOfNeon.Core
             _dilate.AddBinding("<Keyboard>/leftAlt");
             _dilate.AddBinding("<Gamepad>/leftShoulder");
 
+            _fend = _gameplayMap.AddAction("Fend", InputActionType.Button);
+            _fend.AddBinding("<Keyboard>/f");
+            _fend.AddBinding("<Gamepad>/leftTrigger");
+
+            _whistle = _gameplayMap.AddAction("Whistle", InputActionType.Button);
+            _whistle.AddBinding("<Keyboard>/v");
+            _whistle.AddBinding("<Gamepad>/dpad/up");
+
             _move.performed += ctx => { NoteDevice(ctx); OnMove?.Invoke(ctx.ReadValue<Vector2>()); };
             _move.canceled += _ => OnMove?.Invoke(Vector2.zero);
 
@@ -143,6 +153,9 @@ namespace EchoesOfNeon.Core
             _pause.started += ctx => { NoteDevice(ctx); OnPause?.Invoke(); };
 
             _sonar.started += ctx => { NoteDevice(ctx); OnSonarPulse?.Invoke(); };
+
+            _fend.started += ctx => { NoteDevice(ctx); OnFendPressed?.Invoke(); };
+            _whistle.started += ctx => { NoteDevice(ctx); OnWhistlePressed?.Invoke(); };
 
             _dilate.started += ctx => { NoteDevice(ctx); OnNeuralDilatePressed?.Invoke(); };
             _dilate.canceled += _ => OnNeuralDilateReleased?.Invoke();
