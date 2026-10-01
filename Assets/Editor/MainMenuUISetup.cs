@@ -475,6 +475,7 @@ public static class MainMenuUISetup
     private static readonly string[] RebindableActions =
     {
         "Fire", "Aim", "Jump", "Interact", "Sprint", "Crouch", "Reload", "Pause", "SonarPulse", "NeuralDilate",
+        "Fend", "Whistle", "EchoStep", "Special", "CycleSpecial", "Howl", "Journal", "Status",
     };
 
     private static void BuildKeybindTab(Transform parent, DefaultControls.Resources resources)

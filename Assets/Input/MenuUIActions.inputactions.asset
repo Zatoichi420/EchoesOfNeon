@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionAsset
   m_ActionMaps:
   - m_Name: UI
-    m_Id: cb75a69c-6861-4d9f-b72b-45e2b69e1e76
+    m_Id: 504a3e92-7b3d-480f-acd1-34239713f4c3
     m_Asset: {fileID: 11400000}
     m_Actions: []
     m_Bindings: []
