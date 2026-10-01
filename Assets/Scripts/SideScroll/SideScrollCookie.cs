@@ -29,6 +29,9 @@ namespace EchoesOfNeon.SideScroll
         public int BitesLanded { get; private set; }
 
         private SideScrollEnemy _target;
+        private SideScrollPlayer _pl;
+        private float _guardCd, _rallyCd, _pingTimer, _eyeCd, _howlCd, _tandemCd;
+        private static SideScrollProgression Prog => SideScrollProgression.Instance;
         private float _cooldown, _biteTimer, _stepTimer, _collarTimer;
         private bool _wasReady = true;
         private AudioSource _steps, _collar, _voice;
@@ -58,6 +61,8 @@ namespace EchoesOfNeon.SideScroll
         public void Tick(float dt)
         {
             if (leader == null) return;
+            if (_pl == null) _pl = leader.GetComponent<SideScrollPlayer>();
+            _guardCd -= dt; _rallyCd -= dt; _eyeCd -= dt; _howlCd -= dt; _tandemCd -= dt;
             if (_cooldown > 0f) _cooldown -= dt;
             if (!_wasReady && IsReady) { _voice.PlayOneShot(SideScrollTones.ReadyChime, 0.6f); AccessibilityManager.Instance?.Announce("Cookie is ready"); }
             _wasReady = IsReady;
@@ -84,10 +89,13 @@ namespace EchoesOfNeon.SideScroll
                 case CookieState.Returning:
                 {
                     float d = lx - x;
-                    if (Mathf.Abs(d) <= followOffset + 0.4f) { State = CookieState.Following; _cooldown = cooldownSeconds; _target = null; break; }
+                    if (Mathf.Abs(d) <= followOffset + 0.4f) { State = CookieState.Following; _cooldown = Mathf.Max(2f, cooldownSeconds - (Prog != null ? Prog.CookieCooldownReduction : 0f)); _target = null; break; }
                     dir = Mathf.Sign(d); speed = chargeSpeed * 0.7f; break;
                 }
             }
+
+            if (State == CookieState.Following) Augments(dt);
+            if (State == CookieState.Charging && Prog != null && Prog.Has(CookieAbility.PackLink) && _pl != null && _pl.abilities != null && _pl.abilities.IsOverclocked) speed *= 1.4f;
 
             CurrentSpeed = speed;
             if (dir != 0f)
@@ -104,10 +112,82 @@ namespace EchoesOfNeon.SideScroll
         private void Bite()
         {
             if (_target == null) return;
-            _target.TakeDamage(biteDamage, transform.position, Vector3.zero);
-            _target.Stagger(biteStagger);
+            bool titan = Prog != null && Prog.Has(CookieAbility.TitanBite);
+            bool link = Prog != null && Prog.Has(CookieAbility.PackLink) && _pl != null && _pl.abilities != null && _pl.abilities.IsOverclocked;
+            float dmg = biteDamage * (Prog != null ? Prog.CookieBiteMultiplier : 1f) * (titan ? 1.6f : 1f) * (link ? 1.5f : 1f);
+            bool blocked = _target.Hit(dmg, transform.position.x, titan, true);       // Titan Bite breaks a Shield Guard's guard
+            if (!blocked) _target.Stagger(biteStagger);
             BitesLanded++;
-            _voice.PlayOneShot(SideScrollTones.Bite, 1f);
+            _voice.PlayOneShot(titan ? SideScrollTones.TitanBite : SideScrollTones.Bite, 1f);
+            Prog?.AwardCookieXp(6);
+            if (_pl != null && _pl.abilities != null) _pl.abilities.AddSpecial(5f);
+        }
+
+        // ------------------------------------------------------------- cybernetic augments
+
+        private void Augments(float dt)
+        {
+            if (Prog == null || _pl == null) return;
+            // Rally (Lv7): heals a badly hurt Marcus
+            if (Prog.Has(CookieAbility.Rally) && _rallyCd <= 0f && _pl.Health > 0f && _pl.Health < _pl.MaxHealth * 0.3f)
+            { _rallyCd = 25f; _voice.PlayOneShot(SideScrollTones.Rally, 0.8f); _pl.Heal(15f, "Cookie nuzzles you"); }
+            // Collar Ping (Lv2): chimes from the nearest threat's position so he can locate it by ear
+            if (Prog.Has(CookieAbility.CollarPing) && (_pingTimer -= dt) <= 0f)
+            {
+                _pingTimer = 4f; var e = NearestEnemy(12f);
+                if (e != null && AcousticEventSystemAvailable()) EchoesOfNeon.Core.AcousticEventSystem.Instance.PlayOneShotAt(SideScrollTones.CollarPing, e.transform.position + Vector3.up, 16f);
+            }
+            // Cyber-Eye (Lv4): calls out ledges and fliers
+            if (Prog.Has(CookieAbility.CyberEye) && _eyeCd <= 0f)
+            {
+                var edge = leader.GetComponent<SideScrollEdgeSensor>();
+                if (edge != null && edge.NearestGapDistance >= 0f && edge.NearestGapDistance <= 4f) { _eyeCd = 4f; EchoesOfNeon.Accessibility.AccessibilityManager.Instance?.Announce("Ledge ahead"); }
+                else
+                {
+                    foreach (var e in SideScrollEnemy.All)
+                        if (e != null && !e.IsDown && e.aerial && Mathf.Abs(e.transform.position.x - leader.position.x) < 8f) { _eyeCd = 4f; EchoesOfNeon.Accessibility.AccessibilityManager.Instance?.Announce("Enemy above"); break; }
+                }
+            }
+        }
+
+        private static bool AcousticEventSystemAvailable() => EchoesOfNeon.Core.AcousticEventSystem.Instance != null;
+
+        private SideScrollEnemy NearestEnemy(float range)
+        {
+            SideScrollEnemy b = null; float bd = range;
+            foreach (var e in SideScrollEnemy.All) { if (e == null || e.IsDown) continue; float d = Mathf.Abs(e.transform.position.x - transform.position.x); if (d < bd) { bd = d; b = e; } }
+            return b;
+        }
+
+        /// <summary>Guard Mode (Lv6): she bodyblocks and absorbs ONE hit aimed at Marcus every 20 s.</summary>
+        public bool TryAbsorbHit(Vector3 from)
+        {
+            if (Prog == null || !Prog.Has(CookieAbility.GuardMode) || _guardCd > 0f || State != CookieState.Following) return false;
+            if (Mathf.Abs(transform.position.x - leader.position.x) > 3f) return false;
+            _guardCd = 20f; _voice.PlayOneShot(SideScrollTones.Block, 1f);
+            EchoesOfNeon.Accessibility.AccessibilityManager.Instance?.Announce("Cookie takes the hit");
+            return true;
+        }
+
+        /// <summary>Shock Howl (Lv9): a sonic stun on everything within 8 m of Cookie.</summary>
+        public bool Howl()
+        {
+            if (Prog == null || !Prog.Has(CookieAbility.ShockHowl)) { EchoesOfNeon.Accessibility.AccessibilityManager.Instance?.Announce("Cookie has not learned that yet"); return false; }
+            if (_howlCd > 0f) { EchoesOfNeon.Accessibility.AccessibilityManager.Instance?.Announce("Cookie needs a moment"); return false; }
+            _howlCd = 14f; _voice.PlayOneShot(SideScrollTones.Howl, 1f);
+            foreach (var e in SideScrollEnemy.All) if (e != null && !e.IsDown && Mathf.Abs(e.transform.position.x - transform.position.x) <= 8f) e.Stagger(2f);
+            Prog.AwardCookieXp(4);
+            return true;
+        }
+
+        /// <summary>Tandem Strike (Lv10): when Marcus fires a heavy special, Cookie adds a free bite on the nearest enemy.</summary>
+        public bool TandemStrike()
+        {
+            if (Prog == null || !Prog.Has(CookieAbility.TandemStrike) || _tandemCd > 0f) return false;
+            var e = NearestEnemy(10f); if (e == null) return false;
+            _tandemCd = 6f; e.Hit(biteDamage * Prog.CookieBiteMultiplier, transform.position.x, true, true); e.Stagger(1f);
+            _voice.PlayOneShot(SideScrollTones.TitanBite, 1f); Prog.AwardCookieXp(4);
+            return true;
         }
 
         private void Teleport(float x) { var p = transform.position; p.x = x; transform.position = p; }

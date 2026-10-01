@@ -48,9 +48,15 @@ namespace EchoesOfNeon.Core
         public event Action OnNeuralDilateReleased;
         public event Action OnFendPressed;         // Side-scroller: cane fend-off (parry)
         public event Action OnWhistlePressed;      // Side-scroller: whistle sends Cookie after an enemy
+        public event Action OnEchoStepPressed;     // Side-scroller: Echo Step dash (Lv2)
+        public event Action OnSpecialPressed;      // Side-scroller: fire the selected special
+        public event Action OnCycleSpecialPressed; // Side-scroller: choose the next unlocked special
+        public event Action OnHowlPressed;         // Side-scroller: Cookie's Shock Howl (Cookie Lv9)
+        public event Action OnJournalPressed;      // Side-scroller: replay the latest lore clue
+        public event Action OnStatusPressed;       // Side-scroller: speak health / level / special / strain
 
         private InputActionMap _gameplayMap;
-        private InputAction _move, _look, _fire, _aim, _jump, _interact, _sprint, _crouch, _reload, _pause, _sonar, _dilate, _fend, _whistle;
+        private InputAction _move, _look, _fire, _aim, _jump, _interact, _sprint, _crouch, _reload, _pause, _sonar, _dilate, _fend, _whistle, _echoStep, _special, _cycleSpecial, _howl, _journal, _status;
 
         private const string RebindsPrefsKey = "EchoesOfNeon.InputRebinds";
 
@@ -129,6 +135,19 @@ namespace EchoesOfNeon.Core
             _whistle.AddBinding("<Keyboard>/v");
             _whistle.AddBinding("<Gamepad>/dpad/up");
 
+            _echoStep = _gameplayMap.AddAction("EchoStep", InputActionType.Button);
+            _echoStep.AddBinding("<Keyboard>/z"); _echoStep.AddBinding("<Gamepad>/dpad/left");
+            _special = _gameplayMap.AddAction("Special", InputActionType.Button);
+            _special.AddBinding("<Keyboard>/c"); _special.AddBinding("<Gamepad>/buttonNorth");
+            _cycleSpecial = _gameplayMap.AddAction("CycleSpecial", InputActionType.Button);
+            _cycleSpecial.AddBinding("<Keyboard>/tab"); _cycleSpecial.AddBinding("<Gamepad>/dpad/right");
+            _howl = _gameplayMap.AddAction("Howl", InputActionType.Button);
+            _howl.AddBinding("<Keyboard>/b"); _howl.AddBinding("<Gamepad>/dpad/down");
+            _journal = _gameplayMap.AddAction("Journal", InputActionType.Button);
+            _journal.AddBinding("<Keyboard>/y"); _journal.AddBinding("<Gamepad>/select");
+            _status = _gameplayMap.AddAction("Status", InputActionType.Button);
+            _status.AddBinding("<Keyboard>/h"); _status.AddBinding("<Gamepad>/rightStickPress");
+
             _move.performed += ctx => { NoteDevice(ctx); OnMove?.Invoke(ctx.ReadValue<Vector2>()); };
             _move.canceled += _ => OnMove?.Invoke(Vector2.zero);
 
@@ -156,6 +175,13 @@ namespace EchoesOfNeon.Core
 
             _fend.started += ctx => { NoteDevice(ctx); OnFendPressed?.Invoke(); };
             _whistle.started += ctx => { NoteDevice(ctx); OnWhistlePressed?.Invoke(); };
+
+            _echoStep.started += ctx => { NoteDevice(ctx); OnEchoStepPressed?.Invoke(); };
+            _special.started += ctx => { NoteDevice(ctx); OnSpecialPressed?.Invoke(); };
+            _cycleSpecial.started += ctx => { NoteDevice(ctx); OnCycleSpecialPressed?.Invoke(); };
+            _howl.started += ctx => { NoteDevice(ctx); OnHowlPressed?.Invoke(); };
+            _journal.started += ctx => { NoteDevice(ctx); OnJournalPressed?.Invoke(); };
+            _status.started += ctx => { NoteDevice(ctx); OnStatusPressed?.Invoke(); };
 
             _dilate.started += ctx => { NoteDevice(ctx); OnNeuralDilatePressed?.Invoke(); };
             _dilate.canceled += _ => OnNeuralDilateReleased?.Invoke();

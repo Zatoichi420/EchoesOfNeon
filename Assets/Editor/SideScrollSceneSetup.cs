@@ -39,6 +39,8 @@ public static class SideScrollSceneSetup
         var cc = marcus.AddComponent<CharacterController>(); cc.center = new Vector3(0, 0.9f, 0); cc.height = 1.8f; cc.radius = 0.35f;
         var player = marcus.AddComponent<SideScrollPlayer>();
         marcus.AddComponent<SideScrollEdgeSensor>();
+        marcus.AddComponent<SideScrollAbilities>();
+        new GameObject("Progression").AddComponent<SideScrollProgression>();
         var marcusPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Marcus.prefab");
         if (marcusPrefab != null)
         {
@@ -69,9 +71,25 @@ public static class SideScrollSceneSetup
         else Debug.LogWarning("[SideScrollSetup] Cookie.prefab missing.");
 
         // --- Enemies ---
-        Enemy("Enforcer_A", 12f, player, 4f);
-        Enemy("Enforcer_B", 22f, player, 2f);
-        Enemy("Enforcer_C", 56f, player, 4f);
+        Enemy("Enforcer_A", 12f, player, 4f, EnemyKind.PipeThug);
+        Enemy("Enforcer_B", 22f, player, 2f, EnemyKind.PipeThug);
+        Enemy("KnifeRunner_1", 40f, player, 2f, EnemyKind.KnifeRunner);
+        Enemy("BottleThrower_1", 52f, player, 2f, EnemyKind.BottleThrower);
+        Enemy("ShieldGuard_1", 60f, player, 2f, EnemyKind.ShieldGuard);
+        Enemy("ZipGunPunk_1", 66f, player, 2f, EnemyKind.ZipGunPunk);
+        Enemy("AlleyRat_1", 72f, player, 1f, EnemyKind.AlleyRat);
+        Enemy("AlleyRat_2", 73.5f, player, 1f, EnemyKind.AlleyRat);
+        Enemy("AlleyRat_3", 75f, player, 1f, EnemyKind.AlleyRat);
+        Enemy("DroneHawk_1", 80f, player, 2f, EnemyKind.DroneHawk);
+        Enemy("BruteBouncer_1", 86f, player, 1f, EnemyKind.BruteBouncer);
+
+        // --- Recovery + exploration: found by ear (locator beeps / hum) ---
+        Locator<HealthPickup>("MedCell_1", 8f, 0.6f, player);
+        Locator<HealthPickup>("MedCell_2", 38f, 0.6f, player);
+        Locator<RestPoint>("RestPoint_Workshop", 2.5f, 0.1f, player);
+        var rest2 = Locator<RestPoint>("RestPoint_Alley", 37.5f, 0.1f, player); rest2.label = "Alley nook";
+        var b1 = Locator<ExplorationBeacon>("Beacon_Rooftop", 46.5f, 3.0f, player); b1.description = "Rooftop vantage found";
+        var b2 = Locator<ExplorationBeacon>("Beacon_Alley", 15f, 0.6f, player); b2.description = "Hidden alley found";
 
         Directory.CreateDirectory("Assets/Scenes");
         EditorSceneManager.SaveScene(scene, ScenePath);
@@ -90,7 +108,19 @@ public static class SideScrollSceneSetup
         g.GetComponent<Renderer>().sharedMaterial = mat;
     }
 
-    private static void Enemy(string name, float x, SideScrollPlayer player, float patrolHalf)
+    private static T Locator<T>(string name, float x, float y, SideScrollPlayer player) where T : LocatorObject
+    {
+        var g = GameObject.CreatePrimitive(PrimitiveType.Sphere); g.name = name;
+        Object.DestroyImmediate(g.GetComponent<Collider>());
+        g.transform.position = new Vector3(x, y, 0f); g.transform.localScale = Vector3.one * 0.4f;
+        var mat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
+        mat.color = typeof(T) == typeof(HealthPickup) ? new Color(0.2f, 0.9f, 0.3f) : typeof(T) == typeof(RestPoint) ? new Color(0.3f, 0.5f, 1f) : new Color(1f, 0.8f, 0.2f);
+        g.GetComponent<Renderer>().sharedMaterial = mat;
+        var c = g.AddComponent<T>(); c.player = player;
+        return c;
+    }
+
+    private static void Enemy(string name, float x, SideScrollPlayer player, float patrolHalf, EnemyKind kind = EnemyKind.PipeThug)
     {
         var root = new GameObject(name); root.transform.position = new Vector3(x, 0.05f, 0f);
         var cc = root.AddComponent<CharacterController>(); cc.center = new Vector3(0, 0.9f, 0); cc.height = 1.8f; cc.radius = 0.4f;
@@ -99,6 +129,6 @@ public static class SideScrollSceneSetup
         vis.transform.SetParent(root.transform, false); vis.transform.localPosition = new Vector3(0, 0.9f, 0); vis.transform.localScale = new Vector3(0.8f, 0.9f, 0.8f);
         var mat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard")); mat.color = new Color(0.8f, 0.2f, 0.1f);
         vis.GetComponent<Renderer>().sharedMaterial = mat;
-        var e = root.AddComponent<SideScrollEnemy>(); e.target = player; e.patrolHalfWidth = patrolHalf;
+        var e = root.AddComponent<SideScrollEnemy>(); e.target = player; e.patrolHalfWidth = patrolHalf; e.kind = kind;
     }
 }

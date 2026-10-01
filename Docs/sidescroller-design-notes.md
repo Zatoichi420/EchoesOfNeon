@@ -98,3 +98,22 @@ final 3-platform boss with tracking laser); end-of-act score tally spoken (kills
 speak the number first; unlockables: boss rush, survival waves, no-damage, one-life, cheat menu (disables score).
 Adopt: pickup locator beacons, terrain-keyed footsteps/cane taps, fixed warning lead-time per hazard, spoken boss taunt that
 follows the boss in 3D, escape/chase set-pieces, act-end read-out + personal-best sting, status hotkeys, extras/modes.
+
+
+---
+# Build log 2026-09-30 (round 2): recovery, XP/levels, augments, street enemies - Orlando's decisions applied
+Decisions (Orlando): clues MAY name the vampire bloodline early (the Madame-is-twin reveal stays for the ending);
+"resurrection" is literal; Resonance covert heal OK; augment strain is a REAL cost; XP from kills AND exploration, cap 10;
+Cookie levels independently of Marcus; assists (regen) yes.
+Built + Play-Mode tested (38 checks PASS): `SideScrollProgression` (XP, levels 1-10 for Marcus and Cookie, save via PlayerPrefs,
+`LoreClues` DRAFT text - Orlando to rewrite), `SideScrollAbilities` (special meter, strain, Echo Step, Sonar Lock, Flash Blind,
+Sonic Pulse, Overclock, Execution Chain, Echo Storm), Shadow Veil (hold Crouch), Resonance, `HealthPickup` (+25, locator
+beep, not wasted at full health), `RestPoint` (hum; Interact = full heal, clears strain, sets respawn), `ExplorationBeacon`
+(XP once), down -> respawn at last rest point at 50%, regen-assist toggle (`SideScrollPlayer.regenAssist`), Cookie augments
+(Collar Ping, faster whistle, Cyber-Eye, Titan Bite, Guard Mode, Rally, Pack Link, Shock Howl, Tandem Strike), 8 enemy
+archetypes (data-driven in `SideScrollEnemy.Configure`). New input actions: EchoStep Z, Special C, CycleSpecial Tab, Howl B,
+Journal Y, Status H (+ gamepad bindings); also listed in the keybinding menu (MainMenu scene rebuilt, not human-checked).
+Known gaps: Cookie augments Collar Ping / Cyber-Eye / Guard Mode / Rally / Pack Link / Howl / Tandem and Marcus's Shadow Veil
+have code but only some are covered by tests; no in-game regen-assist toggle in the Options menu yet; stats are computed
+from level in `SideScrollProgression` rather than through UpgradeManager/ModifiableStat (not yet integrated); all tones are
+procedural placeholders; nothing has been heard or played by a human.
