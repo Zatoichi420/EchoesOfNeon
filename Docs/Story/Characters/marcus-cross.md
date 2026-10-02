@@ -43,8 +43,9 @@ confirmation.
 
 ## Physical description
 
-6'2", 250 lbs, African-American male, late 40s to early 50s, salt-and-pepper goatee,
-scar under his left eye.
+6'2", 250 lbs, African-American male, late 40s to early 50s, **bald**, a clearly
+**salt-and-pepper goatee** (black and silver-white mix), and a **larger, noticeable scar under his left eye** (Orlando,
+2026-10-02: pale raised diagonal, readable at full-body distance).
 
 ## Costume and gear
 
