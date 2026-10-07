@@ -85,6 +85,8 @@ namespace EchoesOfNeon.UI
             WireAudioSettings();
             WireAccessibilitySettings();
 
+            HideUnimplementedSettings();
+
             ShowOnly(new[] { mainMenuPanel, optionsPanel }, mainMenuPanel);
             RefreshContinueButton();
             if (GameSaveManager.Instance != null)
@@ -224,6 +226,39 @@ namespace EchoesOfNeon.UI
             reduceMotionToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.reduceMotion = v));
             audioDescriptionToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.audioDescriptionEnabled = v));
             subtitlesToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.subtitlesEnabled = v));
+        }
+
+        // --- Hide controls whose setting nothing reads yet ---
+
+        private void HideUnimplementedSettings()
+        {
+            HideIfUnimplemented(AccessibilityManager.UnimplementedSettings, nameof(AccessibilitySettings.aimAssistFriction), aimAssistFrictionSlider);
+            HideIfUnimplemented(AccessibilityManager.UnimplementedSettings, nameof(AccessibilitySettings.aimAssistMagnetism), aimAssistMagnetismSlider);
+            HideIfUnimplemented(AccessibilityManager.UnimplementedSettings, nameof(AccessibilitySettings.screenShakeScale), screenShakeSlider);
+            HideIfUnimplemented(AccessibilityManager.UnimplementedSettings, nameof(AccessibilitySettings.audioDescriptionEnabled), audioDescriptionToggle);
+            HideIfUnimplemented(AccessibilityManager.UnimplementedSettings, nameof(AccessibilitySettings.subtitlesEnabled), subtitlesToggle);
+            HideIfUnimplemented(AudioSettingsManager.UnimplementedSettings, nameof(AudioSettingsData.sfxVolume), sfxVolumeSlider);
+            HideIfUnimplemented(AudioSettingsManager.UnimplementedSettings, nameof(AudioSettingsData.dialogueVolume), dialogueVolumeSlider);
+        }
+
+        private static void HideIfUnimplemented(string[] unimplemented, string field, Selectable control)
+        {
+            if (control == null || System.Array.IndexOf(unimplemented, field) < 0) return;
+
+            // Each row is a Text label plus the control, placed at the same
+            // y. Disable both so neither sighted focus nor the screen reader
+            // ever lands on a setting that does nothing. (AccessibleX nodes
+            // remove themselves in OnDisable.)
+            var controlRect = (RectTransform)control.transform;
+            foreach (Transform sibling in control.transform.parent)
+            {
+                if (sibling == control.transform) continue;
+                var rt = sibling as RectTransform;
+                if (rt != null && sibling.GetComponent<Text>() != null
+                    && Mathf.Approximately(rt.anchoredPosition.y, controlRect.anchoredPosition.y))
+                    sibling.gameObject.SetActive(false);
+            }
+            control.gameObject.SetActive(false);
         }
 
         // --- Shared apply helpers ---

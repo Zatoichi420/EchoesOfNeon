@@ -81,6 +81,22 @@ namespace EchoesOfNeon.Accessibility
 
         private const string SettingsPrefsKey = "EchoesOfNeon.AccessibilitySettings";
 
+        /// <summary>Fields of AccessibilitySettings that no gameplay system
+        /// reads yet. MenuController hides the matching controls so players
+        /// are never offered a switch that does nothing. When you implement
+        /// one, delete its name here - the EditMode test
+        /// SettingsAuditTests fails if a field is neither consumed in code
+        /// nor listed here, and also if a listed field turns out to be
+        /// consumed.</summary>
+        public static readonly string[] UnimplementedSettings =
+        {
+            nameof(AccessibilitySettings.screenShakeScale),      // no screen shake exists yet
+            nameof(AccessibilitySettings.aimAssistFriction),     // no aim-assist system yet
+            nameof(AccessibilitySettings.aimAssistMagnetism),
+            nameof(AccessibilitySettings.audioDescriptionEnabled), // Milestone 3 (CaptionService)
+            nameof(AccessibilitySettings.subtitlesEnabled),
+        };
+
         private AccessibilityHierarchy _hierarchy;
         private InputManager _input;
 

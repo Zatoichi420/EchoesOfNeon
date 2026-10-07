@@ -1,4 +1,5 @@
 using System.Collections;
+using EchoesOfNeon.Accessibility;
 using EchoesOfNeon.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,10 +23,6 @@ namespace EchoesOfNeon.UI
         [SerializeField] private float ringRadius = 120f;      // pixels from HUD center
         [SerializeField] private float blipLifetime = 1.5f;
         [SerializeField] private float blipSize = 18f;
-
-        private static readonly Color GunfireColor = new Color(1f, 0.55f, 0f);
-        private static readonly Color FootstepColor = Color.cyan;
-        private static readonly Color MechanicalColor = Color.yellow;
 
         private Sprite _dotSprite;
 
@@ -60,10 +57,23 @@ namespace EchoesOfNeon.UI
             blipGO.transform.SetParent(transform, false);
             var image = blipGO.GetComponent<Image>();
             image.sprite = _dotSprite;
-            image.color = ColorFor(evt.Type);
+            var settings = AccessibilityManager.Instance != null ? AccessibilityManager.Instance.Settings : null;
+            var mode = settings != null ? settings.colorblindMode : ColorblindMode.None;
+            bool highContrast = settings != null && settings.highContrastOutlines;
+            image.color = CompassPalette.ColorFor(evt.Type, mode);
+
+            // Size varies by sound type so the compass never relies on color
+            // alone; high-contrast adds a bright outline and larger blips.
+            float size = blipSize * CompassPalette.SizeScaleFor(evt.Type) * (highContrast ? 1.35f : 1f);
+            if (highContrast)
+            {
+                var outline = blipGO.AddComponent<Outline>();
+                outline.effectColor = Color.white;
+                outline.effectDistance = new Vector2(3f, 3f);
+            }
 
             var rt = (RectTransform)blipGO.transform;
-            rt.sizeDelta = new Vector2(blipSize, blipSize);
+            rt.sizeDelta = new Vector2(size, size);
             float rad = bearing * Mathf.Deg2Rad;
             rt.anchoredPosition = new Vector2(Mathf.Sin(rad), Mathf.Cos(rad)) * ringRadius;
 
@@ -86,17 +96,6 @@ namespace EchoesOfNeon.UI
             Vector3 forward = listenerTransform.forward;
             forward.y = 0f;
             return Vector3.SignedAngle(forward, toTarget, Vector3.up);
-        }
-
-        private static Color ColorFor(AcousticEventType type)
-        {
-            switch (type)
-            {
-                case AcousticEventType.Gunfire: return GunfireColor;
-                case AcousticEventType.Footstep: return FootstepColor;
-                case AcousticEventType.Mechanical: return MechanicalColor;
-                default: return Color.white;
-            }
         }
 
         private static Sprite CreateDotSprite()

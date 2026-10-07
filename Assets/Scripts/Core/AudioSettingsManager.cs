@@ -26,6 +26,16 @@ namespace EchoesOfNeon.Core
 
         private const string PrefsKey = "EchoesOfNeon.AudioSettings";
 
+        /// <summary>Volume fields nothing plays through yet (only music is
+        /// wired, via MenuMusicPlayer). MenuController hides these sliders;
+        /// SettingsAuditTests enforces the list stays honest. Remove a name
+        /// when its category actually honors the volume.</summary>
+        public static readonly string[] UnimplementedSettings =
+        {
+            nameof(AudioSettingsData.sfxVolume),
+            nameof(AudioSettingsData.dialogueVolume),
+        };
+
         public AudioSettingsData Data { get; private set; } = new AudioSettingsData();
 
         public event Action<AudioSettingsData> OnSettingsChanged;

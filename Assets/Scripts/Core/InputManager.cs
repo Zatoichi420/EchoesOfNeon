@@ -152,6 +152,7 @@ namespace EchoesOfNeon.Core
             _move.canceled += _ => OnMove?.Invoke(Vector2.zero);
 
             _look.performed += ctx => { NoteDevice(ctx); OnLook?.Invoke(ctx.ReadValue<Vector2>()); };
+            _look.canceled += _ => OnLook?.Invoke(Vector2.zero);
 
             _fire.started += ctx => { NoteDevice(ctx); OnFirePressed?.Invoke(); };
             _fire.canceled += _ => OnFireReleased?.Invoke();
@@ -194,6 +195,20 @@ namespace EchoesOfNeon.Core
             if (kind == CurrentDevice) return;
             CurrentDevice = kind;
             OnDeviceChanged?.Invoke(CurrentDevice);
+        }
+
+        /// <summary>Turns every gameplay action off (or back on) except Pause,
+        /// so a pause menu can freeze movement, look, fire and abilities
+        /// while Escape/Start can still reach it to resume. Disabling fires
+        /// each action's canceled callback, which releases held inputs.</summary>
+        public void SetGameplayInputEnabled(bool enabled)
+        {
+            if (_gameplayMap == null) return;
+            foreach (var action in _gameplayMap.actions)
+            {
+                if (action == _pause) continue;
+                if (enabled) action.Enable(); else action.Disable();
+            }
         }
 
         private void OnEnable() => _gameplayMap?.Enable();

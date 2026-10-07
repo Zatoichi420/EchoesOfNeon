@@ -194,6 +194,9 @@ namespace EchoesOfNeon.Optics
 
         private void UpdateTimeScale()
         {
+            // The pause menu owns Time.timeScale while open - easing it here
+            // would un-freeze the game behind the menu.
+            if (PauseState.IsPaused) return;
             if (Mathf.Approximately(Time.timeScale, _targetTimeScale)) return;
 
             Time.timeScale = Mathf.MoveTowards(Time.timeScale, _targetTimeScale, dilateTransitionSpeed * Time.unscaledDeltaTime);

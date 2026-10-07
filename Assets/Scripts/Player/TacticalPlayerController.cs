@@ -143,7 +143,6 @@ namespace EchoesOfNeon.Player
             _input.OnLook += HandleLook;
             _input.OnJump += HandleJump;
             _input.OnInteract += HandleInteract;
-            _input.OnPause += HandlePause;
 
             Cursor.lockState = CursorLockMode.Locked;
         }
@@ -155,7 +154,6 @@ namespace EchoesOfNeon.Player
             _input.OnLook -= HandleLook;
             _input.OnJump -= HandleJump;
             _input.OnInteract -= HandleInteract;
-            _input.OnPause -= HandlePause;
         }
 
         private void HandleMove(Vector2 value) => _moveInput = value;
@@ -164,16 +162,6 @@ namespace EchoesOfNeon.Player
         private void HandleJump()
         {
             if (_controller.isGrounded) _jumpQueued = true;
-        }
-
-        private void HandlePause()
-        {
-            // Placeholder until a real pause-menu system (Phase 5/6) owns
-            // this - without it, there'd be no way to free the mouse cursor
-            // during testing.
-            Cursor.lockState = Cursor.lockState == CursorLockMode.Locked
-                ? CursorLockMode.None
-                : CursorLockMode.Locked;
         }
 
         private void HandleInteract()
