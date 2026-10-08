@@ -28,10 +28,10 @@ resume; check the Accessibility tab no longer shows dead controls; run EditMode 
 8. `CaptionService` + `CaptionDisplay`: Subtitles (enemy barks, with direction) and Sound Captions ("[Gunfire, to your left]", off by default, rate-limited). A test fails if a recorded bark has no transcript. Audio Description stays hidden: no cutscenes exist.
 9. UI size 100/125/150% for captions and the pause menu (`UiScaleApplier`). NOT the main menu: its layout is absolute-positioned for 1920x1080 and would clip; needs layout groups. Nothing else in the game is color-coded, so no further palettes.
 
-## Milestone 4: controls and onboarding
-10. Rebind WASD; toggle variants for held abilities; timing options.
-11. Difficulty setting.
-12. Audio tutorial, hint key, first-run accessibility prompt.
+## Milestone 4: controls and onboarding (BUILT 2026-10-08, awaiting playtest)
+10. Rebind W/A/S/D individually (`Move:Up` etc.); Toggle Neural Dilate; side-scroller sprint/crouch now honor the existing toggle options; Timing Assist (Standard/Relaxed/Generous: longer enemy wind-ups and fend window). Key Bindings tab is two columns and shows each current key as a spoken hint.
+11. Difficulty (Story 0.4x / Easy 0.7x / Normal / Hard 1.3x damage taken) in the side-scroller. Tactical scenes have no player health yet, so it does nothing there.
+12. `F1` reads your current controls from live bindings; first-run spoken welcome (once for the menu, once for gameplay). NOT built: an interactive practice tutorial.
 
 ## Later / platform
 Hook `screenReaderStatusChanged` and `nodeFocusChanged`; OS caption/font-scale settings on
@@ -49,3 +49,9 @@ with `UnityEngine.Accessibility.AccessibilitySettings`.
 - Options > Accessibility: no gaps where dead rows used to be; Subtitles, Sound Captions, size slider present.
 - In a tactical scene with a guard: barks show as `Guard (to your left): "Contact! Get eyes on him!"`; with Sound Captions on, gunfire shows `[Gunfire, ahead]`.
 - Size 150%: captions and pause menu larger. Check the pause title is not clipped.
+
+## Milestone 4 playtest gate
+- Key Bindings tab: 24 rows in two columns, all on screen; Rebind Move Up then press a key; WASD still moves if you rebind one.
+- Controller tab: Toggle Neural Dilate (press once on, again off).
+- Side-scroller: Toggle Sprint / Crouch now work there. Difficulty Story: hits hurt 40 percent as much. Timing Assist Generous: enemy attack sounds start noticeably earlier.
+- Fresh profile: spoken welcome at the menu, and again once in a gameplay scene; `F1` reads the controls.

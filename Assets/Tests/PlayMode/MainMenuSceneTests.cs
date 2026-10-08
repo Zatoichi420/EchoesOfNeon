@@ -15,6 +15,9 @@ namespace EchoesOfNeon.Tests
     /// <summary>Drives the real MainMenu scene end to end (no screen reader needed).</summary>
     public class MainMenuSceneTests
     {
+        [TearDown]
+        public void TearDown() => TestSingletons.DestroyAll();
+
         private static Button FindButton(string name)
         {
             foreach (var b in Resources.FindObjectsOfTypeAll<Button>())
@@ -101,6 +104,37 @@ namespace EchoesOfNeon.Tests
                     prev = y;
                 }
             }
+        }
+
+        [UnityTest]
+        public IEnumerator Menu_HasMilestone4Controls_AndEveryKeybindRowFitsOnScreen()
+        {
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity", new LoadSceneParameters(LoadSceneMode.Single));
+            yield return null; yield return null;
+
+            var names = new System.Collections.Generic.HashSet<string>();
+            foreach (var c in Resources.FindObjectsOfTypeAll<Selectable>())
+                if (c.gameObject.scene.IsValid()) names.Add(c.name);
+            foreach (var n in new[] { "ToggleDilate", "Difficulty", "TimingAssist", "Rebind_Move:Up", "Rebind_Move:Right", "Rebind_Hint", "Rebind_RepeatLast" })
+                Assert.IsTrue(names.Contains(n), "missing " + n);
+
+            var canvas = GameObject.Find("MenuCanvas").GetComponent<Canvas>();
+            var canvasRect = (RectTransform)canvas.transform;
+            var corners = new Vector3[4];
+            int rows = 0;
+            foreach (var b in Resources.FindObjectsOfTypeAll<Button>())
+            {
+                if (!b.gameObject.scene.IsValid() || !b.name.StartsWith("Rebind_")) continue;
+                rows++;
+                ((RectTransform)b.transform).GetWorldCorners(corners);
+                foreach (var corner in corners)
+                {
+                    var local = canvasRect.InverseTransformPoint(corner);
+                    Assert.GreaterOrEqual(local.y, canvasRect.rect.yMin, b.name + " is below the screen");
+                    Assert.LessOrEqual(local.x, canvasRect.rect.xMax, b.name + " is off the right edge");
+                }
+            }
+            Assert.GreaterOrEqual(rows, 24);
         }
     }
 }

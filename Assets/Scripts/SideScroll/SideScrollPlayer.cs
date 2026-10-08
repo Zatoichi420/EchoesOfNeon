@@ -96,8 +96,11 @@ namespace EchoesOfNeon.SideScroll
             if (_input == null) return;
             _input.OnMove += OnMove; _input.OnJump += RequestJump; _input.OnFirePressed += Strike;
             _input.OnFendPressed += Fend; _input.OnWhistlePressed += OnWhistleKey; _input.OnSonarPulse += OnSonarKey;
-            _input.OnSprintPressed += OnSprintDown; _input.OnSprintReleased += OnSprintUp;
-            _input.OnCrouchPressed += OnCrouchDown; _input.OnCrouchReleased += OnCrouchUp;
+            // Sprint/crouch go through AccessibilityManager so the Toggle
+            // Sprint / Toggle Crouch options apply here too (raw press/release
+            // is the fallback when no manager exists).
+            TryBindAccessibility();
+            _input.OnSprintPressed += OnSprintDown; _input.OnSprintReleased += OnSprintUp; _input.OnCrouchPressed += OnCrouchDown; _input.OnCrouchReleased += OnCrouchUp;
             _input.OnEchoStepPressed += EchoStep; _input.OnSpecialPressed += Special; _input.OnCycleSpecialPressed += CycleSpecial;
             _input.OnHowlPressed += Howl; _input.OnJournalPressed += Journal; _input.OnStatusPressed += OnStatusKey;
         }
@@ -108,6 +111,7 @@ namespace EchoesOfNeon.SideScroll
             if (_input == null) return;
             _input.OnMove -= OnMove; _input.OnJump -= RequestJump; _input.OnFirePressed -= Strike;
             _input.OnFendPressed -= Fend; _input.OnWhistlePressed -= OnWhistleKey; _input.OnSonarPulse -= OnSonarKey;
+            if (_a11y != null) { _a11y.OnSprintStateChanged -= SetSprintState; _a11y.OnCrouchStateChanged -= SetVeil; _a11y = null; }
             _input.OnSprintPressed -= OnSprintDown; _input.OnSprintReleased -= OnSprintUp;
             _input.OnCrouchPressed -= OnCrouchDown; _input.OnCrouchReleased -= OnCrouchUp;
             _input.OnEchoStepPressed -= EchoStep; _input.OnSpecialPressed -= Special; _input.OnCycleSpecialPressed -= CycleSpecial;
@@ -118,10 +122,24 @@ namespace EchoesOfNeon.SideScroll
         private void OnStatusKey() => Status();
         private void OnWhistleKey() => Whistle();
         private void OnSonarKey() => SonarScan();
-        private void OnSprintDown() => _sprint = true;
-        private void OnSprintUp() => _sprint = false;
-        private void OnCrouchDown() => SetVeil(true);
-        private void OnCrouchUp() => SetVeil(false);
+        private AccessibilityManager _a11y;
+
+        // The manager may be created after this component enables, so bind
+        // lazily (OnEnable and Update). Once bound, its toggle-aware events
+        // drive sprint/crouch and the raw key handlers below stand down.
+        private void TryBindAccessibility()
+        {
+            if (_a11y != null || AccessibilityManager.Instance == null) return;
+            _a11y = AccessibilityManager.Instance;
+            _a11y.OnSprintStateChanged += SetSprintState;
+            _a11y.OnCrouchStateChanged += SetVeil;
+        }
+
+        private void SetSprintState(bool on) => _sprint = on;
+        private void OnSprintDown() { if (_a11y == null) _sprint = true; }
+        private void OnSprintUp() { if (_a11y == null) _sprint = false; }
+        private void OnCrouchDown() { if (_a11y == null) SetVeil(true); }
+        private void OnCrouchUp() { if (_a11y == null) SetVeil(false); }
         public void SetVeil(bool on) { _crouch = on; IsVeiled = on && progression != null && progression.Has(MarcusAbility.ShadowVeil); }
         public void SetMoveInput(float x) => _moveInput = Mathf.Abs(x) < 0.2f ? 0f : Mathf.Sign(x);   // digital: walking is the only speed control
         public void RequestJump() => _jumpBuf = jumpBuffer;
@@ -133,7 +151,7 @@ namespace EchoesOfNeon.SideScroll
         public void Dash(int dir, float distance) { _dashDir = dir; _dashTime = 0.18f; _dashSpeed = distance / 0.18f; }
         private float _dashSpeed;
 
-        private void Update() => Tick(Time.deltaTime);
+        private void Update() { TryBindAccessibility(); Tick(Time.deltaTime); }
 
         public void Tick(float dt)
         {
@@ -200,7 +218,7 @@ namespace EchoesOfNeon.SideScroll
         public void Fend()
         {
             if (IsDead || _fendCd > 0f) return;
-            float w = (fendWindow + (progression != null ? progression.FendWindowBonus : 0f)) * (abilities != null ? abilities.FendWindowMultiplier : 1f);
+            float w = (fendWindow + (progression != null ? progression.FendWindowBonus : 0f)) * (abilities != null ? abilities.FendWindowMultiplier : 1f) * DifficultyRules.CurrentFendWindow;
             _fendTimer = w; _fendCd = fendCooldown + w;
             Play(SideScrollTones.Swing, 0.35f);
         }
@@ -229,13 +247,13 @@ namespace EchoesOfNeon.SideScroll
                 Say("Fended off");
                 return;
             }
-            float dmg = amount * (progression != null ? progression.DamageTakenMultiplier : 1f);
+            float dmg = amount * (progression != null ? progression.DamageTakenMultiplier : 1f) * DifficultyRules.CurrentDamageTaken;
             Health = Mathf.Max(0f, Health - dmg); _sinceHurt = 0f;
             Play(SideScrollTones.PlayerHurt, 1f);
             if (IsDead) Down();
         }
 
-        public void TakeUnavoidable(float amount) { if (IsDead) return; Health = Mathf.Max(0f, Health - amount); _sinceHurt = 0f; Play(SideScrollTones.PlayerHurt, 0.8f); if (IsDead) Down(); }
+        public void TakeUnavoidable(float amount) { if (IsDead) return; amount *= DifficultyRules.CurrentDamageTaken; Health = Mathf.Max(0f, Health - amount); _sinceHurt = 0f; Play(SideScrollTones.PlayerHurt, 0.8f); if (IsDead) Down(); }
 
         public void Heal(float amount, string source = null)
         {

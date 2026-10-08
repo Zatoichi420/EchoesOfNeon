@@ -54,6 +54,7 @@ namespace EchoesOfNeon.UI
         [SerializeField] private Toggle toggleAimToggle;
         [SerializeField] private Toggle toggleSprintToggle;
         [SerializeField] private Toggle toggleCrouchToggle;
+        [SerializeField] private Toggle toggleDilateToggle;
         [SerializeField] private Slider lookSensitivitySlider;
 
         [Header("Audio settings")]
@@ -73,6 +74,8 @@ namespace EchoesOfNeon.UI
         [SerializeField] private Toggle subtitlesToggle;
         [SerializeField] private Toggle soundCaptionsToggle;
         [SerializeField] private Slider uiScaleSlider;
+        [SerializeField] private Slider difficultySlider;
+        [SerializeField] private Slider timingAssistSlider;
 
         [Header("Other")]
         [SerializeField] private MenuMusicPlayer musicPlayer;
@@ -234,6 +237,7 @@ namespace EchoesOfNeon.UI
             toggleAimToggle.isOn = s.toggleAim;
             toggleSprintToggle.isOn = s.toggleSprint;
             toggleCrouchToggle.isOn = s.toggleCrouch;
+            toggleDilateToggle.isOn = s.toggleDilate;
             lookSensitivitySlider.value = s.lookSensitivity;
             _suppressCallbacks = false;
 
@@ -243,6 +247,7 @@ namespace EchoesOfNeon.UI
             toggleAimToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.toggleAim = v));
             toggleSprintToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.toggleSprint = v));
             toggleCrouchToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.toggleCrouch = v));
+            toggleDilateToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.toggleDilate = v));
             lookSensitivitySlider.onValueChanged.AddListener(v => ApplyAccessibility(x => x.lookSensitivity = v));
         }
 
@@ -285,6 +290,8 @@ namespace EchoesOfNeon.UI
             subtitlesToggle.isOn = s.subtitlesEnabled;
             soundCaptionsToggle.isOn = s.soundCaptionsEnabled;
             uiScaleSlider.value = UiScaleStepFor(s.uiScale);
+            difficultySlider.value = s.difficulty;
+            timingAssistSlider.value = s.timingAssist;
             _suppressCallbacks = false;
 
             colorblindModeSlider.onValueChanged.AddListener(v => ApplyAccessibility(x => x.colorblindMode = (ColorblindMode)Mathf.RoundToInt(v)));
@@ -295,6 +302,8 @@ namespace EchoesOfNeon.UI
             audioDescriptionToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.audioDescriptionEnabled = v));
             subtitlesToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.subtitlesEnabled = v));
             soundCaptionsToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.soundCaptionsEnabled = v));
+            difficultySlider.onValueChanged.AddListener(v => ApplyAccessibility(x => x.difficulty = Mathf.RoundToInt(v)));
+            timingAssistSlider.onValueChanged.AddListener(v => ApplyAccessibility(x => x.timingAssist = Mathf.RoundToInt(v)));
             uiScaleSlider.onValueChanged.AddListener(v => ApplyAccessibility(x => x.uiScale = UiScaleSteps[Mathf.Clamp(Mathf.RoundToInt(v), 0, UiScaleSteps.Length - 1)]));
         }
 

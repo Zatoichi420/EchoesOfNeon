@@ -53,11 +53,12 @@ namespace EchoesOfNeon.Core
         public event Action OnCycleSpecialPressed; // Side-scroller: choose the next unlocked special
         public event Action OnHowlPressed;         // Side-scroller: Cookie's Shock Howl (Cookie Lv9)
         public event Action OnJournalPressed;      // Side-scroller: replay the latest lore clue
+        public event Action OnHintPressed;         // Read out the current controls
         public event Action OnRepeatPressed;       // Say the last announcement again
         public event Action OnStatusPressed;       // Side-scroller: speak health / level / special / strain
 
         private InputActionMap _gameplayMap;
-        private InputAction _move, _look, _fire, _aim, _jump, _interact, _sprint, _crouch, _reload, _pause, _sonar, _dilate, _fend, _whistle, _echoStep, _special, _cycleSpecial, _howl, _journal, _status, _repeat;
+        private InputAction _move, _look, _fire, _aim, _jump, _interact, _sprint, _crouch, _reload, _pause, _sonar, _dilate, _fend, _whistle, _echoStep, _special, _cycleSpecial, _howl, _journal, _status, _repeat, _hint;
 
         private const string RebindsPrefsKey = "EchoesOfNeon.InputRebinds";
 
@@ -150,6 +151,8 @@ namespace EchoesOfNeon.Core
             _status.AddBinding("<Keyboard>/h"); _status.AddBinding("<Gamepad>/rightStickPress");
             _repeat = _gameplayMap.AddAction("RepeatLast", InputActionType.Button);
             _repeat.AddBinding("<Keyboard>/v");
+            _hint = _gameplayMap.AddAction("Hint", InputActionType.Button);
+            _hint.AddBinding("<Keyboard>/f1");
 
             _move.performed += ctx => { NoteDevice(ctx); OnMove?.Invoke(ctx.ReadValue<Vector2>()); };
             _move.canceled += _ => OnMove?.Invoke(Vector2.zero);
@@ -187,6 +190,7 @@ namespace EchoesOfNeon.Core
             _journal.started += ctx => { NoteDevice(ctx); OnJournalPressed?.Invoke(); };
             _status.started += ctx => { NoteDevice(ctx); OnStatusPressed?.Invoke(); };
             _repeat.started += ctx => { NoteDevice(ctx); OnRepeatPressed?.Invoke(); };
+            _hint.started += ctx => { NoteDevice(ctx); OnHintPressed?.Invoke(); };
 
             _dilate.started += ctx => { NoteDevice(ctx); OnNeuralDilatePressed?.Invoke(); };
             _dilate.canceled += _ => OnNeuralDilateReleased?.Invoke();
@@ -253,14 +257,16 @@ namespace EchoesOfNeon.Core
         /// one bad lookup.</summary>
         public string GetBindingDisplayString(string actionName, DeviceKind deviceKind)
         {
-            var action = _gameplayMap.FindAction(actionName);
+            SplitActionName(actionName, out var actionOnly, out var part);
+            var action = _gameplayMap.FindAction(actionOnly);
             if (action == null) return "-";
 
-            var group = deviceKind == DeviceKind.Gamepad ? "Gamepad" : "Keyboard&Mouse";
             for (int i = 0; i < action.bindings.Count; i++)
             {
                 var binding = action.bindings[i];
                 if (binding.isComposite) continue;
+                if (part != null) { if (!binding.isPartOfComposite || !string.Equals(binding.name, part, StringComparison.OrdinalIgnoreCase)) continue; }
+                else if (binding.isPartOfComposite) continue;
                 var path = binding.effectivePath;
                 bool matches = deviceKind == DeviceKind.Gamepad
                     ? path.Contains("<Gamepad>")
@@ -270,19 +276,43 @@ namespace EchoesOfNeon.Core
             return "-";
         }
 
+        /// <summary>"Move:Up" -> action "Move", part "Up". A plain name has no part.</summary>
+        public static void SplitActionName(string name, out string action, out string part)
+        {
+            int colon = name.IndexOf(':');
+            if (colon < 0) { action = name; part = null; return; }
+            action = name.Substring(0, colon);
+            part = name.Substring(colon + 1);
+        }
+
         /// <summary>Starts interactive rebinding for the named action (e.g.
         /// "Jump", "SonarPulse"). Caller is responsible for prompting the
         /// player and calling SaveBindingOverrides() in onComplete.</summary>
         public InputActionRebindingExtensions.RebindingOperation StartRebind(string actionName, Action onComplete)
         {
-            var action = _gameplayMap.FindAction(actionName);
+            SplitActionName(actionName, out var actionOnly, out var part);
+            var action = _gameplayMap.FindAction(actionOnly);
             if (action == null)
             {
                 Debug.LogWarning($"[InputManager] No action named '{actionName}' to rebind.");
                 return null;
             }
+            int partIndex = -1;
+            if (part != null)
+            {
+                for (int i = 0; i < action.bindings.Count; i++)
+                    if (action.bindings[i].isPartOfComposite && string.Equals(action.bindings[i].name, part, StringComparison.OrdinalIgnoreCase)
+                        && action.bindings[i].path.Contains("<Keyboard>")) { partIndex = i; break; }
+                if (partIndex < 0)
+                {
+                    Debug.LogWarning($"[InputManager] No keyboard part '{part}' on '{actionOnly}'.");
+                    return null;
+                }
+            }
+            // Input System refuses to rebind an enabled action.
             action.Disable();
-            return action.PerformInteractiveRebinding()
+            var rebind = partIndex >= 0 ? action.PerformInteractiveRebinding(partIndex) : action.PerformInteractiveRebinding();
+            return rebind
                 .WithControlsExcluding("Mouse/position")
                 .OnMatchWaitForAnother(0.1f)
                 .OnComplete(op =>

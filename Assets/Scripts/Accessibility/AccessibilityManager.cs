@@ -44,7 +44,11 @@ namespace EchoesOfNeon.Accessibility
         public bool audioDescriptionEnabled = false;
         public bool subtitlesEnabled = true;      // on-screen text for spoken lines (enemy barks)
         public bool soundCaptionsEnabled = false; // on-screen text for non-speech sounds: "[Gunfire, to your left]"
-        public float uiScale = 1f;                // 1 - 1.5: size of captions and the pause menu
+        public float uiScale = 1f;
+
+        public bool toggleDilate = false;         // Neural Dilate: press to start, press again to stop
+        public int difficulty = 2;                // 0 Story, 1 Easy, 2 Normal, 3 Hard (DifficultyRules)
+        public int timingAssist = 0;              // 0 Standard, 1 Relaxed, 2 Generous (DifficultyRules)                // 1 - 1.5: size of captions and the pause menu
     }
 
     /// <summary>
@@ -69,6 +73,12 @@ namespace EchoesOfNeon.Accessibility
     public class AccessibilityManager : MonoBehaviour
     {
         public static AccessibilityManager Instance { get; private set; }
+
+        /// <summary>Raised once the manager exists and its screen-reader
+        /// hierarchy is ready. Menu controls that enabled earlier (scene
+        /// object order is not guaranteed) register their nodes when this
+        /// fires instead of silently never registering.</summary>
+        public static event Action Ready;
 
         public AccessibilitySettings Settings { get; private set; } = new AccessibilitySettings();
         public event Action<AccessibilitySettings> OnSettingsChanged;
@@ -114,6 +124,7 @@ namespace EchoesOfNeon.Accessibility
             SetupScreenReaderHierarchy();
             if (GetComponent<EchoesOfNeon.UI.MenuFocusAnnouncer>() == null)
                 gameObject.AddComponent<EchoesOfNeon.UI.MenuFocusAnnouncer>();
+            Ready?.Invoke();
         }
 
         private void Start()
@@ -135,6 +146,13 @@ namespace EchoesOfNeon.Accessibility
             _input.OnCrouchReleased += HandleCrouchReleased;
             _input.OnStatusPressed += HandleStatusPressed;
             _input.OnRepeatPressed += RepeatLastAnnouncement;
+            _input.OnHintPressed += HandleHintPressed;
+        }
+
+        private void HandleHintPressed()
+        {
+            var device = _input.CurrentDevice;
+            Announce(ControlsGuide.Compose(action => _input.GetBindingDisplayString(action, device)));
         }
 
         // Tactical scenes register providers with StatusRegistry; the
@@ -156,6 +174,7 @@ namespace EchoesOfNeon.Accessibility
             _input.OnCrouchReleased -= HandleCrouchReleased;
             _input.OnStatusPressed -= HandleStatusPressed;
             _input.OnRepeatPressed -= RepeatLastAnnouncement;
+            _input.OnHintPressed -= HandleHintPressed;
         }
 
         // --- Toggle-vs-hold translation ---

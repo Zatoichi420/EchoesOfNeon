@@ -131,6 +131,9 @@ public static class MainMenuUISetup
         so.FindProperty("audioDescriptionToggle").objectReferenceValue = accessibilityRefs.audioDescription;
         so.FindProperty("subtitlesToggle").objectReferenceValue = accessibilityRefs.subtitles;
 
+        so.FindProperty("toggleDilateToggle").objectReferenceValue = controllerRefs.toggleDilate;
+        so.FindProperty("difficultySlider").objectReferenceValue = accessibilityRefs.difficulty;
+        so.FindProperty("timingAssistSlider").objectReferenceValue = accessibilityRefs.timingAssist;
         so.FindProperty("monoAudioToggle").objectReferenceValue = audioRefs.mono;
         so.FindProperty("soundCaptionsToggle").objectReferenceValue = accessibilityRefs.soundCaptions;
         so.FindProperty("uiScaleSlider").objectReferenceValue = accessibilityRefs.uiScale;
@@ -405,7 +408,7 @@ public static class MainMenuUISetup
     private struct ControllerRefs
     {
         public Slider aimAssistFriction, aimAssistMagnetism, lookSensitivity;
-        public Toggle singleStick, toggleAim, toggleSprint, toggleCrouch;
+        public Toggle singleStick, toggleAim, toggleSprint, toggleCrouch, toggleDilate;
     }
 
     private struct AudioRefs
@@ -416,7 +419,7 @@ public static class MainMenuUISetup
 
     private struct AccessibilityRefs
     {
-        public Slider colorblindMode, screenShake, uiScale;
+        public Slider colorblindMode, screenShake, uiScale, difficulty, timingAssist;
         public Toggle highContrastOutlines, cameraBob, reduceMotion, audioDescription, subtitles, soundCaptions;
     }
 
@@ -468,32 +471,46 @@ public static class MainMenuUISetup
         (_, refs.singleStick) = CreateSettingToggle("SingleStickMode", "Single-Stick Mode", parent, resources, y); y -= rowSpacing;
         (_, refs.toggleAim) = CreateSettingToggle("ToggleAim", "Toggle Aim (instead of Hold)", parent, resources, y); y -= rowSpacing;
         (_, refs.toggleSprint) = CreateSettingToggle("ToggleSprint", "Toggle Sprint (instead of Hold)", parent, resources, y); y -= rowSpacing;
-        (_, refs.toggleCrouch) = CreateSettingToggle("ToggleCrouch", "Toggle Crouch (instead of Hold)", parent, resources, y);
+        (_, refs.toggleCrouch) = CreateSettingToggle("ToggleCrouch", "Toggle Crouch (instead of Hold)", parent, resources, y); y -= rowSpacing;
+        (_, refs.toggleDilate) = CreateSettingToggle("ToggleDilate", "Toggle Neural Dilate (instead of Hold)", parent, resources, y);
 
         return refs;
     }
 
-    /// <summary>Only the single-binding button actions - Move/Look are a
-    /// composite and a continuous Vector2 action respectively, and
-    /// interactively rebinding either needs its own per-part UI this pass
-    /// doesn't build (see KeybindRow.cs's own header comment).</summary>
+    /// <summary>Every rebindable action. "Move:Up" etc. rebind one key of
+    /// the WASD composite (InputManager.SplitActionName). Look stays
+    /// mouse/stick only.</summary>
     private static readonly string[] RebindableActions =
     {
+        "Move:Up", "Move:Down", "Move:Left", "Move:Right",
         "Fire", "Aim", "Jump", "Interact", "Sprint", "Crouch", "Reload", "Pause", "SonarPulse", "NeuralDilate",
-        "Fend", "Whistle", "EchoStep", "Special", "CycleSpecial", "Howl", "Journal", "Status",
+        "Fend", "Whistle", "EchoStep", "Special", "CycleSpecial", "Howl", "Journal", "Status", "RepeatLast", "Hint",
     };
 
     private static void BuildKeybindTab(Transform parent, DefaultControls.Resources resources)
     {
-        float y = -230f;
         const float rowSpacing = 58f;
+        int perColumn = (RebindableActions.Length + 1) / 2;
 
-        foreach (var action in RebindableActions)
+        // Two half-width columns so all rows fit on screen; rows are built
+        // with the same right-anchored layout inside each column.
+        var columns = new[]
         {
-            CreateRowLabel(action, parent, y);
+            CreateColumn("KeybindColumnLeft", parent, 0f, 0.5f),
+            CreateColumn("KeybindColumnRight", parent, 0.5f, 1f),
+        };
+
+        for (int n = 0; n < RebindableActions.Length; n++)
+        {
+            var action = RebindableActions[n];
+            var column = columns[n / perColumn];
+            float y = -230f - (n % perColumn) * rowSpacing;
+            var spoken = action.Replace(':', ' ');
+
+            CreateRowLabel(spoken, column, y);
 
             var valueGO = new GameObject("Value_" + action, typeof(RectTransform));
-            valueGO.transform.SetParent(parent, false);
+            valueGO.transform.SetParent(column, false);
             SetRect(valueGO.GetComponent<RectTransform>(), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-220f, y), new Vector2(160f, 40f));
             var valueText = valueGO.AddComponent<Text>();
             valueText.font = BodyFont;
@@ -502,10 +519,7 @@ public static class MainMenuUISetup
             valueText.alignment = TextAnchor.MiddleRight;
             valueText.text = "-";
 
-            var rowBtnGO = CreateMenuButton("Rebind_" + action, "Rebind", parent, resources, new Vector2(-40f, y), new Vector2(140f, 40f));
-            // Anchor to the right edge like the toggle/slider rows, not
-            // center - CreateMenuButton anchors top-center by default, so
-            // override just this instance's anchor/pivot.
+            var rowBtnGO = CreateMenuButton("Rebind_" + action, "Rebind", column, resources, new Vector2(-40f, y), new Vector2(140f, 40f));
             SetRect(rowBtnGO.GetComponent<RectTransform>(), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-40f, y), new Vector2(140f, 40f));
 
             var keybindRow = rowBtnGO.AddComponent<KeybindRow>();
@@ -513,17 +527,24 @@ public static class MainMenuUISetup
             keybindRow.ValueText = valueText;
             keybindRow.DeviceKind = InputManager.DeviceKind.KeyboardMouse;
 
-            // Override the AccessibleButton's spoken label to "Rebind X" -
-            // its default would just read the on-screen "Rebind" text,
-            // identical for every row, which is useless to a screen-reader
-            // user trying to tell rows apart.
+            // Spoken label "Rebind X": the on-screen text is the same
+            // "Rebind" on every row, useless for telling rows apart.
             var accessible = rowBtnGO.GetComponent<AccessibleButton>();
             var accessibleSo = new SerializedObject(accessible);
-            accessibleSo.FindProperty("label").stringValue = $"Rebind {action}";
+            accessibleSo.FindProperty("label").stringValue = $"Rebind {spoken}";
             accessibleSo.ApplyModifiedProperties();
-
-            y -= rowSpacing;
         }
+    }
+
+    private static Transform CreateColumn(string name, Transform parent, float xMin, float xMax)
+    {
+        var go = new GameObject(name, typeof(RectTransform));
+        go.transform.SetParent(parent, false);
+        var rt = (RectTransform)go.transform;
+        rt.anchorMin = new Vector2(xMin, 0f);
+        rt.anchorMax = new Vector2(xMax, 1f);
+        rt.offsetMin = rt.offsetMax = Vector2.zero;
+        return go.transform;
     }
 
     private static AudioRefs BuildAudioTab(Transform parent, DefaultControls.Resources resources)
@@ -556,7 +577,9 @@ public static class MainMenuUISetup
         (_, refs.audioDescription) = CreateSettingToggle("AudioDescription", "Audio Description (cutscenes)", parent, resources, y); y -= rowSpacing;
         (_, refs.subtitles) = CreateSettingToggle("Subtitles", "Subtitles", parent, resources, y); y -= rowSpacing;
         (_, refs.soundCaptions) = CreateSettingToggle("SoundCaptions", "Sound Captions", parent, resources, y); y -= rowSpacing;
-        (_, refs.uiScale) = CreateSettingSlider("UiScale", "Caption and Pause Menu Size", parent, resources, y, 0f, 2f, true, new[] { "100 percent", "125 percent", "150 percent" });
+        (_, refs.uiScale) = CreateSettingSlider("UiScale", "Caption and Pause Menu Size", parent, resources, y, 0f, 2f, true, new[] { "100 percent", "125 percent", "150 percent" }); y -= rowSpacing;
+        (_, refs.difficulty) = CreateSettingSlider("Difficulty", "Difficulty", parent, resources, y, 0f, 3f, true, new[] { "Story", "Easy", "Normal", "Hard" }); y -= rowSpacing;
+        (_, refs.timingAssist) = CreateSettingSlider("TimingAssist", "Timing Assist (slower enemy attacks, longer fend window)", parent, resources, y, 0f, 2f, true, new[] { "Standard", "Relaxed", "Generous" });
 
         return refs;
     }

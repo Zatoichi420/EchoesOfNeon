@@ -36,7 +36,19 @@ namespace EchoesOfNeon.UI
 
         private void OnEnable()
         {
-            if (AccessibilityManager.Instance == null) return;
+            if (AccessibilityManager.Instance == null)
+            {
+                // Manager not created yet: register when it announces itself.
+                AccessibilityManager.Ready += Register;
+                return;
+            }
+            Register();
+        }
+
+        private void Register()
+        {
+            AccessibilityManager.Ready -= Register;
+            if (_node != null || AccessibilityManager.Instance == null || !isActiveAndEnabled) return;
 
             var resolvedLabel = string.IsNullOrEmpty(label) ? ResolveTextLabel() : label;
             _node = AccessibilityManager.Instance.CreateMenuNode(
@@ -54,6 +66,7 @@ namespace EchoesOfNeon.UI
 
         private void OnDisable()
         {
+            AccessibilityManager.Ready -= Register;
             _toggle.onValueChanged.RemoveListener(ApplyState);
             if (_node == null || AccessibilityManager.Instance == null) return;
             _node.invoked -= HandleInvoked;

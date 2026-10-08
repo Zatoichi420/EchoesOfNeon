@@ -182,6 +182,13 @@ namespace EchoesOfNeon.Optics
 
         private void HandleDilatePressed()
         {
+            // Toggle mode: each press flips it, so the player never has to
+            // hold a button down for the whole slow-motion window.
+            if (_accessibility != null && _accessibility.Settings.toggleDilate && IsDilating)
+            {
+                HandleDilateReleased(force: true);
+                return;
+            }
             IsDilating = true;
             float target = _accessibility != null ? _accessibility.Settings.neuralDilateTimescale : 0.3f;
             _targetTimeScale = Mathf.Clamp(target, 0.05f, 1f);
@@ -192,8 +199,11 @@ namespace EchoesOfNeon.Optics
             _accessibility?.Announce("Neural Dilate engaged.");
         }
 
-        private void HandleDilateReleased()
+        private void HandleDilateReleased() => HandleDilateReleased(force: false);
+
+        private void HandleDilateReleased(bool force)
         {
+            if (!force && _accessibility != null && _accessibility.Settings.toggleDilate) return; // toggle mode ignores key-up
             IsDilating = false;
             _targetTimeScale = 1f;
             OnNeuralDilateStateChanged?.Invoke(false);

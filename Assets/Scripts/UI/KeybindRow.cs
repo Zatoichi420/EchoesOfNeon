@@ -46,18 +46,21 @@ namespace EchoesOfNeon.UI
         {
             if (InputManager.Instance == null || valueText == null) return;
             valueText.text = InputManager.Instance.GetBindingDisplayString(actionName, deviceKind);
+            // The binding text sits next to the button but is not itself
+            // focusable, so put it in the button's spoken hint.
+            _accessibleButton.SetHint("Currently " + valueText.text);
         }
 
         private void BeginRebind()
         {
             if (InputManager.Instance == null) return;
             if (valueText != null) valueText.text = "Press a key...";
-            AccessibilityManager.Instance?.Announce($"Rebinding {actionName}. Press a key or button.");
+            AccessibilityManager.Instance?.Announce($"Rebinding {actionName.Replace(':', ' ')}. Press a key or button.");
             InputManager.Instance.StartRebind(actionName, () =>
             {
                 InputManager.Instance.SaveBindingOverrides();
                 Refresh();
-                AccessibilityManager.Instance?.Announce($"{actionName} bound to {(valueText != null ? valueText.text : "unknown")}.");
+                AccessibilityManager.Instance?.Announce($"{actionName.Replace(':', ' ')} bound to {(valueText != null ? valueText.text : "unknown")}.");
             });
         }
     }

@@ -16,6 +16,7 @@ namespace EchoesOfNeon.Tests
         [SetUp]
         public void SetUp()
         {
+            TestSingletons.DestroyAll();
             _managerGO = new GameObject("AccessibilityManager", typeof(AccessibilityManager));
             _canvasGO = new GameObject("Canvas", typeof(Canvas));
         }
@@ -68,6 +69,20 @@ namespace EchoesOfNeon.Tests
             panel.SetActive(false);
             Assert.IsNull(a.GetComponent<AccessibleButton>().Node);
             Assert.IsNull(b.GetComponent<AccessibleButton>().Node);
+        }
+
+        [UnityTest]
+        public IEnumerator Button_EnabledBeforeTheManagerExists_StillRegistersOnceItAppears()
+        {
+            yield return null;
+            Object.DestroyImmediate(_managerGO);   // no manager yet
+            var go = NewButton("Early");           // enables with Instance == null
+            var accessible = go.GetComponent<AccessibleButton>();
+            Assert.IsNull(accessible.Node);
+
+            _managerGO = new GameObject("AccessibilityManager", typeof(AccessibilityManager));
+            Assert.IsNotNull(accessible.Node, "control that enabled first must register when the manager is created");
+            Assert.AreEqual("Early", accessible.Node.label);
         }
     }
 }

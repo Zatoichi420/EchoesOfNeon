@@ -154,7 +154,7 @@ namespace EchoesOfNeon.SideScroll
 
         private void BeginWindUp()
         {
-            State = EnemyState.WindUp; _timer = windUpSeconds;
+            State = EnemyState.WindUp; _timer = windUpSeconds * EchoesOfNeon.Accessibility.DifficultyRules.CurrentEnemyTelegraph;
             Face(target.transform.position.x - transform.position.x);
             _voice.PlayOneShot(kind == EnemyKind.DroneHawk ? SideScrollTones.DroneDive : kind == EnemyKind.ZipGunPunk ? SideScrollTones.GunCharge : kind == EnemyKind.BottleThrower ? SideScrollTones.Bottle
                 : SideScrollTones.WindupFor((int)kind, windFrom, windTo, Mathf.Max(0.3f, windUpSeconds)), 0.9f);

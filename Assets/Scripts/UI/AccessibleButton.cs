@@ -38,7 +38,19 @@ namespace EchoesOfNeon.UI
 
         private void OnEnable()
         {
-            if (AccessibilityManager.Instance == null) return;
+            if (AccessibilityManager.Instance == null)
+            {
+                // Manager not created yet: register when it announces itself.
+                AccessibilityManager.Ready += Register;
+                return;
+            }
+            Register();
+        }
+
+        private void Register()
+        {
+            AccessibilityManager.Ready -= Register;
+            if (_node != null || AccessibilityManager.Instance == null || !isActiveAndEnabled) return;
 
             var resolvedLabel = string.IsNullOrEmpty(label) ? ResolveTextLabel() : label;
             _node = AccessibilityManager.Instance.CreateMenuNode(
@@ -59,6 +71,7 @@ namespace EchoesOfNeon.UI
 
         private void OnDisable()
         {
+            AccessibilityManager.Ready -= Register;
             if (_node == null || AccessibilityManager.Instance == null) return;
             _node.invoked -= HandleInvoked;
             AccessibilityManager.Instance.RemoveMenuNode(_node);
@@ -81,6 +94,14 @@ namespace EchoesOfNeon.UI
         {
             _selected = selected;
             ApplyState();
+        }
+
+        /// <summary>Changes the spoken hint at runtime (e.g. a keybind row
+        /// saying which key it is currently bound to).</summary>
+        public void SetHint(string newHint)
+        {
+            hint = newHint;
+            if (_node != null) _node.hint = newHint;
         }
 
         /// <summary>Overrides the announced role (e.g. TabButton).</summary>
