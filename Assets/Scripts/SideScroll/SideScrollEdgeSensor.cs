@@ -26,6 +26,7 @@ namespace EchoesOfNeon.SideScroll
         {
             _player = GetComponent<SideScrollPlayer>();
             _src = new GameObject("EdgeTicks").AddComponent<AudioSource>();
+            EchoesOfNeon.Core.AudioRouting.Bind(_src, EchoesOfNeon.Core.AudioCategory.Sfx);
             _src.transform.SetParent(transform, false); _src.spatialBlend = 0f; _src.playOnAwake = false;
         }
 

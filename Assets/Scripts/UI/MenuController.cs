@@ -61,6 +61,7 @@ namespace EchoesOfNeon.UI
         [SerializeField] private Slider musicVolumeSlider;
         [SerializeField] private Slider sfxVolumeSlider;
         [SerializeField] private Slider dialogueVolumeSlider;
+        [SerializeField] private Toggle monoAudioToggle;
 
         [Header("Accessibility settings")]
         [SerializeField] private Slider colorblindModeSlider;
@@ -70,6 +71,8 @@ namespace EchoesOfNeon.UI
         [SerializeField] private Toggle reduceMotionToggle;
         [SerializeField] private Toggle audioDescriptionToggle;
         [SerializeField] private Toggle subtitlesToggle;
+        [SerializeField] private Toggle soundCaptionsToggle;
+        [SerializeField] private Slider uiScaleSlider;
 
         [Header("Other")]
         [SerializeField] private MenuMusicPlayer musicPlayer;
@@ -255,12 +258,14 @@ namespace EchoesOfNeon.UI
             musicVolumeSlider.value = d.musicVolume;
             sfxVolumeSlider.value = d.sfxVolume;
             dialogueVolumeSlider.value = d.dialogueVolume;
+            monoAudioToggle.isOn = d.monoAudio;
             _suppressCallbacks = false;
 
             masterVolumeSlider.onValueChanged.AddListener(v => ApplyAudio(x => x.masterVolume = v));
             musicVolumeSlider.onValueChanged.AddListener(v => ApplyAudio(x => x.musicVolume = v));
             sfxVolumeSlider.onValueChanged.AddListener(v => ApplyAudio(x => x.sfxVolume = v));
             dialogueVolumeSlider.onValueChanged.AddListener(v => ApplyAudio(x => x.dialogueVolume = v));
+            monoAudioToggle.onValueChanged.AddListener(v => ApplyAudio(x => x.monoAudio = v));
         }
 
         // --- Accessibility settings ---
@@ -278,6 +283,8 @@ namespace EchoesOfNeon.UI
             reduceMotionToggle.isOn = s.reduceMotion;
             audioDescriptionToggle.isOn = s.audioDescriptionEnabled;
             subtitlesToggle.isOn = s.subtitlesEnabled;
+            soundCaptionsToggle.isOn = s.soundCaptionsEnabled;
+            uiScaleSlider.value = UiScaleStepFor(s.uiScale);
             _suppressCallbacks = false;
 
             colorblindModeSlider.onValueChanged.AddListener(v => ApplyAccessibility(x => x.colorblindMode = (ColorblindMode)Mathf.RoundToInt(v)));
@@ -287,6 +294,19 @@ namespace EchoesOfNeon.UI
             reduceMotionToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.reduceMotion = v));
             audioDescriptionToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.audioDescriptionEnabled = v));
             subtitlesToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.subtitlesEnabled = v));
+            soundCaptionsToggle.onValueChanged.AddListener(v => ApplyAccessibility(x => x.soundCaptionsEnabled = v));
+            uiScaleSlider.onValueChanged.AddListener(v => ApplyAccessibility(x => x.uiScale = UiScaleSteps[Mathf.Clamp(Mathf.RoundToInt(v), 0, UiScaleSteps.Length - 1)]));
+        }
+
+        // Slider step -> scale: 100 / 125 / 150 percent.
+        public static readonly float[] UiScaleSteps = { 1f, 1.25f, 1.5f };
+
+        private static int UiScaleStepFor(float scale)
+        {
+            int best = 0;
+            for (int i = 1; i < UiScaleSteps.Length; i++)
+                if (Mathf.Abs(UiScaleSteps[i] - scale) < Mathf.Abs(UiScaleSteps[best] - scale)) best = i;
+            return best;
         }
 
         // --- Hide controls whose setting nothing reads yet ---
@@ -297,9 +317,40 @@ namespace EchoesOfNeon.UI
             HideIfUnimplemented(AccessibilityManager.UnimplementedSettings, nameof(AccessibilitySettings.aimAssistMagnetism), aimAssistMagnetismSlider);
             HideIfUnimplemented(AccessibilityManager.UnimplementedSettings, nameof(AccessibilitySettings.screenShakeScale), screenShakeSlider);
             HideIfUnimplemented(AccessibilityManager.UnimplementedSettings, nameof(AccessibilitySettings.audioDescriptionEnabled), audioDescriptionToggle);
-            HideIfUnimplemented(AccessibilityManager.UnimplementedSettings, nameof(AccessibilitySettings.subtitlesEnabled), subtitlesToggle);
             HideIfUnimplemented(AudioSettingsManager.UnimplementedSettings, nameof(AudioSettingsData.sfxVolume), sfxVolumeSlider);
             HideIfUnimplemented(AudioSettingsManager.UnimplementedSettings, nameof(AudioSettingsData.dialogueVolume), dialogueVolumeSlider);
+            CompactRows(controllerPanel.transform);
+            CompactRows(audioPanel.transform);
+            CompactRows(accessibilityPanel.transform);
+        }
+
+        /// <summary>Closes the gaps left by hidden rows: active children keep
+        /// their order but are re-spaced at the panel's original row pitch.</summary>
+        public static void CompactRows(Transform panel)
+        {
+            var ys = new System.Collections.Generic.SortedSet<float>(System.Collections.Generic.Comparer<float>.Create((a, b) => b.CompareTo(a)));
+            foreach (Transform child in panel)
+            {
+                var rt = child as RectTransform;
+                if (rt != null && child.gameObject.activeSelf) ys.Add(Mathf.Round(rt.anchoredPosition.y));
+            }
+            if (ys.Count < 2) return;
+
+            var list = new System.Collections.Generic.List<float>(ys);
+            float pitch = float.MaxValue;
+            for (int i = 1; i < list.Count; i++) pitch = Mathf.Min(pitch, list[i - 1] - list[i]);
+            if (pitch < 1f) return;
+
+            foreach (Transform child in panel)
+            {
+                var rt = child as RectTransform;
+                if (rt == null || !child.gameObject.activeSelf) continue;
+                int row = list.IndexOf(Mathf.Round(rt.anchoredPosition.y));
+                if (row < 0) continue;
+                var p = rt.anchoredPosition;
+                p.y = list[0] - row * pitch;
+                rt.anchoredPosition = p;
+            }
         }
 
         private static void HideIfUnimplemented(string[] unimplemented, string field, Selectable control)

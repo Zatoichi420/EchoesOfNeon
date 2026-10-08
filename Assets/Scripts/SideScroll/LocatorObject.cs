@@ -23,6 +23,7 @@ namespace EchoesOfNeon.SideScroll
         {
             Src = gameObject.AddComponent<AudioSource>(); Src.spatialBlend = 1f; Src.rolloffMode = AudioRolloffMode.Linear;
             Src.minDistance = 2f; Src.maxDistance = hearRange + 2f; Src.playOnAwake = false;
+            EchoesOfNeon.Core.AudioRouting.Bind(Src, EchoesOfNeon.Core.AudioCategory.Sfx);
         }
 
         protected bool Reached()

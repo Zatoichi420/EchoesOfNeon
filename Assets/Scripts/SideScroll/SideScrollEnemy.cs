@@ -77,6 +77,7 @@ namespace EchoesOfNeon.SideScroll
             var s = go.AddComponent<AudioSource>();
             s.spatialBlend = 1f; s.rolloffMode = AudioRolloffMode.Linear; s.minDistance = 2f; s.maxDistance = 22f;
             s.loop = loop; s.playOnAwake = false;
+            EchoesOfNeon.Core.AudioRouting.Bind(s, EchoesOfNeon.Core.AudioCategory.Sfx);
             return s;
         }
 
@@ -250,7 +251,7 @@ namespace EchoesOfNeon.SideScroll
             g.transform.position = pos; g.transform.localScale = Vector3.one * 0.25f;
             var p = g.AddComponent<SideScrollProjectile>(); p._owner = owner; p._dir = dir; p._speed = speed; p._damage = damage;
             p._src = g.AddComponent<AudioSource>(); p._src.spatialBlend = 1f; p._src.rolloffMode = AudioRolloffMode.Linear; p._src.maxDistance = 20f;
-            p._src.clip = SideScrollTones.Bottle; p._src.loop = true; p._src.Play();
+            EchoesOfNeon.Core.AudioRouting.Bind(p._src, EchoesOfNeon.Core.AudioCategory.Sfx); p._src.clip = SideScrollTones.Bottle; p._src.loop = true; p._src.Play();
             return p;
         }
 

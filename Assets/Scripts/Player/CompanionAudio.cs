@@ -42,6 +42,7 @@ namespace EchoesOfNeon.Player
             var s = go.AddComponent<AudioSource>();
             s.playOnAwake = false; s.spatialBlend = 1f;           // fully 3D: direction and distance are the whole point
             s.rolloffMode = AudioRolloffMode.Logarithmic; s.minDistance = 1.5f; s.maxDistance = 30f;
+            EchoesOfNeon.Core.AudioRouting.Bind(s, EchoesOfNeon.Core.AudioCategory.Sfx);
             return s;
         }
 

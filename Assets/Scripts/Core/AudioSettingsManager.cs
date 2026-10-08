@@ -10,6 +10,7 @@ namespace EchoesOfNeon.Core
         public float musicVolume = 0.35f; // menu music defaults to "not too loud", per Orlando's explicit request
         public float sfxVolume = 1f;
         public float dialogueVolume = 1f;
+        public bool monoAudio = false; // downmix to one channel for single-sided hearing
     }
 
     /// <summary>No AudioMixer exists in the project yet, and building one
@@ -26,15 +27,9 @@ namespace EchoesOfNeon.Core
 
         private const string PrefsKey = "EchoesOfNeon.AudioSettings";
 
-        /// <summary>Volume fields nothing plays through yet (only music is
-        /// wired, via MenuMusicPlayer). MenuController hides these sliders;
-        /// SettingsAuditTests enforces the list stays honest. Remove a name
-        /// when its category actually honors the volume.</summary>
-        public static readonly string[] UnimplementedSettings =
-        {
-            nameof(AudioSettingsData.sfxVolume),
-            nameof(AudioSettingsData.dialogueVolume),
-        };
+        /// <summary>Audio fields nothing reads yet (none right now). Menu
+        /// hides these; SettingsAuditTests keeps the list honest.</summary>
+        public static readonly string[] UnimplementedSettings = { };
 
         public AudioSettingsData Data { get; private set; } = new AudioSettingsData();
 
@@ -50,6 +45,7 @@ namespace EchoesOfNeon.Core
             Instance = this;
             DontDestroyOnLoad(gameObject);
             LoadSettings();
+            ApplySpeakerMode();
         }
 
         public void LoadSettings()
@@ -63,7 +59,27 @@ namespace EchoesOfNeon.Core
             Data = newSettings ?? new AudioSettingsData();
             PlayerPrefs.SetString(PrefsKey, JsonUtility.ToJson(Data));
             PlayerPrefs.Save();
+            ApplySpeakerMode();
             OnSettingsChanged?.Invoke(Data);
+        }
+
+        /// <summary>Mono mixes both ears into one channel (for single-sided
+        /// hearing). Changing the speaker mode restarts the audio engine,
+        /// so only do it when the mode actually differs.</summary>
+        public void ApplySpeakerMode()
+        {
+            var wanted = Data.monoAudio ? AudioSpeakerMode.Mono : AudioSpeakerMode.Stereo;
+            try
+            {
+                var config = AudioSettings.GetConfiguration();
+                if (config.speakerMode == wanted) return;
+                config.speakerMode = wanted;
+                AudioSettings.Reset(config);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[AudioSettingsManager] could not change speaker mode: " + e.Message);
+            }
         }
 
         public float EffectiveMusicVolume => Data.masterVolume * Data.musicVolume;

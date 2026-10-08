@@ -115,7 +115,7 @@ namespace EchoesOfNeon.Core
         /// (enemy barks, for instance: an enemy shouting shouldn't make every
         /// other enemy investigate the shout). Emit() is still the path for
         /// anything that is a real in-world noise event.</summary>
-        public void PlayOneShotAt(AudioClip clip, Vector3 position, float audibleRadius)
+        public void PlayOneShotAt(AudioClip clip, Vector3 position, float audibleRadius, AudioCategory category = AudioCategory.Sfx)
         {
             if (clip == null) return;
 
@@ -131,6 +131,7 @@ namespace EchoesOfNeon.Core
             source.minDistance = minAudibleDistance;
             source.maxDistance = Mathf.Max(audibleRadius, minAudibleDistance + 1f);
             source.rolloffMode = AudioRolloffMode.Linear;
+            AudioRouting.Bind(source, category);
             source.Play();
             Destroy(go, clip.length + 0.1f);
         }

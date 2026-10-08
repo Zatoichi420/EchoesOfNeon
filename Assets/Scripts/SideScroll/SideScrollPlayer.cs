@@ -79,6 +79,7 @@ namespace EchoesOfNeon.SideScroll
             var go = new GameObject("PlayerSfx"); go.transform.SetParent(transform, false);
             go.transform.localPosition = new Vector3(0, 1f, 0);
             _sfx = go.AddComponent<AudioSource>(); _sfx.spatialBlend = 0f; _sfx.playOnAwake = false;  // own sounds: centered
+            EchoesOfNeon.Core.AudioRouting.Bind(_sfx, EchoesOfNeon.Core.AudioCategory.Sfx);
         }
 
         private void Start()

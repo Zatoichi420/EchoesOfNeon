@@ -131,6 +131,10 @@ public static class MainMenuUISetup
         so.FindProperty("audioDescriptionToggle").objectReferenceValue = accessibilityRefs.audioDescription;
         so.FindProperty("subtitlesToggle").objectReferenceValue = accessibilityRefs.subtitles;
 
+        so.FindProperty("monoAudioToggle").objectReferenceValue = audioRefs.mono;
+        so.FindProperty("soundCaptionsToggle").objectReferenceValue = accessibilityRefs.soundCaptions;
+        so.FindProperty("uiScaleSlider").objectReferenceValue = accessibilityRefs.uiScale;
+
         so.FindProperty("musicPlayer").objectReferenceValue = musicPlayer;
         so.ApplyModifiedProperties();
 
@@ -407,12 +411,13 @@ public static class MainMenuUISetup
     private struct AudioRefs
     {
         public Slider master, music, sfx, dialogue;
+        public Toggle mono;
     }
 
     private struct AccessibilityRefs
     {
-        public Slider colorblindMode, screenShake;
-        public Toggle highContrastOutlines, cameraBob, reduceMotion, audioDescription, subtitles;
+        public Slider colorblindMode, screenShake, uiScale;
+        public Toggle highContrastOutlines, cameraBob, reduceMotion, audioDescription, subtitles, soundCaptions;
     }
 
     private static (GameObject optionsPanel, GameObject controllerPanel, GameObject keybindPanel, GameObject audioPanel, GameObject accessibilityPanel,
@@ -530,7 +535,8 @@ public static class MainMenuUISetup
         (_, refs.master) = CreateSettingSlider("MasterVolume", "Master Volume", parent, resources, y, 0f, 1f, false); y -= rowSpacing;
         (_, refs.music) = CreateSettingSlider("MusicVolume", "Music Volume", parent, resources, y, 0f, 1f, false); y -= rowSpacing;
         (_, refs.sfx) = CreateSettingSlider("SfxVolume", "SFX Volume", parent, resources, y, 0f, 1f, false); y -= rowSpacing;
-        (_, refs.dialogue) = CreateSettingSlider("DialogueVolume", "Dialogue Volume", parent, resources, y, 0f, 1f, false);
+        (_, refs.dialogue) = CreateSettingSlider("DialogueVolume", "Dialogue Volume", parent, resources, y, 0f, 1f, false); y -= rowSpacing;
+        (_, refs.mono) = CreateSettingToggle("MonoAudio", "Mono Audio (one ear)", parent, resources, y);
 
         return refs;
     }
@@ -548,7 +554,9 @@ public static class MainMenuUISetup
         (_, refs.screenShake) = CreateSettingSlider("ScreenShake", "Screen Shake", parent, resources, y, 0f, 1f, false); y -= rowSpacing;
         (_, refs.reduceMotion) = CreateSettingToggle("ReduceMotion", "Reduce Motion", parent, resources, y); y -= rowSpacing;
         (_, refs.audioDescription) = CreateSettingToggle("AudioDescription", "Audio Description (cutscenes)", parent, resources, y); y -= rowSpacing;
-        (_, refs.subtitles) = CreateSettingToggle("Subtitles", "Subtitles", parent, resources, y);
+        (_, refs.subtitles) = CreateSettingToggle("Subtitles", "Subtitles", parent, resources, y); y -= rowSpacing;
+        (_, refs.soundCaptions) = CreateSettingToggle("SoundCaptions", "Sound Captions", parent, resources, y); y -= rowSpacing;
+        (_, refs.uiScale) = CreateSettingSlider("UiScale", "Caption and Pause Menu Size", parent, resources, y, 0f, 2f, true, new[] { "100 percent", "125 percent", "150 percent" });
 
         return refs;
     }

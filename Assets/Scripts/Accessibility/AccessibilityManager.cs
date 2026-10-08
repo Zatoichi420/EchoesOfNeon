@@ -42,7 +42,9 @@ namespace EchoesOfNeon.Accessibility
         // menu doesn't need revisiting once those systems land; both no-op
         // until then.
         public bool audioDescriptionEnabled = false;
-        public bool subtitlesEnabled = true;
+        public bool subtitlesEnabled = true;      // on-screen text for spoken lines (enemy barks)
+        public bool soundCaptionsEnabled = false; // on-screen text for non-speech sounds: "[Gunfire, to your left]"
+        public float uiScale = 1f;                // 1 - 1.5: size of captions and the pause menu
     }
 
     /// <summary>
@@ -93,8 +95,7 @@ namespace EchoesOfNeon.Accessibility
             nameof(AccessibilitySettings.screenShakeScale),      // no screen shake exists yet
             nameof(AccessibilitySettings.aimAssistFriction),     // no aim-assist system yet
             nameof(AccessibilitySettings.aimAssistMagnetism),
-            nameof(AccessibilitySettings.audioDescriptionEnabled), // Milestone 3 (CaptionService)
-            nameof(AccessibilitySettings.subtitlesEnabled),
+            nameof(AccessibilitySettings.audioDescriptionEnabled), // needs cutscenes to exist first
         };
 
         private AccessibilityHierarchy _hierarchy;

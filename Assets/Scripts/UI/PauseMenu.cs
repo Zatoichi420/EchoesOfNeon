@@ -173,6 +173,7 @@ namespace EchoesOfNeon.UI
             var scaler = canvasGO.GetComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920f, 1080f);
+            canvasGO.AddComponent<UiScaleApplier>();
 
             // Build inactive so the buttons' OnEnable (screen-reader nodes)
             // runs when Pause() activates the panel, not mid-construction.

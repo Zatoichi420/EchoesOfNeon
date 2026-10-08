@@ -42,15 +42,24 @@ namespace EchoesOfNeon.Tests
         }
 
         [Test]
-        public void EveryAudioVolume_IsConsumedOrListedUnimplemented()
+        public void EveryAudioSetting_IsConsumedOrListedUnimplemented()
         {
-            foreach (var name in new[] { "musicVolume", "sfxVolume", "dialogueVolume" })
+            foreach (var f in typeof(AudioSettingsData).GetFields(BindingFlags.Public | BindingFlags.Instance))
             {
-                var effective = "Effective" + char.ToUpper(name[0]) + name.Substring(1);
-                bool consumed = SourceFiles("MenuController.cs", "AudioSettingsManager.cs").Any(f => File.ReadAllText(f).Contains(effective));
-                bool listed = AudioSettingsManager.UnimplementedSettings.Contains(name);
-                Assert.IsFalse(consumed && listed, $"{name} is now played through - remove it from AudioSettingsManager.UnimplementedSettings.");
-                Assert.IsTrue(consumed || listed, $"{name} slider does nothing. Route audio through {effective} or list it as unimplemented.");
+                if (f.Name == "masterVolume") continue; // folded into every Effective*Volume
+                bool consumed;
+                if (f.Name.EndsWith("Volume"))
+                {
+                    var effective = "Effective" + char.ToUpper(f.Name[0]) + f.Name.Substring(1);
+                    consumed = SourceFiles("MenuController.cs", "AudioSettingsManager.cs").Any(file => File.ReadAllText(file).Contains(effective));
+                }
+                else
+                {
+                    consumed = IsReadOutsideMenu(@"\." + f.Name + @"\b");
+                }
+                bool listed = AudioSettingsManager.UnimplementedSettings.Contains(f.Name);
+                Assert.IsFalse(consumed && listed, $"{f.Name} is now used - remove it from AudioSettingsManager.UnimplementedSettings.");
+                Assert.IsTrue(consumed || listed, $"{f.Name} does nothing. Wire it up or list it as unimplemented.");
             }
         }
 

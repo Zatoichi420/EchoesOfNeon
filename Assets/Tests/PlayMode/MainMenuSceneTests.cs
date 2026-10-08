@@ -62,6 +62,46 @@ namespace EchoesOfNeon.Tests
                     Assert.IsFalse(s.gameObject.activeSelf, s.name + " should be hidden");
             }
         }
+
+        [UnityTest]
+        public IEnumerator Menu_HasNewAudioAndCaptionControls_AndNoGapsLeftByHiddenRows()
+        {
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity", new LoadSceneParameters(LoadSceneMode.Single));
+            yield return null; yield return null;
+
+            bool mono = false, caps = false, scale = false;
+            foreach (var t in Resources.FindObjectsOfTypeAll<Toggle>())
+            {
+                if (!t.gameObject.scene.IsValid()) continue;
+                if (t.name == "MonoAudio") mono = true;
+                if (t.name == "SoundCaptions") caps = true;
+            }
+            foreach (var sl in Resources.FindObjectsOfTypeAll<Slider>())
+                if (sl.gameObject.scene.IsValid() && sl.name == "UiScale") scale = true;
+            Assert.IsTrue(mono && caps && scale, $"mono={mono} captions={caps} uiScale={scale}");
+
+            // Accessibility tab rows should be evenly spaced after compaction.
+            var panel = GameObject.Find("MenuCanvas").transform.Find("OptionsPanel");
+            Assert.IsNotNull(panel, "OptionsPanel not found");
+            foreach (Transform tab in panel)
+            {
+                if (!tab.name.ToLower().Contains("accessibility")) continue;
+                var ys = new System.Collections.Generic.SortedSet<float>();
+                foreach (Transform c in tab)
+                    if (c.gameObject.activeSelf && c is RectTransform rt && c.GetComponent<Text>() != null) ys.Add(Mathf.Round(rt.anchoredPosition.y));
+                float prev = float.NaN, pitch = float.NaN;
+                foreach (var y in ys)
+                {
+                    if (!float.IsNaN(prev))
+                    {
+                        float gap = y - prev;
+                        if (float.IsNaN(pitch)) pitch = gap;
+                        Assert.AreEqual(pitch, gap, 1f, "uneven row spacing - a hidden row left a gap");
+                    }
+                    prev = y;
+                }
+            }
+        }
     }
 }
 #endif

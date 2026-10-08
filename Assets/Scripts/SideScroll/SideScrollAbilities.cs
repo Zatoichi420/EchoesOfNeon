@@ -41,7 +41,7 @@ namespace EchoesOfNeon.SideScroll
         private void Awake()
         {
             _p = GetComponent<SideScrollPlayer>();
-            var go = new GameObject("AbilitySfx"); go.transform.SetParent(transform, false); _sfx = go.AddComponent<AudioSource>(); _sfx.spatialBlend = 0f;
+            var go = new GameObject("AbilitySfx"); go.transform.SetParent(transform, false); _sfx = go.AddComponent<AudioSource>(); EchoesOfNeon.Core.AudioRouting.Bind(_sfx, EchoesOfNeon.Core.AudioCategory.Sfx); _sfx.spatialBlend = 0f;
             foreach (SpecialMove m in System.Enum.GetValues(typeof(SpecialMove))) _cd[m] = 0f;
         }
 

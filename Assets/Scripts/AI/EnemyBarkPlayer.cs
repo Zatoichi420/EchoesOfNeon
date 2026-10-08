@@ -135,7 +135,8 @@ namespace EchoesOfNeon.AI
             // Spatialized, and deliberately NOT AcousticEventSystem.Emit() -
             // a bark should be heard, not treated as a noise event other
             // enemies investigate (which would cascade).
-            AcousticEventSystem.Instance.PlayOneShotAt(clip, transform.position, barkRadius);
+            AcousticEventSystem.Instance.PlayOneShotAt(clip, transform.position, barkRadius, AudioCategory.Dialogue);
+            EchoesOfNeon.UI.CaptionService.SpokenLine("Guard", clip.name, transform.position);
         }
     }
 }

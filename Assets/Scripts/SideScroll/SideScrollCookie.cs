@@ -46,6 +46,7 @@ namespace EchoesOfNeon.SideScroll
             var go = new GameObject(n); go.transform.SetParent(transform, false); go.transform.localPosition = Vector3.up * 0.4f;
             var s = go.AddComponent<AudioSource>();
             s.spatialBlend = 1f; s.rolloffMode = AudioRolloffMode.Linear; s.minDistance = 2f; s.maxDistance = 25f; s.playOnAwake = false;
+            EchoesOfNeon.Core.AudioRouting.Bind(s, EchoesOfNeon.Core.AudioCategory.Sfx);
             return s;
         }
 
