@@ -88,6 +88,7 @@ namespace EchoesOfNeon.UI
             HideUnimplementedSettings();
 
             ShowOnly(new[] { mainMenuPanel, optionsPanel }, mainMenuPanel);
+            Focus(startButton);
             RefreshContinueButton();
             if (GameSaveManager.Instance != null)
                 GameSaveManager.Instance.OnSaveDataChanged += RefreshContinueButton;
@@ -115,7 +116,13 @@ namespace EchoesOfNeon.UI
                 SceneManager.LoadScene(GameSaveManager.Instance.Data.sceneName);
             });
 
-            optionsButton.onClick.AddListener(() => ShowOnly(new[] { mainMenuPanel, optionsPanel }, optionsPanel));
+            optionsButton.onClick.AddListener(() =>
+            {
+                ShowOnly(new[] { mainMenuPanel, optionsPanel }, optionsPanel);
+                ShowTab(controllerPanel, controllerTabButton, announceTitle: false);
+                _optionsAccessible.AnnounceTitle();
+                Focus(controllerTabButton);
+            });
 
             quitButton.onClick.AddListener(() =>
             {
@@ -139,15 +146,69 @@ namespace EchoesOfNeon.UI
 
         private void WireOptionsTabs()
         {
-            var tabs = new[] { controllerPanel, keybindPanel, audioPanel, accessibilityPanel };
-            controllerTabButton.onClick.AddListener(() => ShowOnly(tabs, controllerPanel));
-            keybindTabButton.onClick.AddListener(() => ShowOnly(tabs, keybindPanel));
-            audioTabButton.onClick.AddListener(() => ShowOnly(tabs, audioPanel));
-            accessibilityTabButton.onClick.AddListener(() => ShowOnly(tabs, accessibilityPanel));
-            optionsBackButton.onClick.AddListener(() => ShowOnly(new[] { mainMenuPanel, optionsPanel }, mainMenuPanel));
+            _tabs = new[] { controllerPanel, keybindPanel, audioPanel, accessibilityPanel };
+            _tabButtons = new[] { controllerTabButton, keybindTabButton, audioTabButton, accessibilityTabButton };
+            var tabTitles = new[] { "Controller settings", "Key bindings", "Audio settings", "Accessibility settings" };
+
+            // Titled containers + role/selected state, so the screen reader
+            // knows these are tabs and which one is open.
+            for (int i = 0; i < _tabs.Length; i++)
+            {
+                var panel = _tabs[i].AddComponent<AccessiblePanel>();
+                panel.Title = tabTitles[i];
+                panel.OnDismiss = GoBackFromOptions;
+                _tabPanels[i] = panel;
+                _tabButtons[i].GetComponent<AccessibleButton>()?.SetRole(UnityEngine.Accessibility.AccessibilityRole.TabButton);
+            }
+            _optionsAccessible = optionsPanel.AddComponent<AccessiblePanel>();
+            _optionsAccessible.Title = "Options";
+            _optionsAccessible.OnDismiss = GoBackFromOptions;
+
+            // Escape / gamepad B anywhere inside Options goes back.
+            optionsPanel.AddComponent<CancelRelay>().OnCancelRequested = GoBackFromOptions;
+
+            for (int i = 0; i < _tabs.Length; i++)
+            {
+                var panelObj = _tabs[i];
+                var button = _tabButtons[i];
+                button.onClick.AddListener(() => ShowTab(panelObj, button, announceTitle: true));
+            }
+            optionsBackButton.onClick.AddListener(GoBackFromOptions);
 
             // Default to the Controller tab the first time Options opens.
-            ShowOnly(tabs, controllerPanel);
+            ShowTab(controllerPanel, controllerTabButton, announceTitle: false);
+        }
+
+        private GameObject[] _tabs;
+        private Button[] _tabButtons;
+        private readonly AccessiblePanel[] _tabPanels = new AccessiblePanel[4];
+        private AccessiblePanel _optionsAccessible;
+
+        private void ShowTab(GameObject panel, Button tabButton, bool announceTitle)
+        {
+            ShowOnly(_tabs, panel);
+            for (int i = 0; i < _tabButtons.Length; i++)
+                _tabButtons[i].GetComponent<AccessibleButton>()?.SetSelected(_tabButtons[i] == tabButton);
+            if (announceTitle)
+                for (int i = 0; i < _tabs.Length; i++)
+                    if (_tabs[i] == panel) { _tabPanels[i].AnnounceTitle(); break; }
+        }
+
+        private void GoBackFromOptions()
+        {
+            if (!optionsPanel.activeInHierarchy) return;
+            ShowOnly(new[] { mainMenuPanel, optionsPanel }, mainMenuPanel);
+            AccessibilityManager.Instance?.SetFocusPrefix("Main menu.");
+            Focus(optionsButton);
+        }
+
+        /// <summary>Moves keyboard/gamepad focus to a control after a panel
+        /// change. Without this the EventSystem keeps pointing at a button
+        /// that was just hidden and arrow keys do nothing.</summary>
+        private static void Focus(Selectable target)
+        {
+            if (target == null || UnityEngine.EventSystems.EventSystem.current == null) return;
+            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(target.gameObject);
         }
 
         private static void ShowOnly(GameObject[] group, GameObject show)

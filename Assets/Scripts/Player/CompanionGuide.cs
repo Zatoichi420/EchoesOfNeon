@@ -1,4 +1,5 @@
 using System;
+using EchoesOfNeon.Accessibility;
 using UnityEngine;
 
 namespace EchoesOfNeon.Player
@@ -29,6 +30,20 @@ namespace EchoesOfNeon.Player
         public string speedParam = "Speed";
 
         public GuideState State { get; private set; } = GuideState.Leading;
+
+        private void OnEnable()
+        {
+            StatusRegistry.Register("cookie", () =>
+            {
+                if (player == null) return "";
+                float d = Vector3.Distance(player.position, transform.position);
+                string what = State == GuideState.Leading ? "leading" : State == GuideState.Waiting ? "waiting for you"
+                    : State == GuideState.Returning ? "coming back to you" : "at the destination";
+                return $"Cookie is {what}, {d:F0} meters away.";
+            });
+        }
+
+        private void OnDisable() => StatusRegistry.Unregister("cookie");
         public float CurrentSpeed { get; private set; }
         public event Action<GuideState, GuideState> OnStateChanged;   // (from, to)
 

@@ -24,6 +24,9 @@ namespace EchoesOfNeon.UI
         [SerializeField] private AccessibleButton parentElement;
 
         private Button _button;
+        [Tooltip("Optional extra spoken after the control, e.g. \"Press Enter to rebind\".")]
+        [SerializeField] private string hint;
+
         private AccessibilityNode _node;
 
         public AccessibilityNode Node => _node;
@@ -42,9 +45,11 @@ namespace EchoesOfNeon.UI
                 resolvedLabel, AccessibilityRole.Button,
                 (RectTransform)transform, parentElement != null ? parentElement.Node : null);
             if (_node == null) return;
+            _node.hint = hint;
 
             _node.invoked += HandleInvoked;
-            _node.state = _button.interactable ? AccessibilityState.None : AccessibilityState.Disabled;
+            if (_roleOverride.HasValue) _node.role = _roleOverride.Value;
+            ApplyState();
 
             // A freshly-opened panel needs the OS told something changed -
             // otherwise the screen reader keeps announcing whatever was
@@ -69,11 +74,38 @@ namespace EchoesOfNeon.UI
         /// is exactly the kind of gap the project's "invisible selection
         /// state" failure mode exists to catch, applied to enabled/disabled
         /// rather than selected/unselected.</summary>
+        /// <summary>Marks this button as the active one in a group (e.g. the
+        /// current options tab) so the screen reader says "selected" -
+        /// otherwise the active tab is only visible, never audible.</summary>
+        public void SetSelected(bool selected)
+        {
+            _selected = selected;
+            ApplyState();
+        }
+
+        /// <summary>Overrides the announced role (e.g. TabButton).</summary>
+        public void SetRole(AccessibilityRole role)
+        {
+            _roleOverride = role;
+            if (_node != null) _node.role = role;
+        }
+
+        private bool _selected;
+        private AccessibilityRole? _roleOverride;
+
+        private void ApplyState()
+        {
+            if (_node == null) return;
+            var state = AccessibilityState.None;
+            if (!_button.interactable) state |= AccessibilityState.Disabled;
+            if (_selected) state |= AccessibilityState.Selected;
+            _node.state = state;
+        }
+
         public void SetInteractable(bool interactable)
         {
             _button.interactable = interactable;
-            if (_node != null)
-                _node.state = interactable ? AccessibilityState.None : AccessibilityState.Disabled;
+            ApplyState();
         }
 
         private bool HandleInvoked()
@@ -82,10 +114,6 @@ namespace EchoesOfNeon.UI
             return true;
         }
 
-        private string ResolveTextLabel()
-        {
-            var text = GetComponentInChildren<Text>();
-            return text != null ? text.text : gameObject.name;
-        }
+        private string ResolveTextLabel() => EchoesOfNeon.UI.AccessibleLabel.Resolve(this);
     }
 }

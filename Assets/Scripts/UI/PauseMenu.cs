@@ -105,9 +105,11 @@ namespace EchoesOfNeon.UI
             if (a11y != null)
             {
                 // Each button's OnEnable asked for focus; the last one wins,
-                // so re-point focus at Resume explicitly.
+                // so re-point focus at Resume explicitly. The focus
+                // announcer then speaks "Paused. Resume, button." as one
+                // sentence (prefix + the focused control).
                 a11y.NotifyLayoutChanged(_resumeAccessible.Node);
-                a11y.Announce("Paused. Resume, Main menu, Quit.");
+                a11y.SetFocusPrefix("Paused.");
             }
         }
 
@@ -183,6 +185,9 @@ namespace EchoesOfNeon.UI
             panelRect.offsetMin = panelRect.offsetMax = Vector2.zero;
             _panel.GetComponent<Image>().color = new Color(0.03f, 0.035f, 0.045f, 0.92f);
 
+            var accessiblePanel = _panel.AddComponent<AccessiblePanel>();
+            accessiblePanel.Title = "Paused";
+            accessiblePanel.OnDismiss = () => Resume(announce: true);
             AddTitle(_panel.transform, "Paused");
             var resume = AddButton("Resume", 60f, () => Resume(announce: true));
             AddButton("Main menu", -60f, ReturnToMainMenu);

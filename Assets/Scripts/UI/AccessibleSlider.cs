@@ -27,6 +27,9 @@ namespace EchoesOfNeon.UI
         [SerializeField] private string[] valueLabels;
 
         private Slider _slider;
+        [Tooltip("Optional extra spoken after the control, e.g. \"Press Enter to rebind\".")]
+        [SerializeField] private string hint;
+
         private AccessibilityNode _node;
 
         public AccessibilityNode Node => _node;
@@ -45,6 +48,7 @@ namespace EchoesOfNeon.UI
                 resolvedLabel, AccessibilityRole.Slider,
                 (RectTransform)transform, parentElement != null ? parentElement.Node : null);
             if (_node == null) return;
+            _node.hint = hint;
 
             _node.incremented += HandleIncremented;
             _node.decremented += HandleDecremented;
@@ -86,10 +90,6 @@ namespace EchoesOfNeon.UI
                 : value.ToString("0.##");
         }
 
-        private string ResolveTextLabel()
-        {
-            var text = GetComponentInChildren<Text>();
-            return text != null ? text.text : gameObject.name;
-        }
+        private string ResolveTextLabel() => EchoesOfNeon.UI.AccessibleLabel.Resolve(this);
     }
 }

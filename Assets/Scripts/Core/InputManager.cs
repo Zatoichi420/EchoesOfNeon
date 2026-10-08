@@ -53,10 +53,11 @@ namespace EchoesOfNeon.Core
         public event Action OnCycleSpecialPressed; // Side-scroller: choose the next unlocked special
         public event Action OnHowlPressed;         // Side-scroller: Cookie's Shock Howl (Cookie Lv9)
         public event Action OnJournalPressed;      // Side-scroller: replay the latest lore clue
+        public event Action OnRepeatPressed;       // Say the last announcement again
         public event Action OnStatusPressed;       // Side-scroller: speak health / level / special / strain
 
         private InputActionMap _gameplayMap;
-        private InputAction _move, _look, _fire, _aim, _jump, _interact, _sprint, _crouch, _reload, _pause, _sonar, _dilate, _fend, _whistle, _echoStep, _special, _cycleSpecial, _howl, _journal, _status;
+        private InputAction _move, _look, _fire, _aim, _jump, _interact, _sprint, _crouch, _reload, _pause, _sonar, _dilate, _fend, _whistle, _echoStep, _special, _cycleSpecial, _howl, _journal, _status, _repeat;
 
         private const string RebindsPrefsKey = "EchoesOfNeon.InputRebinds";
 
@@ -147,6 +148,8 @@ namespace EchoesOfNeon.Core
             _journal.AddBinding("<Keyboard>/y"); _journal.AddBinding("<Gamepad>/select");
             _status = _gameplayMap.AddAction("Status", InputActionType.Button);
             _status.AddBinding("<Keyboard>/h"); _status.AddBinding("<Gamepad>/rightStickPress");
+            _repeat = _gameplayMap.AddAction("RepeatLast", InputActionType.Button);
+            _repeat.AddBinding("<Keyboard>/v");
 
             _move.performed += ctx => { NoteDevice(ctx); OnMove?.Invoke(ctx.ReadValue<Vector2>()); };
             _move.canceled += _ => OnMove?.Invoke(Vector2.zero);
@@ -183,6 +186,7 @@ namespace EchoesOfNeon.Core
             _howl.started += ctx => { NoteDevice(ctx); OnHowlPressed?.Invoke(); };
             _journal.started += ctx => { NoteDevice(ctx); OnJournalPressed?.Invoke(); };
             _status.started += ctx => { NoteDevice(ctx); OnStatusPressed?.Invoke(); };
+            _repeat.started += ctx => { NoteDevice(ctx); OnRepeatPressed?.Invoke(); };
 
             _dilate.started += ctx => { NoteDevice(ctx); OnNeuralDilatePressed?.Invoke(); };
             _dilate.canceled += _ => OnNeuralDilateReleased?.Invoke();

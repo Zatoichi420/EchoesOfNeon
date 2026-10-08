@@ -116,6 +116,14 @@ namespace EchoesOfNeon.Optics
             }
         }
 
+        private void OnEnable()
+        {
+            StatusRegistry.Register("senses", () =>
+                $"Neural Dilate {(IsDilating ? "engaged" : "off")}. Sonar {(_sonarCooldownTimer > 0f ? "recharging" : "ready")}.");
+        }
+
+        private void OnDisable() => StatusRegistry.Unregister("senses");
+
         private void Update()
         {
             if (_sonarCooldownTimer > 0f) _sonarCooldownTimer -= Time.unscaledDeltaTime;

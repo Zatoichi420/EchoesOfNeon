@@ -22,6 +22,9 @@ namespace EchoesOfNeon.UI
         [SerializeField] private AccessibleButton parentElement;
 
         private Toggle _toggle;
+        [Tooltip("Optional extra spoken after the control, e.g. \"Press Enter to rebind\".")]
+        [SerializeField] private string hint;
+
         private AccessibilityNode _node;
 
         public AccessibilityNode Node => _node;
@@ -40,6 +43,7 @@ namespace EchoesOfNeon.UI
                 resolvedLabel, AccessibilityRole.Toggle,
                 (RectTransform)transform, parentElement != null ? parentElement.Node : null);
             if (_node == null) return;
+            _node.hint = hint;
 
             _node.invoked += HandleInvoked;
             ApplyState(_toggle.isOn);
@@ -75,10 +79,6 @@ namespace EchoesOfNeon.UI
             _node.value = isOn ? "on" : "off";
         }
 
-        private string ResolveTextLabel()
-        {
-            var text = GetComponentInChildren<Text>();
-            return text != null ? text.text : gameObject.name;
-        }
+        private string ResolveTextLabel() => EchoesOfNeon.UI.AccessibleLabel.Resolve(this);
     }
 }

@@ -111,6 +111,8 @@ namespace EchoesOfNeon.Accessibility
             DontDestroyOnLoad(gameObject);
             LoadSettings();
             SetupScreenReaderHierarchy();
+            if (GetComponent<EchoesOfNeon.UI.MenuFocusAnnouncer>() == null)
+                gameObject.AddComponent<EchoesOfNeon.UI.MenuFocusAnnouncer>();
         }
 
         private void Start()
@@ -130,6 +132,16 @@ namespace EchoesOfNeon.Accessibility
             _input.OnSprintReleased += HandleSprintReleased;
             _input.OnCrouchPressed += HandleCrouchPressed;
             _input.OnCrouchReleased += HandleCrouchReleased;
+            _input.OnStatusPressed += HandleStatusPressed;
+            _input.OnRepeatPressed += RepeatLastAnnouncement;
+        }
+
+        // Tactical scenes register providers with StatusRegistry; the
+        // side-scroller answers the Status key itself and registers none.
+        private void HandleStatusPressed()
+        {
+            if (StatusRegistry.Count == 0) return;
+            Announce(StatusRegistry.Compose());
         }
 
         private void OnDestroy()
@@ -141,6 +153,8 @@ namespace EchoesOfNeon.Accessibility
             _input.OnSprintReleased -= HandleSprintReleased;
             _input.OnCrouchPressed -= HandleCrouchPressed;
             _input.OnCrouchReleased -= HandleCrouchReleased;
+            _input.OnStatusPressed -= HandleStatusPressed;
+            _input.OnRepeatPressed -= RepeatLastAnnouncement;
         }
 
         // --- Toggle-vs-hold translation ---
@@ -204,8 +218,43 @@ namespace EchoesOfNeon.Accessibility
         /// need to check IsScreenReaderActive themselves first.</summary>
         public void Announce(string text)
         {
-            if (string.IsNullOrEmpty(text) || !AssistiveSupport.isScreenReaderEnabled) return;
-            AssistiveSupport.notificationDispatcher.SendAnnouncement(text);
+            if (string.IsNullOrEmpty(text)) return;
+            LastAnnouncement = text;
+            Speak(text);
+        }
+
+        /// <summary>The most recent thing Announce() was asked to say, so the
+        /// Repeat key can say it again if the player missed it.</summary>
+        public string LastAnnouncement { get; private set; }
+
+        public void RepeatLastAnnouncement()
+        {
+            Speak(string.IsNullOrEmpty(LastAnnouncement) ? "Nothing to repeat." : LastAnnouncement);
+        }
+
+        // Screen reader first; otherwise the OS voice (SpeechFallback) so a
+        // player running without VoiceOver still hears the game.
+        private static void Speak(string text)
+        {
+            if (AssistiveSupport.isScreenReaderEnabled)
+                AssistiveSupport.notificationDispatcher.SendAnnouncement(text);
+            else
+                SpeechFallback.Speak(text);
+        }
+
+        private string _focusPrefix;
+
+        /// <summary>Text to speak before the next focus announcement (e.g. a
+        /// panel title: "Options. Controller, tab, selected"), so a panel
+        /// change and its first control are one sentence instead of one
+        /// interrupting the other.</summary>
+        public void SetFocusPrefix(string prefix) => _focusPrefix = prefix;
+
+        public string ConsumeFocusPrefix()
+        {
+            var p = _focusPrefix;
+            _focusPrefix = null;
+            return p;
         }
 
         /// <summary>Registers one focusable menu element (button, toggle,
