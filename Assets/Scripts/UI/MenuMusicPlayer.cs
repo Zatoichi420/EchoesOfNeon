@@ -4,14 +4,13 @@ using UnityEngine;
 namespace EchoesOfNeon.UI
 {
     /// <summary>
-    /// Loops one ambient bed as menu music while any menu screen is open.
-    /// PLACEHOLDER: the project's real theme (built in Ableton, see
-    /// echoes-of-neon-ableton-soundtrack notes) isn't exported into Unity
-    /// yet - blocked on a Live edition/license export issue. This plays
-    /// new_carthage_night_rain.wav instead so the menu isn't silent and the
-    /// volume-control wiring is real and testable today. Swap the clip via
-    /// the inspector (or update the default below) once the real theme
-    /// lands - nothing else about this component needs to change.
+    /// Loops one track as the main menu theme while any menu screen is open.
+    /// The theme is "City lights at night" by Ondrosik (CC0, archive.org
+    /// Ondrosik Free Music Catalog), locked by Orlando on 2026-10-09; it is
+    /// assigned by MainMenuUISetup from Assets/Audio/Music/. The track fades
+    /// in over its first seconds and out over its last, so the loop "breathes"
+    /// by design. To swap the clip, assign a different AudioClip in the
+    /// inspector or update MainMenuUISetup; nothing else needs to change.
     /// </summary>
     public class MenuMusicPlayer : MonoBehaviour
     {

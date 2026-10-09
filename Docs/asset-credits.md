@@ -58,3 +58,12 @@ account-tier-dependent and worth recording per asset rather than rediscovering l
 grants for *commercial* use of library (non-owned) voices in a distributed game. The
 generated files are usable for development regardless, but shipping is a different
 question and shouldn't be assumed.
+
+## Music
+
+- **"City lights at night"** by Ondrosik, from the Ondrosik Free Music Catalog on the
+  Internet Archive (https://archive.org/details/Ondrosik-Free-music-catalog, uploaded
+  2026-06-13). License: CC0 1.0 Universal (public domain; no attribution required; the
+  collection page describes the 75 tracks as suitable for games). Used as the **main menu
+  theme** (`Assets/Audio/Music/city_lights_at_night.mp3`, played by `MenuMusicPlayer`),
+  locked by Orlando on 2026-10-09. Re-check the license on the item page before shipping.

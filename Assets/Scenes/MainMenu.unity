@@ -13560,7 +13560,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ba4966b20f5f4960bd3f28b059b810d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: EchoesOfNeon.Runtime::EchoesOfNeon.UI.MenuMusicPlayer
-  musicClip: {fileID: 8300000, guid: 8e9ae1ad34b3545abab1c669116b5209, type: 3}
+  musicClip: {fileID: 8300000, guid: 36ecb5dcc5d284c1284190ae1e7f324a, type: 3}
   fadeOnStop: 1
   fadeSeconds: 1
 --- !u!4 &1233907617

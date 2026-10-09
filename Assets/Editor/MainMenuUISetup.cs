@@ -83,10 +83,10 @@ public static class MainMenuUISetup
         musicGO.transform.SetParent(canvasGO.transform, false);
         var musicPlayer = musicGO.AddComponent<MenuMusicPlayer>();
         var musicSo = new SerializedObject(musicPlayer);
-        var placeholderClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Ambient/new_carthage_night_rain.wav");
-        if (placeholderClip == null)
-            Debug.LogWarning("[MainMenuUISetup] Placeholder ambient clip not found - menu will be silent until Assets/Audio/Ambient/new_carthage_night_rain.wav exists or a clip is assigned.");
-        musicSo.FindProperty("musicClip").objectReferenceValue = placeholderClip;
+        var menuThemeClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Music/city_lights_at_night.mp3");
+        if (menuThemeClip == null)
+            Debug.LogWarning("[MainMenuUISetup] Main menu theme not found - menu will be silent until Assets/Audio/Music/city_lights_at_night.mp3 exists or a clip is assigned.");
+        musicSo.FindProperty("musicClip").objectReferenceValue = menuThemeClip;
         musicSo.ApplyModifiedProperties();
 
         var controllerGO = new GameObject("MenuController");
