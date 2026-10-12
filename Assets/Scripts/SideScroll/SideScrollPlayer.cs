@@ -180,7 +180,7 @@ namespace EchoesOfNeon.SideScroll
             if (_comboTimer > 0f && (_comboTimer -= dt) <= 0f) ComboCount = 0;
 
             if (regenAssist && _sinceHurt > 4f && Health < MaxHealth * 0.5f) Health = Mathf.Min(MaxHealth * 0.5f, Health + 3f * dt);
-            if (Health < MaxHealth * 0.25f && !_lowAnnounced) { _lowAnnounced = true; Say("Low health"); }
+            if (Health < MaxHealth * 0.25f && !_lowAnnounced) { _lowAnnounced = true; Say("Low health", SpeechPriority.High); }
             if (Health >= MaxHealth * 0.4f) _lowAnnounced = false;
 
             if (_moveInput != 0f) Facing = (int)_moveInput;
@@ -304,11 +304,11 @@ namespace EchoesOfNeon.SideScroll
             if (cookie != null && cookie.BeginRevive())
             {
                 IsReviving = true; _reviveTimer = reviveSeconds;
-                Say("Marcus is down. Cookie is pulling you up.");
+                Say("Marcus is down. Cookie is pulling you up.", SpeechPriority.Critical);
                 return;
             }
             _deadTimer = respawnDelay;
-            Say(cookie != null && cookie.IsDown ? "Marcus and Cookie are both down. Responders are coming." : "Marcus is down");
+            Say(cookie != null && cookie.IsDown ? "Marcus and Cookie are both down. Responders are coming." : "Marcus is down", SpeechPriority.Critical);
         }
 
         private void ReviveByCookie()
@@ -430,6 +430,6 @@ namespace EchoesOfNeon.SideScroll
         }
 
         private void Play(AudioClip clip, float vol) { if (clip != null && _sfx != null) _sfx.PlayOneShot(clip, vol); }
-        private static void Say(string s) { AccessibilityManager.Instance?.Announce(s); }
+        private static void Say(string s, SpeechPriority p = SpeechPriority.Normal) { AccessibilityManager.Instance?.Announce(s, p); }
     }
 }

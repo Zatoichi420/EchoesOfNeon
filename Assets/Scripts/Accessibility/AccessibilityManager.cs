@@ -249,11 +249,22 @@ namespace EchoesOfNeon.Accessibility
         /// "Objective updated") - not tied to a specific focused UI element.
         /// No-ops quietly if no screen reader is active, so callers never
         /// need to check IsScreenReaderActive themselves first.</summary>
-        public void Announce(string text)
+        public void Announce(string text, SpeechPriority priority = SpeechPriority.Normal)
         {
             if (string.IsNullOrEmpty(text)) return;
             LastAnnouncement = text;
-            Speak(text);
+            var now = Time.unscaledTime;
+            var go = _speech.Submit(text, priority, now);
+            if (go != null) Speak(go);
+        }
+
+        private readonly SpeechQueue _speech = new SpeechQueue();
+
+        // Releases queued announcements once the voice is free (unscaled, so it keeps working in slow motion / pause).
+        private void LateUpdate()
+        {
+            var next = _speech.Tick(Time.unscaledTime);
+            if (next != null) Speak(next);
         }
 
         /// <summary>The most recent thing Announce() was asked to say, so the

@@ -139,7 +139,7 @@ namespace EchoesOfNeon.SideScroll
             if (Health > 0f) return;
             IsDown = true; _recoverTimer = recoverSeconds; State = CookieState.Following; _target = null; _cooldown = 0f;
             _voice.PlayOneShot(SideScrollTones.PlayerHurt, 0.5f);
-            AccessibilityManager.Instance?.Announce("Cookie is down");
+            AccessibilityManager.Instance?.Announce("Cookie is down", SpeechPriority.High);
         }
 
         private void GetUp()
@@ -208,11 +208,11 @@ namespace EchoesOfNeon.SideScroll
             if (Prog.Has(CookieAbility.CyberEye) && _eyeCd <= 0f)
             {
                 var edge = leader.GetComponent<SideScrollEdgeSensor>();
-                if (edge != null && edge.NearestGapDistance >= 0f && edge.NearestGapDistance <= 4f) { _eyeCd = 4f; EchoesOfNeon.Accessibility.AccessibilityManager.Instance?.Announce("Ledge ahead"); }
+                if (edge != null && edge.NearestGapDistance >= 0f && edge.NearestGapDistance <= 4f) { _eyeCd = 4f; EchoesOfNeon.Accessibility.AccessibilityManager.Instance?.Announce("Ledge ahead", EchoesOfNeon.Accessibility.SpeechPriority.High); }
                 else
                 {
                     foreach (var e in SideScrollEnemy.All)
-                        if (e != null && !e.IsDown && e.aerial && Mathf.Abs(e.transform.position.x - leader.position.x) < 8f) { _eyeCd = 4f; EchoesOfNeon.Accessibility.AccessibilityManager.Instance?.Announce("Enemy above"); break; }
+                        if (e != null && !e.IsDown && e.aerial && Mathf.Abs(e.transform.position.x - leader.position.x) < 8f) { _eyeCd = 4f; EchoesOfNeon.Accessibility.AccessibilityManager.Instance?.Announce("Enemy above", EchoesOfNeon.Accessibility.SpeechPriority.High); break; }
                 }
             }
         }

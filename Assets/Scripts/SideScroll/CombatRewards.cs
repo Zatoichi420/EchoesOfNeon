@@ -94,7 +94,7 @@ namespace EchoesOfNeon.SideScroll
             pickup.player = _player;
 
             string side = pos.x >= _player.transform.position.x ? "to your right" : "to your left";
-            AccessibilityManager.Instance?.Announce($"{(kind == RewardKind.MarcusPack ? "Health pack" : "Treat for Cookie")} dropped {side}.");
+            AccessibilityManager.Instance?.Announce($"{(kind == RewardKind.MarcusPack ? "Health pack" : "Treat for Cookie")} dropped {side}.", SpeechPriority.Low);
         }
     }
 }
