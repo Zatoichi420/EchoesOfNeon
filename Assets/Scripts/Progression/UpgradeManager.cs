@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EchoesOfNeon.Optics;
 using EchoesOfNeon.Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace EchoesOfNeon.Progression
 {
@@ -54,6 +55,24 @@ namespace EchoesOfNeon.Progression
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                SceneManager.sceneLoaded -= OnSceneLoaded;
+                Instance = null;
+            }
+        }
+
+        /// <summary>This manager outlives scenes but the player it modifies does
+        /// not, so re-resolve the player and replay purchases after every load.</summary>
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            playerController = FindFirstObjectByType<TacticalPlayerController>();
+            LoadAndApplyAll();
         }
 
         private void Start()
@@ -102,11 +121,21 @@ namespace EchoesOfNeon.Progression
             }
             else
             {
-                JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString(PrefsKey), Data);
+                try
+                {
+                    JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString(PrefsKey), Data);
+                }
+                catch (ArgumentException e)
+                {
+                    // Corrupt save: keep playing with no upgrades rather than throwing.
+                    Debug.LogWarning($"UpgradeManager: saved upgrades unreadable, starting empty. {e.Message}");
+                    Data = new PurchasedUpgradesData();
+                }
             }
 
-            playerController?.ClearMoveSpeedModifiers();
-            OculusSensorySuite.Instance?.ClearSonarRadiusModifiers();
+            // Explicit null checks: '?.' skips Unity's destroyed-object check.
+            if (playerController != null) playerController.ClearMoveSpeedModifiers();
+            if (OculusSensorySuite.Instance != null) OculusSensorySuite.Instance.ClearSonarRadiusModifiers();
 
             foreach (var id in Data.purchasedIds)
             {

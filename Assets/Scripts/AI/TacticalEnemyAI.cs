@@ -158,12 +158,16 @@ namespace EchoesOfNeon.AI
             // OculusSensorySuite's coroutine already waited out the sonar's
             // travel delay before calling this - answer back immediately so
             // a blind player hears exactly where the ping found something.
+            // A downed enemy must stay silent: a corpse that answers a ping
+            // reads as a live threat to a player who can't see it.
+            if (_health <= 0f) return;
             _emitter.Emit();
         }
 
         // --- IDamageable ---
         public void TakeDamage(float amount, Vector3 hitPoint, Vector3 hitNormal)
         {
+            if (_health <= 0f) return; // already down - no repeat "Enemy down"
             _health -= amount;
             if (_health <= 0f)
             {

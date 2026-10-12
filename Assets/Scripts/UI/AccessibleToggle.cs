@@ -59,7 +59,7 @@ namespace EchoesOfNeon.UI
 
             _node.invoked += HandleInvoked;
             ApplyState(_toggle.isOn);
-            _toggle.onValueChanged.AddListener(ApplyState);
+            _toggle.onValueChanged.AddListener(HandleValueChanged);
 
             AccessibilityManager.Instance.NotifyLayoutChanged(_node);
         }
@@ -67,7 +67,7 @@ namespace EchoesOfNeon.UI
         private void OnDisable()
         {
             AccessibilityManager.Ready -= Register;
-            _toggle.onValueChanged.RemoveListener(ApplyState);
+            _toggle.onValueChanged.RemoveListener(HandleValueChanged);
             if (_node == null || AccessibilityManager.Instance == null) return;
             _node.invoked -= HandleInvoked;
             AccessibilityManager.Instance.RemoveMenuNode(_node);
@@ -83,6 +83,19 @@ namespace EchoesOfNeon.UI
         {
             _toggle.isOn = !_toggle.isOn;
             return true;
+        }
+
+        // Without a screen reader the node's value change is never spoken, so the
+        // player flipping a setting heard nothing. Speak it - but only for the focused
+        // control, so programmatic refreshes (opening a panel) stay quiet.
+        private void HandleValueChanged(bool isOn)
+        {
+            ApplyState(isOn);
+            var mgr = AccessibilityManager.Instance;
+            if (mgr == null || mgr.IsScreenReaderActive) return;
+            if (UnityEngine.EventSystems.EventSystem.current?.currentSelectedGameObject != gameObject) return;
+            var name = string.IsNullOrEmpty(label) ? ResolveTextLabel() : label;
+            mgr.Announce($"{name} {(isOn ? "on" : "off")}");
         }
 
         private void ApplyState(bool isOn)

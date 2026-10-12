@@ -54,14 +54,32 @@ namespace EchoesOfNeon.UI
         private void BeginRebind()
         {
             if (InputManager.Instance == null) return;
-            if (valueText != null) valueText.text = "Press a key...";
-            AccessibilityManager.Instance?.Announce($"Rebinding {actionName.Replace(':', ' ')}. Press a key or button.");
-            InputManager.Instance.StartRebind(actionName, () =>
+            string spoken = actionName.Replace(':', ' ');
+            string conflict = null;
+            var op = InputManager.Instance.StartRebind(actionName, () =>
             {
                 InputManager.Instance.SaveBindingOverrides();
                 Refresh();
-                AccessibilityManager.Instance?.Announce($"{actionName.Replace(':', ' ')} bound to {(valueText != null ? valueText.text : "unknown")}.");
-            });
+                string msg = $"{spoken} bound to {(valueText != null ? valueText.text : "unknown")}.";
+                if (conflict != null) msg += $" Warning: that key is also used by {conflict}.";
+                AccessibilityManager.Instance?.Announce(msg);
+            },
+            () =>
+            {
+                Refresh();
+                AccessibilityManager.Instance?.Announce("Rebind cancelled. Binding unchanged.");
+            },
+            c => conflict = c);
+
+            if (op == null)
+            {
+                // Previously silent and left the row stuck on "Press a key...".
+                Refresh();
+                AccessibilityManager.Instance?.Announce($"Can't rebind {spoken}.");
+                return;
+            }
+            if (valueText != null) valueText.text = "Press a key...";
+            AccessibilityManager.Instance?.Announce($"Rebinding {spoken}. Press a key or button, or Escape to cancel.");
         }
     }
 }

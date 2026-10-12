@@ -5,6 +5,7 @@ using EchoesOfNeon.Accessibility;
 using EchoesOfNeon.Core;
 using EchoesOfNeon.Progression;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace EchoesOfNeon.Optics
 {
@@ -82,6 +83,20 @@ namespace EchoesOfNeon.Optics
             Instance = this;
             DontDestroyOnLoad(gameObject);
             _baseFixedDeltaTime = Time.fixedDeltaTime;
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        /// <summary>This suite outlives scenes, but its origin (camera/head) does
+        /// not. Rebind to the new scene's camera and drop any carried-over
+        /// Neural Dilate so a scene change never starts in slow motion.</summary>
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (originTransform == null && Camera.main != null)
+                originTransform = Camera.main.transform;
+            IsDilating = false;
+            _targetTimeScale = 1f;
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = _baseFixedDeltaTime;
         }
 
         private void Start()
@@ -101,6 +116,7 @@ namespace EchoesOfNeon.Optics
 
         private void OnDestroy()
         {
+            if (Instance == this) SceneManager.sceneLoaded -= OnSceneLoaded;
             if (_input != null)
             {
                 _input.OnSonarPulse -= HandleSonarPulse;
@@ -154,6 +170,9 @@ namespace EchoesOfNeon.Optics
         public void PulseFrom(Vector3 origin)
         {
             var hits = Physics.OverlapSphere(origin, sonarRadius.Value, sonarMask);
+            // One announcement per pingable per pulse: an enemy with several
+            // colliders must not read as several contacts.
+            var alreadyPinged = new HashSet<ISonarPingable>();
             foreach (var hit in hits)
             {
                 float distance = Vector3.Distance(origin, hit.transform.position);
@@ -161,7 +180,10 @@ namespace EchoesOfNeon.Optics
                 OnSonarPingDetected?.Invoke(hit, delay, distance);
 
                 var pingable = hit.GetComponentInParent<ISonarPingable>();
-                if (pingable != null)
+                // A disabled behaviour is a downed enemy (TacticalEnemyAI disables
+                // itself on death) - skip it so a corpse never reads as a threat.
+                if (pingable is Behaviour b && !b.enabled) continue;
+                if (pingable != null && alreadyPinged.Add(pingable))
                     StartCoroutine(DispatchPingAfterDelay(pingable, delay, distance));
             }
         }

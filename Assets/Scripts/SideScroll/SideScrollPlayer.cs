@@ -30,6 +30,12 @@ namespace EchoesOfNeon.SideScroll
         public float maxHealth = 100f;
         public bool regenAssist;                      // assist: slowly regain health (to half) when out of combat
         public float respawnDelay = 2f;
+        [Tooltip("How long Cookie takes to pull a downed Marcus up.")]
+        public float reviveSeconds = 4f;
+        [Tooltip("Fraction of max health Marcus gets back when Cookie revives him.")]
+        public float reviveHealthFraction = 0.35f;
+        public bool IsReviving { get; private set; }
+        private float _reviveTimer;
 
         [Header("Cane")]
         public float strikeRange = 1.8f;
@@ -86,13 +92,21 @@ namespace EchoesOfNeon.SideScroll
         {
             if (progression == null) progression = SideScrollProgression.Instance;
             if (abilities == null) abilities = GetComponent<SideScrollAbilities>();
-            if (progression != null) { progression.OnMarcusLevelUp += OnLevelUp; Health = Mathf.Min(MaxHealth, Health + progression.MaxHealthBonus); }
-            SideScrollEnemy.Killed += OnEnemyKilled;
+            if (progression != null)
+            {
+                progression.OnMarcusLevelUp -= OnLevelUp; progression.OnMarcusLevelUp += OnLevelUp; // no double-subscribe
+                Health = Mathf.Min(MaxHealth, Health + progression.MaxHealthBonus);
+            }
         }
 
         private void OnEnable()
         {
+            // Subscribed here (not Start) so a disable/enable cycle restores it,
+            // and before the input early-out so Resonance healing never depends on input.
+            SideScrollEnemy.Killed -= OnEnemyKilled; SideScrollEnemy.Killed += OnEnemyKilled;
+            if (progression != null) { progression.OnMarcusLevelUp -= OnLevelUp; progression.OnMarcusLevelUp += OnLevelUp; }
             _input = InputManager.Instance;
+            if (_input == null) Debug.LogWarning("[SideScrollPlayer] No InputManager found - player will not respond to input.");
             if (_input == null) return;
             _input.OnMove += OnMove; _input.OnJump += RequestJump; _input.OnFirePressed += Strike;
             _input.OnFendPressed += Fend; _input.OnWhistlePressed += OnWhistleKey; _input.OnSonarPulse += OnSonarKey;
@@ -108,6 +122,7 @@ namespace EchoesOfNeon.SideScroll
         private void OnDisable()
         {
             SideScrollEnemy.Killed -= OnEnemyKilled;
+            if (progression != null) progression.OnMarcusLevelUp -= OnLevelUp;
             if (_input == null) return;
             _input.OnMove -= OnMove; _input.OnJump -= RequestJump; _input.OnFirePressed -= Strike;
             _input.OnFendPressed -= Fend; _input.OnWhistlePressed -= OnWhistleKey; _input.OnSonarPulse -= OnSonarKey;
@@ -157,7 +172,8 @@ namespace EchoesOfNeon.SideScroll
         {
             if (IsDead)
             {
-                if ((_deadTimer -= dt) <= 0f) Respawn();
+                if (IsReviving) { if ((_reviveTimer -= dt) <= 0f) ReviveByCookie(); }
+                else if ((_deadTimer -= dt) <= 0f) Respawn();
                 return;
             }
             _strikeCd -= dt; _fendCd -= dt; _fendTimer -= dt; _sinceHurt += dt; _dashTime -= dt;
@@ -250,6 +266,7 @@ namespace EchoesOfNeon.SideScroll
             float dmg = amount * (progression != null ? progression.DamageTakenMultiplier : 1f) * DifficultyRules.CurrentDamageTaken;
             Health = Mathf.Max(0f, Health - dmg); _sinceHurt = 0f;
             Play(SideScrollTones.PlayerHurt, 1f);
+            if (cookie != null) cookie.TakeSplash(dmg * 0.5f, from.x);
             if (IsDead) Down();
         }
 
@@ -284,7 +301,22 @@ namespace EchoesOfNeon.SideScroll
 
         private void Down()
         {
-            _deadTimer = respawnDelay; Say("Marcus is down");
+            if (cookie != null && cookie.BeginRevive())
+            {
+                IsReviving = true; _reviveTimer = reviveSeconds;
+                Say("Marcus is down. Cookie is pulling you up.");
+                return;
+            }
+            _deadTimer = respawnDelay;
+            Say(cookie != null && cookie.IsDown ? "Marcus and Cookie are both down. Responders are coming." : "Marcus is down");
+        }
+
+        private void ReviveByCookie()
+        {
+            IsReviving = false;
+            Health = MaxHealth * reviveHealthFraction; abilities?.ClearStrain(); _lowAnnounced = false; _sinceHurt = 0f;
+            cookie.FinishRevive();
+            Say($"Cookie got you up. Health {Mathf.RoundToInt(Health)} of {Mathf.RoundToInt(MaxHealth)}.");
         }
 
         private void Respawn()
@@ -292,7 +324,9 @@ namespace EchoesOfNeon.SideScroll
             Respawns++;
             _cc.enabled = false; transform.position = RestPosition + Vector3.up * 0.2f; _cc.enabled = true; _vy = 0f;
             Health = MaxHealth * 0.5f; abilities?.ClearStrain(); _lowAnnounced = false; _sinceHurt = 0f;
-            Say("Back on your feet at the last rest point.");
+            IsReviving = false;
+            if (cookie != null) cookie.RestoreAfterRescue();
+            Say("Responders reached you. Back on your feet at the last rest point. Your progress is kept.");
         }
 
         public string Status()

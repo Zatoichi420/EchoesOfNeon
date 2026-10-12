@@ -23,6 +23,17 @@ namespace EchoesOfNeon.SideScroll
         public float cooldownSeconds = 7f;
         public float catchUpDistance = 12f;
 
+        [Header("Health / revive")]
+        public float maxHealth = 60f;
+        public float recoverSeconds = 15f;      // how long Cookie stays down before getting up on her own
+        public float reviveCooldown = 45f;      // Cookie is spent after pulling Marcus up
+        public float splashRadius = 2.5f;       // hits landing this close to Cookie also hurt her
+
+        public float Health { get; private set; } = 60f;
+        public bool IsDown { get; private set; }
+        public bool CanRevive => !IsDown && _reviveCd <= 0f;
+        private float _recoverTimer, _reviveCd;
+
         public CookieState State { get; private set; } = CookieState.Following;
         public bool IsReady => State == CookieState.Following && _cooldown <= 0f;
         public float CurrentSpeed { get; private set; }
@@ -38,6 +49,7 @@ namespace EchoesOfNeon.SideScroll
 
         private void Awake()
         {
+            Health = maxHealth;
             _steps = MakeSource("PawSteps"); _collar = MakeSource("Collar"); _voice = MakeSource("CookieVoice");
         }
 
@@ -65,6 +77,14 @@ namespace EchoesOfNeon.SideScroll
             if (_pl == null) _pl = leader.GetComponent<SideScrollPlayer>();
             _guardCd -= dt; _rallyCd -= dt; _eyeCd -= dt; _howlCd -= dt; _tandemCd -= dt;
             if (_cooldown > 0f) _cooldown -= dt;
+            if (_reviveCd > 0f) _reviveCd -= dt;
+            if (IsDown)
+            {
+                CurrentSpeed = 0f; if (animator != null) animator.SetFloat("Speed", 0f);
+                // She only gets up while Marcus is on his feet; if both are down, the rescue restores her.
+                if (_pl != null && !_pl.IsDead && (_recoverTimer -= dt) <= 0f) GetUp();
+                return;
+            }
             if (!_wasReady && IsReady) { _voice.PlayOneShot(SideScrollTones.ReadyChime, 0.6f); AccessibilityManager.Instance?.Announce("Cookie is ready"); }
             _wasReady = IsReady;
 
@@ -108,6 +128,46 @@ namespace EchoesOfNeon.SideScroll
             }
             if (animator != null) animator.SetFloat("Speed", speed);
             Audio(dt, speed);
+        }
+
+        /// <summary>A hit that lands near Cookie also hurts her. At zero she is incapacitated: no bites,
+        /// no abilities, and she cannot revive Marcus until she recovers.</summary>
+        public void TakeSplash(float amount, float fromX)
+        {
+            if (IsDown || amount <= 0f || Mathf.Abs(transform.position.x - fromX) > splashRadius) return;
+            Health = Mathf.Max(0f, Health - amount);
+            if (Health > 0f) return;
+            IsDown = true; _recoverTimer = recoverSeconds; State = CookieState.Following; _target = null; _cooldown = 0f;
+            _voice.PlayOneShot(SideScrollTones.PlayerHurt, 0.5f);
+            AccessibilityManager.Instance?.Announce("Cookie is down");
+        }
+
+        private void GetUp()
+        {
+            IsDown = false; Health = maxHealth * 0.5f;
+            _voice.PlayOneShot(SideScrollTones.ReadyChime, 0.6f);
+            AccessibilityManager.Instance?.Announce("Cookie is back on her feet");
+        }
+
+        /// <summary>Marcus went down: Cookie runs to his side. False if she cannot (down or spent).</summary>
+        public bool BeginRevive()
+        {
+            if (!CanRevive) return false;
+            State = CookieState.Following; _target = null;
+            if (leader != null) Teleport(leader.position.x - FacingOf(leader) * 0.8f);
+            return true;
+        }
+
+        public void FinishRevive()
+        {
+            _reviveCd = reviveCooldown;
+            _voice.PlayOneShot(SideScrollTones.Rally, 0.9f);
+        }
+
+        /// <summary>Both were down and the rescue arrived: Cookie is carried back too.</summary>
+        public void RestoreAfterRescue()
+        {
+            IsDown = false; Health = maxHealth * 0.5f; _reviveCd = 0f;
         }
 
         private void Bite()

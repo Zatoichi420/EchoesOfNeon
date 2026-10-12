@@ -65,7 +65,7 @@ namespace EchoesOfNeon.UI
             _node.incremented += HandleIncremented;
             _node.decremented += HandleDecremented;
             ApplyValue(_slider.value);
-            _slider.onValueChanged.AddListener(ApplyValue);
+            _slider.onValueChanged.AddListener(HandleValueChanged);
 
             AccessibilityManager.Instance.NotifyLayoutChanged(_node);
         }
@@ -73,7 +73,7 @@ namespace EchoesOfNeon.UI
         private void OnDisable()
         {
             AccessibilityManager.Ready -= Register;
-            _slider.onValueChanged.RemoveListener(ApplyValue);
+            _slider.onValueChanged.RemoveListener(HandleValueChanged);
             if (_node == null || AccessibilityManager.Instance == null) return;
             _node.incremented -= HandleIncremented;
             _node.decremented -= HandleDecremented;
@@ -92,6 +92,16 @@ namespace EchoesOfNeon.UI
             // from a single arrow-key nudge on the same control.
             var step = _slider.wholeNumbers ? 1f : (_slider.maxValue - _slider.minValue) / 20f;
             _slider.value = Mathf.Clamp(_slider.value + direction * step, _slider.minValue, _slider.maxValue);
+        }
+
+        // See AccessibleToggle.HandleValueChanged: speak the new value when no screen reader will.
+        private void HandleValueChanged(float value)
+        {
+            ApplyValue(value);
+            var mgr = AccessibilityManager.Instance;
+            if (mgr == null || mgr.IsScreenReaderActive || _node == null) return;
+            if (UnityEngine.EventSystems.EventSystem.current?.currentSelectedGameObject != gameObject) return;
+            mgr.Announce(_node.value);
         }
 
         private void ApplyValue(float value)

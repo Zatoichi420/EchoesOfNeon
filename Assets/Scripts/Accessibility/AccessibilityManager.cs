@@ -185,6 +185,7 @@ namespace EchoesOfNeon.Accessibility
         {
             if (IsAiming == value) return;
             IsAiming = value;
+            if (Settings.toggleAim) Announce("Aim " + (value ? "on" : "off")); // hold-to-toggle state is otherwise invisible
             OnAimStateChanged?.Invoke(IsAiming);
         }
 
@@ -194,6 +195,7 @@ namespace EchoesOfNeon.Accessibility
         {
             if (IsSprinting == value) return;
             IsSprinting = value;
+            if (Settings.toggleSprint) Announce("Sprint " + (value ? "on" : "off")); // hold-to-toggle state is otherwise invisible
             OnSprintStateChanged?.Invoke(IsSprinting);
         }
 
@@ -203,6 +205,7 @@ namespace EchoesOfNeon.Accessibility
         {
             if (IsCrouching == value) return;
             IsCrouching = value;
+            if (Settings.toggleCrouch) Announce("Crouch " + (value ? "on" : "off")); // hold-to-toggle state is otherwise invisible
             OnCrouchStateChanged?.Invoke(IsCrouching);
         }
 
@@ -211,7 +214,17 @@ namespace EchoesOfNeon.Accessibility
         public void LoadSettings()
         {
             if (!PlayerPrefs.HasKey(SettingsPrefsKey)) return;
-            JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString(SettingsPrefsKey), Settings);
+            try
+            {
+                JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString(SettingsPrefsKey), Settings);
+            }
+            catch (System.ArgumentException e)
+            {
+                // Corrupt saved settings used to throw in Awake and leave the manager half-built.
+                Debug.LogWarning($"[AccessibilityManager] Saved settings unreadable, using defaults. {e.Message}");
+                Settings = new AccessibilitySettings();
+                Announce("Saved settings could not be read. Defaults restored.");
+            }
         }
 
         public void ApplySettings(AccessibilitySettings newSettings)

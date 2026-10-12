@@ -288,7 +288,7 @@ namespace EchoesOfNeon.Core
         /// <summary>Starts interactive rebinding for the named action (e.g.
         /// "Jump", "SonarPulse"). Caller is responsible for prompting the
         /// player and calling SaveBindingOverrides() in onComplete.</summary>
-        public InputActionRebindingExtensions.RebindingOperation StartRebind(string actionName, Action onComplete)
+        public InputActionRebindingExtensions.RebindingOperation StartRebind(string actionName, Action onComplete, Action onCancel = null, Action<string> onConflict = null)
         {
             SplitActionName(actionName, out var actionOnly, out var part);
             var action = _gameplayMap.FindAction(actionOnly);
@@ -314,14 +314,40 @@ namespace EchoesOfNeon.Core
             var rebind = partIndex >= 0 ? action.PerformInteractiveRebinding(partIndex) : action.PerformInteractiveRebinding();
             return rebind
                 .WithControlsExcluding("Mouse/position")
+                .WithCancelingThrough("<Keyboard>/escape")
                 .OnMatchWaitForAnother(0.1f)
-                .OnComplete(op =>
+                .OnCancel(op =>
                 {
                     op.Dispose();
                     action.Enable();
+                    onCancel?.Invoke();
+                })
+                .OnComplete(op =>
+                {
+                    int idx = partIndex;
+                    if (idx < 0)
+                        for (int i = 0; i < action.bindings.Count; i++)
+                            if (!action.bindings[i].isComposite && !action.bindings[i].isPartOfComposite) { idx = i; break; }
+                    string conflict = idx >= 0 ? FindConflict(action, action.bindings[idx].effectivePath) : null;
+                    op.Dispose();
+                    action.Enable();
+                    if (conflict != null) onConflict?.Invoke(conflict);
                     onComplete?.Invoke();
                 })
                 .Start();
+        }
+
+        /// <summary>Name of another gameplay action already using this path, or null.
+        /// Lets the UI say so out loud instead of silently double-binding a key.</summary>
+        private string FindConflict(InputAction rebound, string path)
+        {
+            foreach (var other in _gameplayMap.actions)
+            {
+                if (other == rebound) continue;
+                foreach (var b in other.bindings)
+                    if (!b.isComposite && b.effectivePath == path) return other.name;
+            }
+            return null;
         }
     }
 }
