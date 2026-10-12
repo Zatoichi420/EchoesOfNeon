@@ -47,9 +47,11 @@ namespace EchoesOfNeon.UI
                 AudioSettingsManager.Instance.OnSettingsChanged -= ApplyVolume;
         }
 
+        private float _baseVolume = 0.35f;
+
         private void Update()
         {
-            if (!_fadingOut) return;
+            if (!_fadingOut) { _source.volume = _baseVolume * AudioDucking.Multiplier(); return; }
             _fadeTimer += Time.unscaledDeltaTime;
             var t = fadeSeconds <= 0f ? 1f : Mathf.Clamp01(_fadeTimer / fadeSeconds);
             _source.volume = Mathf.Lerp(_startFadeVolume, 0f, t);
@@ -81,7 +83,8 @@ namespace EchoesOfNeon.UI
             var musicVolume = AudioSettingsManager.Instance != null
                 ? AudioSettingsManager.Instance.EffectiveMusicVolume
                 : 0.35f;
-            _source.volume = musicVolume;
+            _baseVolume = musicVolume;
+            _source.volume = musicVolume * AudioDucking.Multiplier();
         }
     }
 }

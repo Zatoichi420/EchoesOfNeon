@@ -79,6 +79,7 @@ namespace EchoesOfNeon.SideScroll
             s.spatialBlend = 1f; s.rolloffMode = AudioRolloffMode.Linear; s.minDistance = 2f; s.maxDistance = 22f;
             s.loop = loop; s.playOnAwake = false;
             EchoesOfNeon.Core.AudioRouting.Bind(s, EchoesOfNeon.Core.AudioCategory.Sfx);
+            EchoesOfNeon.Core.AudioOcclusion.Attach(s);   // muffled through walls
             return s;
         }
 

@@ -86,6 +86,8 @@ namespace EchoesOfNeon.SideScroll
             go.transform.localPosition = new Vector3(0, 1f, 0);
             _sfx = go.AddComponent<AudioSource>(); _sfx.spatialBlend = 0f; _sfx.playOnAwake = false;  // own sounds: centered
             EchoesOfNeon.Core.AudioRouting.Bind(_sfx, EchoesOfNeon.Core.AudioCategory.Sfx);
+            var ear = new GameObject("Ear"); ear.transform.SetParent(transform, false); ear.transform.localPosition = new Vector3(0, 1.5f, 0);
+            EchoesOfNeon.Core.AudioOcclusion.Ear = ear.transform;   // occlusion is judged from Marcus's head, not the side-on camera
         }
 
         private void Start()

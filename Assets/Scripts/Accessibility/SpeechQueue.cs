@@ -22,6 +22,7 @@ namespace EchoesOfNeon.Accessibility
         private float _busyUntil;
 
         public int PendingCount => _pending.Count;
+        public SpeechPriority CurrentPriority => _current;
 
         /// <summary>Rough speaking time, so the queue knows when the voice is free.</summary>
         public static float EstimateSeconds(string text) => 0.35f + 0.065f * (text?.Length ?? 0);

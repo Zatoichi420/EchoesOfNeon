@@ -255,7 +255,7 @@ namespace EchoesOfNeon.Accessibility
             LastAnnouncement = text;
             var now = Time.unscaledTime;
             var go = _speech.Submit(text, priority, now);
-            if (go != null) Speak(go);
+            if (go != null) SpeakWithDuck(go);
         }
 
         private readonly SpeechQueue _speech = new SpeechQueue();
@@ -264,7 +264,15 @@ namespace EchoesOfNeon.Accessibility
         private void LateUpdate()
         {
             var next = _speech.Tick(Time.unscaledTime);
-            if (next != null) Speak(next);
+            if (next != null) SpeakWithDuck(next);
+        }
+
+        // High/Critical lines duck music and ambience so they can't be masked (gameplay cues are never ducked).
+        private void SpeakWithDuck(string text)
+        {
+            if (_speech.CurrentPriority >= SpeechPriority.High)
+                EchoesOfNeon.Core.AudioDucking.Duck(0.35f, SpeechQueue.EstimateSeconds(text));
+            Speak(text);
         }
 
         /// <summary>The most recent thing Announce() was asked to say, so the
