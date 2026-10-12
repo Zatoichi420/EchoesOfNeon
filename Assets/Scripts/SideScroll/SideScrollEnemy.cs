@@ -52,6 +52,7 @@ namespace EchoesOfNeon.SideScroll
             Health = maxHealth; _homeX = transform.position.x; _homeY = transform.position.y;
             _voice = MakeSource("EnemyVoice", false);
             _hum = MakeSource("EnemyHum", true); _hum.clip = aerial ? SideScrollTones.DroneHum : SideScrollTones.HumFor((int)kind, humHz); _hum.volume = 0.18f;
+            if (GetComponent<WindUpTelegraph>() == null) gameObject.AddComponent<WindUpTelegraph>();   // visual twin of the wind-up sound
         }
 
         public void Configure(EnemyKind k)
