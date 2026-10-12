@@ -164,6 +164,12 @@ namespace EchoesOfNeon.SideScroll
             _voice.PlayOneShot(SideScrollTones.Rally, 0.9f);
         }
 
+        /// <summary>Full-health reward: refills Cookie and lifts her if she was down.</summary>
+        public void HealFull()
+        {
+            IsDown = false; Health = maxHealth;
+        }
+
         /// <summary>Both were down and the rescue arrived: Cookie is carried back too.</summary>
         public void RestoreAfterRescue()
         {
