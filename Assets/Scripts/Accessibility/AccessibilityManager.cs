@@ -152,6 +152,7 @@ namespace EchoesOfNeon.Accessibility
         private void HandleHintPressed()
         {
             var device = _input.CurrentDevice;
+            if (device == InputManager.DeviceKind.Touch) { Announce(TouchControls.Guide); return; }
             Announce(ControlsGuide.Compose(action => _input.GetBindingDisplayString(action, device)));
         }
 
@@ -335,6 +336,22 @@ namespace EchoesOfNeon.Accessibility
                 // the element if the canvas resizes or the layout reflows.
                 node.frameGetter = () => RectTransformToScreenRect(rect);
             }
+            return node;
+        }
+
+        /// <summary>Registers a node for an area of the screen rather than a UI
+        /// element (the phone's game area and Pause strip). frame returns
+        /// screen pixels with Y growing down from the top. With directTouch,
+        /// VoiceOver passes touches inside it straight to the game, so the
+        /// player can swipe and tap without VoiceOver taking the gesture.</summary>
+        public AccessibilityNode CreateScreenNode(string label, AccessibilityRole role, Func<Rect> frame, bool directTouch = false)
+        {
+            if (_hierarchy == null) return null;
+            var node = _hierarchy.AddNode(label: label);
+            node.role = role;
+            node.isActive = true;
+            node.frameGetter = frame;
+            node.allowsDirectInteraction = directTouch;
             return node;
         }
 

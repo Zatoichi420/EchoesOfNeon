@@ -113,7 +113,8 @@ namespace EchoesOfNeon.UI
             startButton.onClick.AddListener(() =>
             {
                 GameSaveManager.Instance?.ClearSave();
-                SceneManager.LoadScene(firstGameplaySceneName);
+                // Phones play the side-scroller: TouchControls is built for it, not the first-person range.
+                SceneManager.LoadScene(Application.isMobilePlatform ? "SideScrollProto" : firstGameplaySceneName);
             });
 
             continueButton.onClick.AddListener(() =>

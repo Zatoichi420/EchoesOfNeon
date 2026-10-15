@@ -12,6 +12,8 @@ namespace EchoesOfNeon.Accessibility
     ///   built-in System.Speech synthesizer (SAPI). Lines go in on stdin, so
     ///   there is no per-line startup delay; each new line cancels the last,
     ///   matching `say`'s new-interrupts-old behaviour.
+    /// - iOS: Apple's built-in voice (AVSpeechSynthesizer) through the
+    ///   EchoSpeech plugin in Assets/Plugins/iOS; each new line cancels the last.
     /// Other platforms return false. Skipped in batch mode so automated test
     /// runs never talk out loud. Platform is checked at runtime (not #if) so
     /// the Windows path compiles, and is unit-tested, on a Mac.</summary>
@@ -27,11 +29,14 @@ namespace EchoesOfNeon.Accessibility
         private static bool IsWindows =>
             Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor;
 
-        public static bool IsSupported => Enabled && !Application.isBatchMode && (IsMac || IsWindows);
+        private static bool IsIOS => Application.platform == RuntimePlatform.IPhonePlayer;
+
+        public static bool IsSupported => Enabled && !Application.isBatchMode && (IsMac || IsWindows || IsIOS);
 
         public static bool Speak(string text)
         {
             if (string.IsNullOrEmpty(text) || !IsSupported) return false;
+            if (IsIOS) return SpeakIOS(text);
             return IsWindows ? SpeakWindows(text) : SpeakMac(text);
         }
 
@@ -42,7 +47,25 @@ namespace EchoesOfNeon.Accessibility
             catch { /* already gone */ }
             _current = null;
             if (_windows != null) SendLine("");   // empty line = cancel only
+            if (IsIOS) StopIOS();
         }
+
+        // --------------------------------------------------------------- iOS
+
+#if UNITY_IOS && !UNITY_EDITOR
+        [System.Runtime.InteropServices.DllImport("__Internal")] private static extern void EchoSpeech_Speak(string text);
+        [System.Runtime.InteropServices.DllImport("__Internal")] private static extern void EchoSpeech_Stop();
+        [System.Runtime.InteropServices.DllImport("__Internal")] private static extern void EchoSpeech_KeepAudible();
+
+        // Unity sets an audio mode the ring/silent switch mutes; switch to one it doesn't, once Unity is up.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void KeepAudibleOnSilent() => EchoSpeech_KeepAudible();
+        private static bool SpeakIOS(string text) { EchoSpeech_Speak(text); return true; }
+        private static void StopIOS() => EchoSpeech_Stop();
+#else
+        private static bool SpeakIOS(string text) => false;
+        private static void StopIOS() { }
+#endif
 
         // ------------------------------------------------------------- macOS
 

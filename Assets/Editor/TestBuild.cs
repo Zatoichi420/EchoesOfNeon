@@ -41,6 +41,21 @@ public static class TestBuild
         });
     }
 
+    /// <summary>iPhone: the menu plus the side-scroller, as an Xcode project in
+    /// Builds/iOS. Signing (team N724Z4725Y, automatic) comes from Player Settings;
+    /// compile and install with xcodebuild/devicectl afterwards.
+    /// Batch: Unity -batchmode -quit -projectPath . -executeMethod TestBuild.BuildIOS</summary>
+    public static void BuildIOS()
+    {
+        Run(new BuildPlayerOptions
+        {
+            scenes = new[] { "Assets/Scenes/MainMenu.unity", "Assets/Scenes/SideScrollProto.unity" },
+            locationPathName = "Builds/iOS",
+            target = BuildTarget.iOS,
+            options = BuildOptions.None,
+        });
+    }
+
     private static void Run(BuildPlayerOptions options)
     {
         BuildReport report = BuildPipeline.BuildPlayer(options);

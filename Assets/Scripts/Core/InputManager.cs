@@ -23,7 +23,13 @@ namespace EchoesOfNeon.Core
     {
         public static InputManager Instance { get; private set; }
 
-        public enum DeviceKind { KeyboardMouse, Gamepad }
+        public enum DeviceKind { KeyboardMouse, Gamepad, Touch }
+
+        /// <summary>Gameplay commands a touch screen can raise (see TouchControls).</summary>
+        public enum TouchCommand { Strike, Jump, Fend, EchoStepLeft, EchoStepRight, Sonar, Interact, Whistle, Howl, CycleSpecial, Special, Status, Hint, RepeatLast, Journal, Pause }
+
+        /// <summary>False while a menu has paused gameplay input (SetGameplayInputEnabled).</summary>
+        public bool GameplayEnabled { get; private set; } = true;
 
         public DeviceKind CurrentDevice { get; private set; } = DeviceKind.KeyboardMouse;
 
@@ -211,12 +217,63 @@ namespace EchoesOfNeon.Core
         /// each action's canceled callback, which releases held inputs.</summary>
         public void SetGameplayInputEnabled(bool enabled)
         {
+            GameplayEnabled = enabled;
             if (_gameplayMap == null) return;
             foreach (var action in _gameplayMap.actions)
             {
                 if (action == _pause) continue;
                 if (enabled) action.Enable(); else action.Disable();
             }
+        }
+
+        /// <summary>Touch-screen walking: -1 left, 1 right, 0 stop. Ignored while gameplay input is paused.</summary>
+        public void TouchMove(float x)
+        {
+            if (!GameplayEnabled && x != 0f) return;
+            NoteTouch();
+            OnMove?.Invoke(new Vector2(x, 0f));
+        }
+
+        /// <summary>Raises the same events the keyboard and gamepad do, so every
+        /// listener works unchanged on a phone. Only Pause works while paused.</summary>
+        public void RaiseTouch(TouchCommand command)
+        {
+            if (!GameplayEnabled && command != TouchCommand.Pause) return;
+            NoteTouch();
+            switch (command)
+            {
+                case TouchCommand.Strike: OnFirePressed?.Invoke(); OnFireReleased?.Invoke(); break;
+                case TouchCommand.Jump: OnJump?.Invoke(); break;
+                case TouchCommand.Fend: OnFendPressed?.Invoke(); break;
+                case TouchCommand.EchoStepLeft: DashToward(-1f); break;
+                case TouchCommand.EchoStepRight: DashToward(1f); break;
+                case TouchCommand.Sonar: OnSonarPulse?.Invoke(); break;
+                case TouchCommand.Interact: OnInteract?.Invoke(); break;
+                case TouchCommand.Whistle: OnWhistlePressed?.Invoke(); break;
+                case TouchCommand.Howl: OnHowlPressed?.Invoke(); break;
+                case TouchCommand.CycleSpecial: OnCycleSpecialPressed?.Invoke(); break;
+                case TouchCommand.Special: OnSpecialPressed?.Invoke(); break;
+                case TouchCommand.Status: OnStatusPressed?.Invoke(); break;
+                case TouchCommand.Hint: OnHintPressed?.Invoke(); break;
+                case TouchCommand.RepeatLast: OnRepeatPressed?.Invoke(); break;
+                case TouchCommand.Journal: OnJournalPressed?.Invoke(); break;
+                case TouchCommand.Pause: OnPause?.Invoke(); break;
+            }
+        }
+
+        // Echo Step dashes the way Marcus is moving, so steer it for the one call, then let go.
+        private void DashToward(float dir)
+        {
+            OnMove?.Invoke(new Vector2(dir, 0f));
+            OnEchoStepPressed?.Invoke();
+            OnMove?.Invoke(Vector2.zero);
+        }
+
+        private void NoteTouch()
+        {
+            if (CurrentDevice == DeviceKind.Touch) return;
+            CurrentDevice = DeviceKind.Touch;
+            OnDeviceChanged?.Invoke(CurrentDevice);
         }
 
         private void OnEnable() => _gameplayMap?.Enable();
