@@ -1,5 +1,7 @@
 # Maximilian "Max" Gomez — Mentor / Supplier
 
+> **Canon update 2026-10-16 (Orlando):** Desi was Max's niece (his sister's daughter), so Marcus is family by marriage. The House Max serves killed her, and she was close to uncovering his part in the father's death. See `../story-canon-log.md`, which wins over this file.
+
 Built from Orlando's story intake answers (2026-09-13). Voice notes still open — see
 `Docs/Story/Dialogue/dialogue-intake-form.md`.
 

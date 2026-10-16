@@ -1,5 +1,7 @@
 # Desdemona "Desi" Cross — Marcus's Wife (deceased)
 
+> **Canon update 2026-10-16 (Orlando):** Desi is Guatemalan-American and Max Gomez's niece, the daughter of Max's sister. She met Marcus on her own, not through Max. When she was killed she was on the verge of figuring everything out, including her uncle's part in Marcus's father's death. See `../story-canon-log.md`, which wins over this file.
+
 Built from Orlando's story intake answers (2026-09-13). Voice notes are still open —
 see `Docs/Story/Dialogue/dialogue-intake-form.md`, not yet answered. Since Desi only
 appears via memory/dream sequences, her voice notes matter especially for how those

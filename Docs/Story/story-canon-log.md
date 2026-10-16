@@ -228,3 +228,17 @@ These are CONFIRMED by Orlando in session. Everything else in `Development Draft
 - The amnesia leak: Marcus asks the tram time twice; G, the second time: "Ten past. It's all right." Marcus: "Are you with Aegis?" G: "Not tonight." (the Madame's off-scene order: "Don't touch him. Let him finish."). Marcus's hand goes to the cane and it begins to collapse; Cookie: "Marcus. Don't." Marcus: "You walk like you want me to hear you." G: "Yes. I thought it was polite."
 - Optional plant: Marcus says he keeps Desi's glasses on the nightstand though he can't see them; G, flat and a half step lower: "Glasses." (G placed them there after the attack.)
 - End: G: "Mind the step. It's loose." / "I notice things. I don't like it when people fall." / "Goodnight, Mr. Cross." Marcus: "I didn't give you my name." G: "No." His steps get quieter than they should and then are not there. Marcus: "Cook. Who was that?" / "Quiet man, for a loud walker."
+
+### Desi is Max's niece: CONFIRMED by Orlando 2026-10-16
+- Desdemona "Desi" Cross is Guatemalan, the same heritage as Max, and she is Max's NIECE. Marcus married into Max's family.
+- Why (Orlando): it strengthens the reveals and makes them land harder.
+- Consequences to carry through the script (PROPOSED, pending Orlando's review):
+  - Max's guilt doubles: he helped kill Marcus's father, and the House he serves killed his own niece. His "Nobody gets left on the ground" creed now covers her too.
+  - Scene 02's rule that Max never says Desi's name now reads as grief, not only guilt.
+  - Max's leash (the elder listening through his eye) now held him silent while his own family was in danger; the confession can name her as "mi sobrina" once.
+  - Mama Ines (Guatemalan) may have known Desi as a girl in the Understory community; her "I know your walk" line gains a family layer.
+  - Desi's voice: Guatemalan-American, warm; at most one Spanish word per scene, matching Max's dialect rules (vos, mira), never phonetic spelling.
+- ANSWERED by Orlando 2026-10-16:
+  - Desi is the daughter of Max's SISTER (her maiden name is her father's surname, not Gomez; the surname itself is still open).
+  - Marcus did NOT meet Desi through Max; they met on their own, and the family tie came with the marriage.
+  - Desi was ON THE VERGE of figuring everything out (including her uncle's part in the father's death) when she was killed. She never got to confront Max or tell Marcus. This sits beside her research discovery (the Subject A / Subject B match) as the second thing she nearly finished saying.
