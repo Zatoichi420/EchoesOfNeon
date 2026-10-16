@@ -27,6 +27,8 @@ MARCUS (Orlando): Roz Adeyemi. Radio tubes. She's dead, Max.
 [PLANT: the first listen is grief, plain; the second listen is a man who already knew.]
 MAX: *(very quiet)* She was a good cable woman.
 [PERF] Do not break. The voice goes lower, not higher. It is a eulogy said to a bench.
+MAX: She kept the radio running at the clinic. For De... for the clinic.
+[PERF] The second audible stop on Desi's name (the first is Scene 02). He swallows the syllable and finishes on the building, not the woman. [CANON 2026-10-16]
 MAX: Who gave you the signal word?
 [PERF] A half second too fast, as if he was waiting to ask it.
 MARCUS (Orlando): I told you. Roz.

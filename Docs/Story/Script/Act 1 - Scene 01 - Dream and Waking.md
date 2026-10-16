@@ -68,8 +68,9 @@ His smart glasses read the board back to him in their own flat voice, then he re
 [PLANT: Subject A / B (?) and the unfinished sentence pay off at the reveal and the Act 3 playback; 12/04/78 is a code, the "doctor's door"; the torn Aegis-Corvus requisition (cut from this scene) is read later.] **[ORLANDO DECIDES: the requisition is cut from Scene 01 to avoid overload; Bernardin also suggested cutting the date, but the date is how the player learns the code. Keep both the date and the requisition cut?]**
 
 ## LINES: the Inventory [SAFE]
+[CANON 2026-10-16: the solder line establishes, in Act 1 and in plain view, that Desi was Max's niece. Marcus has always known; the player must too (fair play).]
 **ACTION:** triggered when the player touches the photograph on the nightstand.
-MARCUS (Orlando): Desi. Five six. Five seven in the boots she hated. Glasses up in her hair, and she'd tear the house apart looking for them. Coffee cold, on purpose. A laugh in two pieces, the little one first, like she was checking the room was safe. Left-handed. Smeared everything she wrote. She snored. Small, offended engine. *(under his breath)* I'd never say that to her face.
+MARCUS (Orlando): Desi. Five six. Five seven in the boots she hated. Glasses up in her hair, and she'd tear the house apart looking for them. Coffee cold, on purpose. A laugh in two pieces, the little one first, like she was checking the room was safe. Left-handed. Smeared everything she wrote. Her uncle taught her to solder. She was better at it than him. She snored. Small, offended engine. *(under his breath)* I'd never say that to her face.
 [PERF] A catechism, quick and sure. The last line is private and tender. [PLANT: the facts here are correct; the drift begins in Act 2, per Lindelof.] **[ORLANDO DECIDES: Flanagan and Smith had Marcus correct himself here ("No. Her right.") which spends the drift in the first minute; Lindelof and I recommend stating it correctly now and starting the drift in Act 2.]**
 
 ## SOUND and LINES: the reel

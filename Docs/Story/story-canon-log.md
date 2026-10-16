@@ -242,3 +242,18 @@ These are CONFIRMED by Orlando in session. Everything else in `Development Draft
   - Desi is the daughter of Max's SISTER (her maiden name is her father's surname, not Gomez; the surname itself is still open).
   - Marcus did NOT meet Desi through Max; they met on their own, and the family tie came with the marriage.
   - Desi was ON THE VERGE of figuring everything out (including her uncle's part in the father's death) when she was killed. She never got to confront Max or tell Marcus. This sits beside her research discovery (the Subject A / Subject B match) as the second thing she nearly finished saying.
+
+### Writers Room Round 10 (Desi is Max's niece): CONFIRMED by Orlando 2026-10-16 ("Yes to all", with Bernardin's plan)
+Full feedback: `~/Desktop/Echoes of Neon/02 Concept Art and Ideas/Story and Story Ideas/04 Writers Room/Round 10 - Desi Is Max's Niece (pitch and feedback, 2026-10-16).md`. This supersedes the PROPOSED consequence list in the entry above.
+- Surname: DESDEMONA IXCOY (EESH-koy), K'iche' Maya, her father's family from the Understory (Mama Ines's community). The clinic plaque, read once by Marcus's glasses: "Dra. D. Ixcoy de Cross." Max's sister: ELVIRA GOMEZ DE IXCOY, alive, offstage.
+- Fair play: Marcus always knew Desi was Max's niece, so the player learns it in Act 1, openly. Scene 01 Inventory adds "Her uncle taught her to solder. She was better at it than him." Scene 02 adds Marcus: "Your niece used to ask me that." / Max: "She learned it from me. Eat." (both scripts edited). The impact is "family did this", not "Max is family".
+- Max never says her name, audibly: he stops on the first syllable twice: Scene 02 ("De... Hand me that driver.") and Scene 07 ("For De... for the clinic."). Scripts edited.
+- Double guilt: the House killed Max's niece. The elder (Martin) was pleased by the marriage: it locked Max in place, since he could not run without leaving her exposed.
+- Bernardin's load plan for Scene 17 (the confession): ONE niece beat only, Smith's: "My patoja. She was going to find it. She was one question away." ("patoja" is the family word; Max calls Marcus "patojo".) Flanagan's baptism line is NOT used in Scene 17.
+- King's funeral line moves OUT of Scene 17, into Scene 13 or the eye transmissions: "He was at the funeral. He was behind my eye."
+- Flanagan's phone stinger AFTER Scene 17, silent: Max lifts the workshop phone to call Elvira, dial tone, hangs up. No lines.
+- The tune is the family's song (King): it came from Elvira. Max has heard Marcus hum it wrong for months and never corrected him. Max knows the song, not the lie (Desi's flat sixth note), so the canon key holds.
+- Her near-discovery (Lindelof): optional reel in Scene 14 (the Annex), rewarded, never required: "Note to self. Ask Tío about the stairs." Pays off on the confession's "You were on the stairs in your socks..."
+- Scene 20 playback: "Oh. It's you." gets one extra breath of recognition (she knows what G means about her uncle). No new words.
+- Mama Ines knew Desi as a girl and remembers Elvira humming the same tune.
+- Desi's Spanish: usually none; one tender word in key scenes only ("Ay, Marcus", "Tío"). Never phonetic spelling.

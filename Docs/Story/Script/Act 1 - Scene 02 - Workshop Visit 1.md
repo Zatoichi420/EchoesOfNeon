@@ -24,6 +24,9 @@ The player walks in from the door with Cookie leading to the bench by the solder
 MAX: You eat today?
 MARCUS: I had coffee.
 MAX: That is not a meal. Eat. Then I show you the new emitter. In that order.
+MARCUS: Your niece used to ask me that.
+MAX: She learned it from me. Eat.
+[CANON 2026-10-16: Desi was Max's sister's daughter. Max still never says her name; "your niece" is Marcus's word, not his.]
 [PERF] Gruff, no warmth performed. The care is in the order of the sentences.
 *(Cookie crosses and leans against Max's leg. He lets her. A hand scratches behind her ear.)*
 MAX: She is thin. Did you feed her?
@@ -61,8 +64,8 @@ MAX: Do not. That one sticks.
 MARCUS: You ever lose a day, Max? Not a bad day. A day. I got a hole where Tuesday was.
 [PERF] Quiet, curious, not frightened. A man mentioning a stain on a shirt.
 *(A half beat of silence. The soldering iron ticks once. Max sets something down.)*
-MAX: Hand me that driver. The long one.
-[PERF] Max does not hesitate loudly. He just changes the subject, and he is a half beat late.
+MAX: De... Hand me that driver. The long one.
+[PERF] He starts her name on the first syllable and stops (one of two audible stops; the second is in Scene 07). Otherwise Max does not hesitate loudly. He just changes the subject, and he is a half beat late.
 [PLANT: Max stops, then changes the subject. Payoff: he knows what Tuesday was.]
 MARCUS: It's in your hand.
 MAX: So it is.
